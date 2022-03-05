@@ -1,8 +1,8 @@
 import React from "react"
 
-import ecoFrndlyIcon1 from "./images/ecoFrndlyIcon1.svg"
-import fastIcon1 from "./images/fastIcon1.svg"
-import secureIcon21 from "./images/secureIcon21.svg"
+import ecoFrndlyIcon1 from "./images/ecoFrndlyIcon1.png"
+import fastIcon1 from "./images/fastIcon1.png"
+import secureIcon21 from "./images/secureIcon21.png"
 
 const Rectangle19 = (props) => {
   return (
