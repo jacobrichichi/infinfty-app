@@ -1,8 +1,5 @@
-# infiNFTy
-
-# Own Your Possibilities
-
-# Presented by David Liang, Kevin Calle, Hak Soo Kim, Jacob Richichi, and Jian Xi Chen
+# infiNFTy: Own Your Possibilities
+Presented by David Liang, Kevin Calle, Hak Soo Kim, Jacob Richichi, and Jian Xi Chen
 
 # create-react-app with a Node server on Heroku
 
