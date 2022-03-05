@@ -1,8 +1,8 @@
 import React from "react"
 
-import logo from "./logo.svg"
-import searchBarIcon from "./searchBarIcon.svg"
-import accountImg from "./accountImg.svg"
+import logo from "./images/logo.svg"
+import searchBarIcon from "./images/searchBarIcon.svg"
+import accountImg from "./images/accountImg.svg"
 
 const Navbar = (props) => {
   return (

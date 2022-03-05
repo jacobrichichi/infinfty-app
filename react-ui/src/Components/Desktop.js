@@ -3,14 +3,14 @@ import Explore from "./Explore"
 import Join from "./Join"
 import Navbar from "./Navbar"
 
-import logo from "./logo.svg"
-import searchBarIcon from "./searchBarIcon.svg"
-import accountImg from "./accountImg.svg"
-import advertisement from "./advertisement.png"
-import squidft1 from "./squidft1.svg"
-import ecoFrndlyIcon1 from "./ecoFrndlyIcon1.svg"
-import fastIcon1 from "./fastIcon1.svg"
-import secureIcon21 from "./secureIcon21.svg"
+import logo from "./images/logo.svg"
+import searchBarIcon from "./images/searchBarIcon.svg"
+import accountImg from "./images/accountImg.svg"
+import advertisement from "./images/advertisement.png"
+import squidft1 from "./images/squidft1.svg"
+import ecoFrndlyIcon1 from "./images/ecoFrndlyIcon1.svg"
+import fastIcon1 from "./images/fastIcon1.svg"
+import secureIcon21 from "./images/secureIcon21.svg"
 
 const Desktop = (props) => {
   return (
