@@ -1,3 +1,6 @@
+# infiNFTy: Own Your Possibilities
+Presented by David Liang, Kevin Calle, Hak Soo Kim, Jacob Richichi, and Jian Xi Chen
+
 # create-react-app with a Node server on Heroku
 
 A minimal example of using a Node backend (server for API, proxy, & routing) with a [React frontend](https://github.com/facebookincubator/create-react-app).
