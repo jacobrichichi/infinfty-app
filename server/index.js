@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
+require("dotenv").config({ path: "./config.env" });
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,10 @@ if (!isDev && cluster.isMaster) {
 
 } else {
   const app = express();
+  app.use(express.json());
+  app.use(require("./routes/record")); // Need to change & Remove record.js 
+  // get driver connection
+  const dbo = require("./db/conn");
 
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));

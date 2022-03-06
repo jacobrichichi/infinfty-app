@@ -26,6 +26,5 @@
     "create-react-app",
     "react"
   ],
-  "license": "MIT",
-  "devDependencies": {}
+  "license": "MIT"
 }
