@@ -13,14 +13,7 @@ import Grid from '@mui/material/Grid';
 
 const Desktop = (props) => {
     return (
-        <Grid container spacing = {1}>
-        <Grid item xs = {2}>
-            <img src = {logo}/>
-            
-        </Grid>
-        
-
-    </Grid>
+        <Navbar></Navbar>
 
     )
 }

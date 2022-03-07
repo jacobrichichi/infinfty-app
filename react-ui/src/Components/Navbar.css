@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+#navBarContainer {
+    height: 75px;
+    padding-top: 10px;
+}
+
+
+#logo {
+    min-width: 200px;
+    max-width: 300px;
+    width: 20vw;
+}
+
+#logoContainter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#searchContainer{
+    padding-left: 100px;
+    padding-right: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#searchBar{
+    width: 600px;
+    
+    
+}
+
+@media only screen and (max-width: 800px) {
+    #expLinkText {
+      display: none;
+    }
+
+    #expTextContainer {
+        padding-left: 0px;
+        padding-right: 0px;
+        min-width: 5%;
+    }
+    #userTextContainer {
+        
+        min-width: 47.67%;
+    }
+  }
+
+  @media only screen and (max-width: 1000px) {
+    #invLinkText {
+      display: none;
+    }
+    #invTextContainer {
+        padding-left: 0px;
+        padding-right: 0px;
+        min-width: 5%;
+    }
+
+    #userTextContainer {
+        
+        min-width: 40.3%;
+    }
+  }
+  @media only screen and (max-width: 1200px) {
+    #conLinkText {
+      display: none;
+    }
+    #conTextContainer {
+        padding-left: 0px;
+        padding-right: 0px;
+        min-width: 0px;
+        max-width: 0px;
+    }
+
+    #userTextContainer {
+        
+        min-width: 20.8%;
+    }
+  }
+
+.textContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+    padding-left: 15px;
+    padding-right: 15px;
+    
+}
+
+
+
+
+.linkText{
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+}
+
+#userTextContainer {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding-right: 10px;
+}
+
+
+#userText {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+}
