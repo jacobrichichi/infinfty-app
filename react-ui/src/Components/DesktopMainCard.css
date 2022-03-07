@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
 #background {
     background-image: url("./images/muralbackground.jpg");
     min-height: 600px;
+    max-height: 600px;
     min-width: 300px;
     mix-blend-mode: hard-light;
-    opacity: .7;
+    opacity: .9;
 }
 
 #background::after {
@@ -16,5 +19,30 @@
     background: linear-gradient(transparent, white);
     pointer-events: none;
   }
-
   
+
+  #textDiv {
+      position: absolute;
+      top: 170px;
+      left: 80px;
+      padding-left: 30px;
+      
+      min-width: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 45vw;
+      font-family: 'Montserrat', sans-serif;
+      
+  }
+
+  #mainText {
+    font-size: 46px;
+    font-weight: bold;
+  }
+
+  #secondaryText {
+    font-size: 28px;
+    padding-top: 30px;
+  }
