@@ -1,5 +1,6 @@
 import React from "react"
 import Navbar from "./Navbar"
+import DesktopMainCard from "./DesktopMainCard"
 
 import logo from "./images/logo.png"
 import searchBarIcon from "./images/searchBarIcon.png"
@@ -13,7 +14,14 @@ import Grid from '@mui/material/Grid';
 
 const Desktop = (props) => {
     return (
-        <Navbar></Navbar>
+        <div>
+            <div style = {{paddingBottom: "20px"}}>
+                <Navbar/> 
+            </div>  
+            
+            <DesktopMainCard/>
+        </div>
+        
 
     )
 }

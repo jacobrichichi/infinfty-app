@@ -1,25 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 #navBarContainer {
-    height: 75px;
+    height: 75x;
     padding-top: 10px;
 }
 
 
 #logo {
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 150px;
+    max-width: 250px;
     width: 20vw;
+    padding-left: 5%;
+    
 }
 
-#logoContainter {
+#logoContainer {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 #searchContainer{
-    padding-left: 100px;
+    padding-left: 50px;
     padding-right: 30px;
     display: flex;
     justify-content: center;
@@ -29,8 +31,7 @@
 
 #searchBar{
     width: 600px;
-    
-    
+    height: 10px;
 }
 
 @media only screen and (max-width: 800px) {
@@ -43,10 +44,7 @@
         padding-right: 0px;
         min-width: 5%;
     }
-    #userTextContainer {
-        
-        min-width: 47.67%;
-    }
+    
   }
 
   @media only screen and (max-width: 1000px) {
@@ -92,11 +90,9 @@
 }
 
 
-
-
 .linkText{
     font-family: 'Montserrat', sans-serif;
-    font-size: 26px;
+    font-size: 20px;
 }
 
 #userTextContainer {

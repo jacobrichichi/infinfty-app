@@ -1,0 +1,20 @@
+#background {
+    background-image: url("./images/muralbackground.jpg");
+    min-height: 600px;
+    min-width: 300px;
+    mix-blend-mode: hard-light;
+    opacity: .7;
+}
+
+#background::after {
+    position: absolute;
+    content: "";
+    left: 0px;
+    top: 0px;
+    min-height: 700px;
+    width: 100%;
+    background: linear-gradient(transparent, white);
+    pointer-events: none;
+  }
+
+  
