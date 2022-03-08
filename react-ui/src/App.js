@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Desktop from "./Components/Desktop.js";
-import Explore from './Components/Explore'
+import Explore from './Components/Explore';
+import Inventory from './Components/Inventory';
 
 function App() {
   /*
@@ -36,7 +37,8 @@ function App() {
   return (
     <div>
       {/* <Desktop /> */}
-      <Explore />
+      {/* <Explore /> */}
+      <Inventory />
     </div>
   )
 }
