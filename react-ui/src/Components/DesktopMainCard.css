@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 #background {
-    background-image: url("./images/muralbackground.jpg");
+    background-image: url("./images/muralbackgroundhighcontrast.jpg");
     min-height: 600px;
     max-height: 600px;
     min-width: 300px;
     mix-blend-mode: hard-light;
-    opacity: .9;
+    opacity: .8;
 }
 
 #background::after {
@@ -27,7 +27,7 @@
       left: 80px;
       padding-left: 30px;
       
-      min-width: 400px;
+      min-width: 600px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -35,6 +35,41 @@
       width: 45vw;
       font-family: 'Montserrat', sans-serif;
       
+  }
+
+ #previewCard {
+    position: absolute;
+    top: 150px;
+    left: 800px;
+    padding-left: 0px;
+
+    min-width: 300px;
+    max-width: 300px;
+
+    min-height: 460px;
+    max-height: 460px;
+    background-color: white;
+    border-radius: 20px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+#squid {
+    min-width: 300px;
+    max-width: 300px;
+}
+
+@media only screen and (max-width: 800px) {
+    #previewCard {
+      display: none;
+    }
+
+    #previewCard {
+        max-width: 0px;
+    }
   }
 
   #mainText {

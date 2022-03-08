@@ -17,7 +17,7 @@ const Navbar = (props) => {
             
         </Grid>
         <Grid item xs = {10} id = "searchContainer">
-            <TextField id = "searchBar"/>
+            <TextField placeHolder = "Search for items here"  id = "searchBar"/>
             
         </Grid>
 

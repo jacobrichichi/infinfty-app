@@ -1,5 +1,7 @@
 import React from "react"
 
+
+import squid from "./images/squidft.png"
 import "./DesktopMainCard.css"
 
 import Grid from '@mui/material/Grid';
@@ -9,6 +11,7 @@ const DesktopMainCard = (props) => {
     return (
         <div style = {{paddingTop: "20px"}}>
             <div id = "background"/>
+
             <div id = "textDiv">
                 <Grid container>
                     <Grid item xs = {12}>
@@ -25,6 +28,12 @@ const DesktopMainCard = (props) => {
 
                     
                 </Grid>
+            </div>
+
+            <div id = "previewCard">
+                <img src = {squid} id = "squid">
+                </img>
+
             </div>
         </div>
 
