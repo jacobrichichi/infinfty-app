@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Desktop from "./Components/Desktop.js";
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+
+import { Desktop, Explore, Inventory } from "./Components"
 
 function App() {
+  /*
   const [message, setMessage] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [url, setUrl] = useState('/api');
@@ -29,14 +32,19 @@ function App() {
     setIsFetching(true);
     fetchData();
   }, [fetchData]);
+  */
 
   return (
-    <div>
-      <Desktop />
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path = "/" exact component = {Desktop} />
+        <Route path = "/inventory" exact component = {Inventory} />
+        <Route path = "/explore" exact component = {Explore} />
+        <Inventory />
+      </Switch>
+      
+    </BrowserRouter>
   )
-
-
 }
 
 export default App;

@@ -15,12 +15,9 @@ import Grid from '@mui/material/Grid';
 const Desktop = (props) => {
     return (
         <div>
-
             <div style = {{paddingLeft: "30px"}}>
                 <Navbar/> 
             </div>  
-
-        
             <DesktopMainCard/>
         </div>
         
