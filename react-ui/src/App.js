@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Desktop from "./Components/Desktop.js";
+import Explore from './Components/Explore'
 
 function App() {
+  /*
   const [message, setMessage] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [url, setUrl] = useState('/api');
@@ -29,14 +31,14 @@ function App() {
     setIsFetching(true);
     fetchData();
   }, [fetchData]);
+  */
 
   return (
     <div>
-      <Desktop />
+      {/* <Desktop /> */}
+      <Explore />
     </div>
   )
-
-
 }
 
 export default App;
