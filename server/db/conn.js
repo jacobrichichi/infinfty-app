@@ -4,6 +4,18 @@ const client = new MongoClient(Db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+
+// imported from mongodb "Connect"
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://infinfty:<password>@infinfty.hmmyx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const client2 = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+client2.connect(err => {
+  const collection = client2.db("test").collection("devices");
+  // perform actions on the collection object
+  client2.close();
+});
+
  
 var _db;
  
