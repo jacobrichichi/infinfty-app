@@ -5,7 +5,7 @@ import DesktopMainCard from "./DesktopMainCard"
 const Desktop = (props) => {
     return (
         <div>
-            <div style = {{paddingLeft: "30px"}}>
+            <div>
                 <Navbar/> 
             </div>  
             <DesktopMainCard/>

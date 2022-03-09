@@ -98,3 +98,9 @@
         max-width: 0px;
     }
   }
+
+/* Changes made by David Liang to */
+a:-webkit-any-link{
+  background-color:transparent; 
+  text-decoration:none
+}
