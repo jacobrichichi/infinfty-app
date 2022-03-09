@@ -3,6 +3,7 @@ import React from "react"
 import logo from "./images/logo.png"
 import searchBarIcon from "./images/searchBarIcon.png"
 import accountImg from "./images/accountImg.png"
+import { Link } from 'react-router-dom'
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -21,15 +22,19 @@ const Navbar = (props) => {
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">
-            <div className = "linkText" id = "expLinkText">
-              Explore
-            </div>
+          <Link to = "/explore">
+              <div className = "linkText" id = "expLinkText">
+                Explore
+              </div>
+            </Link>
         </Grid>
 
         <Grid item xs = {3} className = "textContainer" id = "invTextContainer">
+          <Link to = "/inventory">
             <div className = "linkText" id = "invLinkText">
               Inventory
             </div>
+          </Link>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
