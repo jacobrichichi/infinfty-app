@@ -58,7 +58,7 @@
 
     min-height: 500px;
     max-height: 500px;
-    background-color: rgb(209, 209, 209);
+    background-color: transparent;
     border-radius: 20px;
     
 }
@@ -68,7 +68,7 @@
     max-width: 300px;
     min-height: 360px;
     max-height: 360px;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 #cardTextContainer {
@@ -78,6 +78,8 @@
 #cardTitleText {
   font-family: "Montserrat", sans-serif;
   font-size: 24px;
+  font-weight: bold;
+  padding-top: 12px;
   padding-bottom: 12px;
 
 }
