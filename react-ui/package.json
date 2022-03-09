@@ -9,9 +9,10 @@
     "@mui/material": "latest",
     "react": "^16.8.6",
     "react-dom": "^16.14.0",
+    "react-pro-sidebar": "^0.7.1",
+    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.2.2",
-    "react-scripts": "^2.1.8",
-    "react-responsive-carousel": "^3.2.23"
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
