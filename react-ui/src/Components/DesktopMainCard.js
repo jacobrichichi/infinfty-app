@@ -10,8 +10,6 @@ import { Carousel } from 'react-responsive-carousel';
 
 
 const DesktopMainCard = (props) => {
-    
-
     return (
         <div style = {{paddingTop: "20px"}}>
             <div id = "background"/>

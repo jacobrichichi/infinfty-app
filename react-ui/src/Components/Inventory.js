@@ -25,8 +25,9 @@ function Inventory(){
     ]
     return (
         <div>
-            <div style = {{paddingLeft: "30px"}}></div>
-            <Navbar/>
+            <div style = {{paddingLeft: "30px"}}>
+                <Navbar/>
+            </div>
             <h1 style={{textAlign: 'center'}}>
                 Your Inventory
             </h1>

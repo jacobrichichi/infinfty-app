@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import logo from "./images/logo.png"
+import wallet from "./images/connectwallet.png"
 import searchBarIcon from "./images/searchBarIcon.png"
 import accountImg from "./images/accountImg.png"
 import { Link } from 'react-router-dom'
@@ -34,6 +35,37 @@ const Navbar = (props) => {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
+  const [walletOpen, setWalletOpen] = React.useState(false);
+  const handleWalletOpen = () => setWalletOpen(true);
+  const handleWalletClose = () => setWalletOpen(false);
+  
+
+  let walletPopup = "";
+
+  if(walletOpen){
+    walletPopup = 
+    <Modal
+        open={walletOpen}
+        onClose={handleWalletClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div style ={{
+          maxHeight: "400px", minHeight: "400px", 
+          maxWidth: "400px", minWidth: "400px", backgroundColor: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',}}>
+          <img src = {wallet} style = {{maxHeight: "400px", maxWidth: "400px"}}></img>
+        </div>
+        
+      </Modal> 
+  }
+
 
   return (
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
@@ -64,10 +96,13 @@ const Navbar = (props) => {
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
-            <div className = "linkText" id = "conLinkText">
+            <div className = "linkText" id = "conLinkText" onClick = {handleWalletOpen}>
               Connect
             </div>
         </Grid>
+
+        {walletPopup}
+        
         
         <Grid item xs = {3} id = "userTextContainer">
           {open ?
