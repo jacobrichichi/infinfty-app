@@ -14,7 +14,9 @@ const Navbar = (props) => {
   return (
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
         <Grid item xs = {4} id = "logoContainer">
+          <Link to = "/">
             <img src = {logo} id = "logo" />
+          </Link>
         </Grid>
 
         <Grid item xs = {10} id = "searchContainer">
