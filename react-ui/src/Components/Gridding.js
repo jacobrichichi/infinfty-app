@@ -6,7 +6,7 @@ function Gridding(props){
     // xs (phones), sm (tablets), md (desktops), and lg (larger desktops)
     // Column widths are integer values between 1 and 12
     return (
-        <div>
+        <div style = {{paddingLeft: "30px"}}>
             <Grid container spacing={6}>
                 {props.nftitems.map(({nftname, nftcost}) => (
                     <Grid item xs={12} sm={4}>
