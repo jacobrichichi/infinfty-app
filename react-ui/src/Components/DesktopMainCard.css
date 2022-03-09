@@ -102,5 +102,6 @@
 /* Changes made by David Liang to */
 a:-webkit-any-link{
   background-color:transparent; 
-  text-decoration:none
+  text-decoration:none;
+  color: black;
 }
