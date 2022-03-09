@@ -37,29 +37,54 @@
       
   }
 
+  #mainText {
+    font-size: 46px;
+    font-weight: bold;
+  }
+
+  #secondaryText {
+    font-size: 28px;
+    padding-top: 30px;
+  }
+
  #previewCard {
     position: absolute;
     top: 150px;
-    left: 800px;
+    left: 900px;
     padding-left: 0px;
 
     min-width: 300px;
     max-width: 300px;
 
-    min-height: 460px;
-    max-height: 460px;
-    background-color: white;
+    min-height: 500px;
+    max-height: 500px;
+    background-color: rgb(209, 209, 209);
     border-radius: 20px;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
     
 }
 
-#squid {
+#cardImage {
     min-width: 300px;
     max-width: 300px;
+    min-height: 360px;
+    max-height: 360px;
+    border-radius: 20px;
+}
+
+#cardTextContainer {
+    text-align: center;
+}
+
+#cardTitleText {
+  font-family: "Montserrat", sans-serif;
+  font-size: 24px;
+  padding-bottom: 12px;
+
+}
+
+#cardDescriptionText {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
 }
 
 @media only screen and (max-width: 800px) {
@@ -70,14 +95,4 @@
     #previewCard {
         max-width: 0px;
     }
-  }
-
-  #mainText {
-    font-size: 46px;
-    font-weight: bold;
-  }
-
-  #secondaryText {
-    font-size: 28px;
-    padding-top: 30px;
   }
