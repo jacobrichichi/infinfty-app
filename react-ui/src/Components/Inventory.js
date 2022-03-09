@@ -7,20 +7,20 @@ function Inventory(){
     // var nftitems is some json object from backend, backend gets from database
     const testingjson=[
         {
-            'nftname' : 'shakesppeer',
-            'nftcost' : 'monnue'
+            'nftname' : 'Johnny Depp',
+            'nftcost' : '100 Algos'
         },{
-            'nftname' : 'somemoremoney',
-            'nftcost' : 'unnn moneerroo'
+            'nftname' : 'Johnny Depp',
+            'nftcost' : '100 Algos'
         },{
-            'nftname' : 'dooodooo',
-            'nftcost' : 'vrooom'
+            'nftname' : 'Johnny Depp',
+            'nftcost' : '100 Algos'
         },{
-            'nftname' : 'im in me mums car',
-            'nftcost' : 'get out me car'
+            'nftname' : 'Johnny Depp',
+            'nftcost' : '100 Algos'
         },{
-            'nftname' : 'gas money up',
-            'nftcost' : 'morebrokeness'
+            'nftname' : 'Johnny Depp',
+            'nftcost' : '100 Algos'
         },
     ]
     return (
