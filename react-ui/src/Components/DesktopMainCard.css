@@ -6,7 +6,7 @@
     max-height: 600px;
     min-width: 300px;
     mix-blend-mode: hard-light;
-    opacity: .8;
+    opacity: 1;
 }
 
 #background::after {
