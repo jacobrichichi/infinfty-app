@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Desktop from './Components/Desktop'
 import Inventory from './Components/Inventory'
 import Explore from './Components/Explore'
+import Account from './Components/Account'
 
 function App() {
   /*
@@ -42,6 +43,7 @@ function App() {
         <Route path = "/" element = {<Desktop/>} />
         <Route path = "/inventory" element = {<Inventory/>} />
         <Route path = "/explore" element = {<Explore/>} />
+        <Route path = "/account" element = {<Account/>} />
       </Routes>
       
     </BrowserRouter>
