@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import './App.css'; 
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { Desktop, Explore, Inventory } from "./Components"
+import Desktop from './Components/Desktop'
+import Inventory from './Components/Inventory'
+import Explore from './Components/Explore'
 
 function App() {
   /*
@@ -36,12 +38,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path = "/" exact component = {Desktop} />
-        <Route path = "/inventory" exact component = {Inventory} />
-        <Route path = "/explore" exact component = {Explore} />
-        <Inventory />
-      </Switch>
+      <Routes>
+        <Route path = "/" element = {<Desktop/>} />
+        <Route path = "/inventory" element = {<Inventory/>} />
+        <Route path = "/explore" element = {<Explore/>} />
+      </Routes>
       
     </BrowserRouter>
   )
