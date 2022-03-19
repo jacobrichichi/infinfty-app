@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css'; 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import Navbar from './Components/Navbar'
 import Desktop from './Components/Desktop'
 import Inventory from './Components/Inventory'
 import Explore from './Components/Explore'
@@ -38,15 +39,19 @@ function App() {
   */
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path = "/" element = {<Desktop/>} />
-        <Route path = "/inventory" element = {<Inventory/>} />
-        <Route path = "/explore" element = {<Explore/>} />
-        <Route path = "/account" element = {<Account/>} />
-      </Routes>
-      
-    </BrowserRouter>
+    <>    
+      <BrowserRouter>
+      <Navbar/> 
+        <Routes>
+          <Route path = "/" element = {<Desktop/>} />
+          <Route path = "/inventory" element = {<Inventory/>} />
+          <Route path = "/explore" element = {<Explore/>} />
+          <Route path = "/account" element = {<Account/>} />
+        </Routes>
+        
+      </BrowserRouter>
+    </>
+
   )
 }
 

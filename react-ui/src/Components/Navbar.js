@@ -87,7 +87,7 @@ const Navbar = (props) => {
             </Link>
         </Grid>
 
-        <Grid item xs = {3} className = "textContainer" id = "invTextContainer">
+        <Grid item xs = {2} className = "textContainer" id = "invTextContainer">
           <Link to = "/inventory">
             <div className = "linkText" id = "invLinkText">
               Inventory
@@ -104,7 +104,7 @@ const Navbar = (props) => {
         {walletPopup}
         
         
-        <Grid item xs = {3} id = "userTextContainer">
+        <Grid item xs = {2} id = "userTextContainer">
           {open ?
           <>
               <Modal

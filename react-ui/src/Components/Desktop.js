@@ -6,7 +6,6 @@ const Desktop = (props) => {
     return (
         <div>
             <div>
-                <Navbar/> 
             </div>  
             <DesktopMainCard/>
         </div>

@@ -5,7 +5,7 @@
     min-height: 600px;
     max-height: 600px;
     min-width: 300px;
-    mix-blend-mode: hard-light;
+    /* mix-blend-mode: hard-light; */
     opacity: 1;
 }
 
