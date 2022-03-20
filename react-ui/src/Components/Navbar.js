@@ -3,12 +3,16 @@ import * as React from 'react';
 import logo from "./images/logo.png"
 import wallet from "./images/connectwallet.png"
 import searchBarIcon from "./images/searchBarIcon.png"
+
 import accountImg from "./images/accountImg.png"
 import { Link } from 'react-router-dom'
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import "./Navbar.css"
+
+// import IconButton from '@mui/icons-material/IconButton';
+
 
 
 import Box from '@mui/material/Box';
@@ -80,23 +84,23 @@ const Navbar = (props) => {
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">
-          <Link to = "/explore">
+          <Link to = "/explore" className='navLink'>
               <div className = "linkText" id = "expLinkText">
                 Explore
               </div>
             </Link>
         </Grid>
 
-        <Grid item xs = {2} className = "textContainer" id = "invTextContainer">
-          <Link to = "/inventory">
-            <div className = "linkText" id = "invLinkText">
+        <Grid item xs = {2} className = "textContainer " id = "invTextContainer">
+          <Link to = "/inventory" className='navLink'>
+            <div className = "linkText " id = "invLinkText">
               Inventory
             </div>
           </Link>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
-            <div className = "linkText" id = "conLinkText" onClick = {handleWalletOpen}>
+            <div className = "linkText navLink" id = "conLinkText" onClick = {handleWalletOpen}>
               Connect
             </div>
         </Grid>
@@ -104,7 +108,7 @@ const Navbar = (props) => {
         {walletPopup}
         
         
-        <Grid item xs = {2} id = "userTextContainer">
+        <Grid item xs = {3} id = "userTextContainer">
           {open ?
           <>
               <Modal
@@ -147,7 +151,7 @@ const Navbar = (props) => {
               Hello User
             </div>
             :
-            <div id = "userText" onClick={handleOpen}>
+            <div id = "userText" className = "navLink" onClick={handleOpen}>
               Login
             </div>
             }
