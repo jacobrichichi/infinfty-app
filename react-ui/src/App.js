@@ -3,7 +3,6 @@ import logo from './logo.svg';
 import './App.css'; 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import Navbar from './Components/Navbar'
 import Desktop from './Components/Desktop'
 import Inventory from './Components/Inventory'
 import Explore from './Components/Explore'
