@@ -6,7 +6,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Desktop from './Components/Desktop'
 import Inventory from './Components/Inventory'
 import Explore from './Components/Explore'
+import ExploreCategories from './Components/ExploreComponents/ExploreCategories'
 import Account from './Components/Account'
+import Navbar from './Components/Navbar'
 
 function App() {
   /*
@@ -39,10 +41,11 @@ function App() {
 
   return (
     <BrowserRouter>
+    <Navbar/>
       <Routes>
         <Route path = "/" element = {<Desktop/>} />
         <Route path = "/inventory" element = {<Inventory/>} />
-        <Route path = "/explore" element = {<Explore/>} />
+        <Route path = "/explore" element = {<ExploreCategories/>} />
         <Route path = "/account" element = {<Account/>} />
       </Routes>
       

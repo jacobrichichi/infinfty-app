@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "./Navbar";
 import Gridding from "./Gridding";
 import './General.css';
 
@@ -25,8 +24,6 @@ function Explore(){
     ]
     return (
         <div>
-            <div style = {{paddingLeft: "30px"}}/>
-            <Navbar/>
             <h1 style={{textAlign: 'center'}}>
                 Find Your NFT
             </h1>

@@ -68,6 +68,7 @@ const Navbar = (props) => {
 
 
   return (
+    <div>
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
         <Grid item xs = {4} id = "logoContainer">
           <Link to = "/">
@@ -153,6 +154,7 @@ const Navbar = (props) => {
             }
         </Grid>
     </Grid>
+    </div>
   )
 }
 
