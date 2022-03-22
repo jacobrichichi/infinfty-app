@@ -24,6 +24,7 @@ function Explore(){
     ]
     return (
         <div>
+            <div style = {{paddingLeft: "30px"}}/>
             <h1 style={{textAlign: 'center'}}>
                 Find Your NFT
             </h1>

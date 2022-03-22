@@ -3,13 +3,16 @@
 #navBarContainer {
     height: 75px;
     padding-top: 10px;
+    font-weight: 500;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+
 }
 
 
 #logo {
     min-width: 150px;
     max-width: 250px;
-    padding-left: 5%;
+    padding-left: 10%;
     
 }
 
@@ -90,7 +93,8 @@
 
 
 .linkText{
-    font-family: 'Montserrat', sans-serif;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+
     font-size: 20px;
 }
 
@@ -103,6 +107,52 @@
 
 
 #userText {
-    font-family: 'Montserrat', sans-serif;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-weight: 500;
     font-size: 20px;
+    color:rgb(233, 120, 79);
 }
+
+.navLink::before, .navLink::after{
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 1px;
+    bottom: -3px;
+    background: rgb(13, 26, 38);
+}
+
+.navLink{
+    display: inline-block;
+    position: relative;
+}
+
+.navLink:hover{
+    color: rgb(28, 121, 184);
+    transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+  
+}
+.navLink:before {
+    left: 0;
+    transition: 0.5s;
+  }
+  
+.navLink:after {
+    background: rgb(13, 26, 38);
+    right: 0;
+    /* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
+  }
+  
+  .navLink:hover:before {
+    background: rgb(13, 26, 38);
+    width: 100%;
+    transition: width 0.5s cubic-bezier((0.22, 0.61, 0.36, 1));
+  }
+  
+  .navLink:hover:after {
+    background: transparent;
+    width: 100%;
+    /* transition: 0s; */
+  }
+  
