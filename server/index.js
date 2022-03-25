@@ -1,42 +1,44 @@
 const express = require('express');
 const path = require('path');
-const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
+const cors = require('cors');
+const cookieParser = require('cookie-parser')
+const dotenv = require('dotenv')
 
-const isDev = process.env.NODE_ENV !== 'production';
+dotenv.config()
 const PORT = process.env.PORT || 5000;
+const app = express();
 
-// Multi-process to utilize all CPU cores.
-if (!isDev && cluster.isMaster) {
-  console.error(`Node cluster master ${process.pid} is running`);
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
-  // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+app.use(express.urlencoded({ extended: true }))
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    credentials: true
+}))
+app.use(express.json())
+app.use(cookieParser())
 
-  cluster.on('exit', (worker, code, signal) => {
-    console.error(`Node cluster worker ${worker.process.pid} exited: code ${code}, signal ${signal}`);
-  });
+const authRouter = require('./routes/auth-router')
+app.use('/auth', authRouter)
+//const nftRouter = require('./routes/nft-router')
+//app.use('/api', nftRouter)
 
-} else {
-  const app = express();
 
-  // Priority serve any static files.
-  app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+const db = require('./db')
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-  // Answer API requests.
-  app.get('/api', function (req, res) {
-    res.set('Content-Type', 'application/json');
-    res.send('{"message":"Hello from the custom server!"}');
-  });
+// Answer API requests.
+/* app.get('/api', function (req, res) {
+  res.set('Content-Type', 'application/json');
+  res.send('{"message":"Hello from the custom server!"}');
+});*/
 
-  // All remaining requests return the React app, so it can handle routing.
-  app.get('*', function(request, response) {
-    response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
-  });
+// All remaining requests return the React app, so it can handle routing.
+/* app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
+});*/
 
-  app.listen(PORT, function () {
-    console.error(`Node ${isDev ? 'dev server' : 'cluster worker '+process.pid}: listening on port ${PORT}`);
-  });
-}
+app.listen(PORT, function () {
+  console.error(`listening on port ${PORT}`);
+});

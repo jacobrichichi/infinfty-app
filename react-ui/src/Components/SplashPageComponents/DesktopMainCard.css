@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 #background {
-    background-image: url("./images/muralbackgroundhighcontrast.jpg");
+    background-image: url("../images/muralbackgroundhighcontrast.jpg");
     min-height: 600px;
     max-height: 600px;
     min-width: 300px;
@@ -23,7 +23,7 @@
 
   #textDiv {
       position: absolute;
-      top: 170px;
+      top: 180px;
       left: 80px;
       padding-left: 30px;
       

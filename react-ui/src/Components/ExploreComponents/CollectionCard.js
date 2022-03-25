@@ -1,5 +1,6 @@
 import React from 'react'
 import "./CollectionCard.css"
+import { Link } from 'react-router-dom'
 
 const CollectionCard = (props) => {
 
@@ -16,7 +17,7 @@ const CollectionCard = (props) => {
                 <img src = {imageLocation}/>
             </div>
             <div id = "collTitleCont">
-                <b>{title}</b>
+                    <b>{title}</b>
             </div>
             <div id = "collDescCont">
                 <span>{description}</span>

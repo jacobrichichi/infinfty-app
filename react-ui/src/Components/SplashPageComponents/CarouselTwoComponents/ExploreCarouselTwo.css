@@ -1,0 +1,24 @@
+
+.carousel-container {
+    width: 100%;
+
+}
+
+#carTwoComponents {
+    display: flex;
+    justify-content: center;
+    padding-left: 20px;
+    height: 85%; 
+}
+
+#expTwoContainer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+#expTwoTitle {
+    font-size: 36px;
+    text-align: center;
+    height: 15%;
+    padding-bottom: 20px;
+}

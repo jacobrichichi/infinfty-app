@@ -20,7 +20,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
-const style = {
+const boxStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -118,7 +118,7 @@ const Navbar = (props) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
               >
-                <Box sx={style}>
+                <Box sx={boxStyle}>
                   <Grid container spacing={2}  direction="column" justifyContent="center" alignItems="center">
                       <Grid item xs = {12}>
                           <div >

@@ -3,9 +3,8 @@ import logo from './logo.svg';
 import './App.css'; 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import Desktop from './Components/Desktop'
+import Desktop from './Components/SplashPageComponents/Desktop'
 import Inventory from './Components/Inventory'
-import Explore from './Components/Explore'
 import ExploreCategories from './Components/ExploreComponents/ExploreCategories'
 import Account from './Components/Account'
 import Navbar from './Components/Navbar'

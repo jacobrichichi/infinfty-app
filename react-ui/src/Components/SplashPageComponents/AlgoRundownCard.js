@@ -1,8 +1,8 @@
 import React from 'react'
 import './AlgoRundownCard.css'
-import eco from "./images/ecoIcon.png"
-import fast from "./images/fastIcon.png"
-import secure from "./images/secureIcon.png"
+import eco from "../images/ecoIcon.png"
+import fast from "../images/fastIcon.png"
+import secure from "../images/secureIcon.png"
 
 const AlgoRundownCard = (props) => {
     return(

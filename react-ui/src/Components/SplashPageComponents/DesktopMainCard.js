@@ -1,7 +1,7 @@
 import React from "react"
-import squid from "./images/squidft.png"
-import axie from "./images/axie_pack.png"
-import sara from "./images/sarafranimage.jpg"
+import squid from "../images/squidft.png"
+import axie from "../images/axie_pack.png"
+import sara from "../images/sarafranimage.jpg"
 import "./DesktopMainCard.css"
 import Grid from '@mui/material/Grid';
 

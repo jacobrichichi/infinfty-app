@@ -1,8 +1,7 @@
 #rdContainer {
     margin-top: 80px;
-    margin-bottom: 300px;
     padding-bottom: 15px;
-    height: 60vh;
+    height: 70vh;
     width: 100%;
     background-color: #F8F8F8;
     -moz-box-shadow:    
@@ -33,7 +32,7 @@
 }
 
 .rdReason {
-    width: 27%;
+    width: 28%;
     height: 90%;
 }
 

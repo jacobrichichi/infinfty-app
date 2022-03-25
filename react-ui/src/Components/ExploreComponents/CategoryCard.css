@@ -34,7 +34,8 @@
 
 #collectionComponents {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    padding-left: 20px;
     height: 85%; 
 }
 
@@ -48,3 +49,9 @@
     height: 6%;
 
 }
+
+
+.carousel-container {
+    width: 100%;
+
+   }

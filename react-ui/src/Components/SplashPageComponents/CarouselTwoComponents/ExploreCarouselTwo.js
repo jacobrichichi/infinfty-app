@@ -1,17 +1,14 @@
-import React from 'react';
+import React from 'react'
+import "./ExploreCarouselTwo.css"
 
-import Button from "@mui/material/Button"
+import CarouselTwoCard from './CarouselTwoCard'
 
-import "./CategoryCard.css";
-import CollectionCard from "./CollectionCard"
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
-const CategoryCard = (props) => {
-    const title = props.data.categoryTitle;
-    const collectionData = props.data.collections;
 
-   
+const ExploreCarouselTwo = (props) => {
+
     const responsive = {
         desktop: {
           breakpoint: { max: 2400, min: 1024 },
@@ -30,8 +27,10 @@ const CategoryCard = (props) => {
         }
       }
 
-    var collectionCards =
-    <div id = "collectionComponents">
+        
+
+    var categoryComponents = 
+    <div id = "carTwoComponents">
          <Carousel swipeable={false}
         draggable={false}
         showDots={true}
@@ -47,32 +46,21 @@ const CategoryCard = (props) => {
         removeArrowOnDeviceType={["tablet", "mobile"]}
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px">
-        {collectionData.map((collection, index) => (
-            <CollectionCard data = {collection}/>
-        ))}
+
+            {props.data.collections.map((collection, index) => (
+                <CarouselTwoCard data = {collection}/>
+            ))}
         </Carousel>
     </div>
 
-
-
-
     return(
-        <div id = "categoryContainer">
-            <div id = "categoryTitleContainer">
-                <b id = "categoryTitleText">
-                    {title}
-                </b>
+        <div id = "expTwoContainer">
+            <div id = "expTwoTitle">
+              {props.data.carouselTitle}
             </div>
-            {collectionCards}
-
-            <div id = "exploreButtonContainer">
-                <Button variant = "contained" style = {{backgroundColor: "#CE4257", fontSize: "24px"}}>
-                    Explore More
-                </Button>
-            </div>
-
+            {categoryComponents}
         </div>
     )
 }
 
-export default CategoryCard
+export default ExploreCarouselTwo
