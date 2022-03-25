@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css'; 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthContextProvider } from './auth';
 
 import Desktop from './Components/SplashPageComponents/Desktop'
 import Inventory from './Components/Inventory'
@@ -40,14 +40,15 @@ function App() {
 
   return (
     <BrowserRouter>
-    <Navbar/>
-      <Routes>
-        <Route path = "/" element = {<Desktop/>} />
-        <Route path = "/inventory" element = {<Inventory/>} />
-        <Route path = "/explore" element = {<ExploreCategories/>} />
-        <Route path = "/account" element = {<Account/>} />
-      </Routes>
-      
+      <AuthContextProvider>
+        <Navbar/>
+          <Routes>
+            <Route path = "/" element = {<Desktop/>} />
+            <Route path = "/inventory" element = {<Inventory/>} />
+            <Route path = "/explore" element = {<ExploreCategories/>} />
+            <Route path = "/account" element = {<Account/>} />
+          </Routes>
+        </AuthContextProvider>
     </BrowserRouter>
   )
 }
