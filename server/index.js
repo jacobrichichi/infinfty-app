@@ -24,20 +24,13 @@ app.use('/auth', authRouter)
 //const nftRouter = require('./routes/nft-router')
 //app.use('/api', nftRouter)
 
+app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
+});
 
 const db = require('./db')
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-// Answer API requests.
-/* app.get('/api', function (req, res) {
-  res.set('Content-Type', 'application/json');
-  res.send('{"message":"Hello from the custom server!"}');
-});*/
-
-// All remaining requests return the React app, so it can handle routing.
-/* app.get('*', function(request, response) {
-  response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
-});*/
 
 app.listen(PORT, function () {
   console.error(`listening on port ${PORT}`);
