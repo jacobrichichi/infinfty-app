@@ -68,6 +68,119 @@ registerUser = async (req, res) => {
     }
 }
 
+
+loginUser = async (req, res) => {
+    try {
+        
+        const { email, password } = req.body;
+
+        console.log(email)
+
+        if (!email || !password) {
+            return res
+                .status(200)
+                .json({ success: false, errorMessage: "Please enter all required fields." });
+        }
+
+        const existingUser = await User.findOne({ email: email });
+        if (!existingUser) {
+            return res
+                .status(200)
+                .json({
+                    success: false,
+                    errorMessage: "Wrong email or password provided."
+                })
+        }
+        const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
+        if (!passwordCorrect) {
+            console.log("Incorrect password");
+            return res
+                .status(200)
+                .json({
+                    success: false,
+                    errorMessage: "Wrong email or password provided."
+                })
+        }
+
+        // LOGIN THE USER
+        const token = auth.signToken(existingUser._id);
+
+        console.log(token)
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: true
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,  
+                userName: existingUser.userName,
+                email: existingUser.email              
+            }
+        })
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+loginUserById = async (req, res) => {
+    console.log(req.userId)
+    await User.findOne({ _id: req.userId }, (err, existingUser) => {
+        return res.status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,  
+                userName: existingUser.userName,
+                email: existingUser.email              
+            }
+        })
+    })
+}
+logoutUser = async (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        secure: true,
+        sameSite: "none"
+    }).send();
+}
+
+getLoggedIn = async (req, res) => {
+    try {
+        let userId = auth.verifyUser(req);
+        if (!userId) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "?"
+            })
+        }
+
+        const loggedInUser = await User.findOne({ _id: userId });
+
+        return res.status(200).json({
+            loggedIn: true,
+            user: {
+                firstName: loggedInUser.firstName,
+                lastName: loggedInUser.lastName,
+                email: loggedInUser.email
+            }
+        })
+    } catch (err) {
+        console.log("err: " + err);
+        res.json(false);
+    }
+}
+
 module.exports = {
-    registerUser
+    registerUser,
+    loginUser,
+    loginUserById,
+    logoutUser,
+    getLoggedIn
 }

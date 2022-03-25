@@ -12,25 +12,9 @@ import TextField from '@mui/material/TextField';
 import "./Navbar.css"
 
 // import IconButton from '@mui/icons-material/IconButton';
-
-
-
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
-const boxStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+import RegisterLoginModal from './RegisterLoginModal';
 
 const Navbar = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -112,38 +96,7 @@ const Navbar = (props) => {
         <Grid item xs = {3} id = "userTextContainer">
           {open ?
           <>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={boxStyle}>
-                  <Grid container spacing={2}  direction="column" justifyContent="center" alignItems="center">
-                      <Grid item xs = {12}>
-                          <div >
-                            Login
-                          </div>
-                      </Grid>
-                      <Grid item xs = {12}>
-                          <input >
-                          </input>
-                      </Grid>
-                      <Grid item xs = {12}>
-                          <div >
-                            Password
-                          </div>
-                      </Grid>
-                      <Grid item xs = {12}>
-                          <input >
-                          </input>
-                      </Grid>
-                      <Grid item xs = {12}>
-                      <Button variant="outlined" onClick={handleLogin} >Login</Button>
-                      </Grid>
-                  </Grid>
-                </Box>
-              </Modal>
+             <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
           </>  
             :  
             loggedIn

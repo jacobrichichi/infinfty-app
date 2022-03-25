@@ -31,17 +31,20 @@ function authManager() {
         try {
             const token = req.cookies.token;
             if (!token) {
+                console.log('hey')
                 return null;
             }
 
             const decodedToken = jwt.verify(token, jwt_secret);
             return decodedToken.userId;
         } catch (err) {
+
             return null;
         }
     }
 
     signToken = (userId) => {
+        console.log(jwt_secret)
         return jwt.sign({
             userId: userId
         }, jwt_secret);
