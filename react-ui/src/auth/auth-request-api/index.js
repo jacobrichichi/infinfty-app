@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
-    baseURL: 'http://localhost:5000/auth',
+    baseURL: 'https://infinftapp.herokuapp.com/auth',
 })
 
 export const loginUser = (email, password) => {
