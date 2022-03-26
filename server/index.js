@@ -40,11 +40,8 @@ if (!isDev && cluster.isMaster) {
   app.use(express.json())
   app.use(cookieParser())
 
-  // Answer API requests.
-  app.use('/auth', function (req, res) {
-    const authRouter = require('./routes/auth-router')
-    app.use('/auth', authRouter)
-  });
+  const authRouter = require('./routes/auth-router')
+  app.use('/auth', authRouter)
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', function(request, response) {
