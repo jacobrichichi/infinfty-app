@@ -1,7 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
+const cookieParser = require('cookie-parser')
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
@@ -24,17 +26,27 @@ if (!isDev && cluster.isMaster) {
 
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+    app.use(cors({
+      origin: ["http://localhost:3000"],
+      credentials: true
+  }))
+  app.use(express.urlencoded({ extended: true }))
+  app.use(express.json())
+  app.use(cookieParser())
 
-  // Answer API requests.
-  app.get('/api', function (req, res) {
-    res.set('Content-Type', 'application/json');
-    res.send('{"message":"Hello from the custom server!"}');
-  });
+
+  const authRouter = require('./routes/auth-router')
+  app.use('/auth', authRouter)
+
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', function(request, response) {
     response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
   });
+
+  const db = require('./db')
+  db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
 
   app.listen(PORT, function () {
     console.error(`Node ${isDev ? 'dev server' : 'cluster worker '+process.pid}: listening on port ${PORT}`);
