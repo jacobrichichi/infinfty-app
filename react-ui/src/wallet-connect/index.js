@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
+import api from './wallet-request-api'
 
 const WalletContext = createContext();
 
@@ -44,7 +45,7 @@ function WalletContextProvider(props) {
 
     }
 
-    wallet.walletConnectInit = function(){
+    wallet.walletConnectInit = async function(){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
             qrcodeModal: QRCodeModal
@@ -68,9 +69,11 @@ function WalletContextProvider(props) {
                     accounts: accounts
                 }
             })
+
+            //const response = await api.addWallet(accounts)
         });
 
-        connector.on("session_update", (error, payload) => {
+        con.on("session_update", (error, payload) => {
             if (error) {
               throw error;
             }
@@ -85,6 +88,8 @@ function WalletContextProvider(props) {
                 }
             })
           });
+
+        
 
         walletReducer({
             type: WalletActionType.GET_CONNECTOR,
