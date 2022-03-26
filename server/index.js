@@ -1,3 +1,5 @@
+// Reasons for not working -> Node Version needs to be >12, mongoose version outdated, app.use over app.get, middleware bugs...
+
 const express = require('express');
 const path = require('path');
 const cluster = require('cluster');
@@ -26,9 +28,9 @@ if (!isDev && cluster.isMaster) {
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
   // Answer API requests.
-  app.get('/api', function (req, res) {
-    res.set('Content-Type', 'application/json');
-    res.send('{"message":"Hello from the custom server!"}');
+  app.use('/auth', function (req, res) {
+    const authRouter = require('./routes/auth-router')
+    app.use('/auth', authRouter)
   });
 
   // All remaining requests return the React app, so it can handle routing.
