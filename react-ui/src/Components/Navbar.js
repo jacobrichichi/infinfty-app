@@ -9,6 +9,9 @@ import { Link } from 'react-router-dom'
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem';
+
 
 import "./Navbar.css"
 
@@ -27,6 +30,15 @@ const Navbar = (props) => {
   const [walletOpen, setWalletOpen] = React.useState(false);
   const handleWalletOpen = () => setWalletOpen(true);
   const handleWalletClose = () => setWalletOpen(false);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   
 
   let walletPopup = "";
@@ -102,9 +114,19 @@ const Navbar = (props) => {
             :  
             loggedIn
             ?
-            <div id = "userText" >
+            <div id = "userText" onClick={handleClick} >
               Hello User
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={openMenu}
+                onClose={handleMenuClose}
+                onClick={handleMenuClose}>
+                <MenuItem onClick={handleMenuClose}><Link to='/account'></Link>Account Settings</MenuItem>
+                <MenuItem>Logout</MenuItem> 
+              </Menu>
             </div>
+            
             :
             <div id = "userText" className = "navLink" onClick={handleOpen}>
               Login
