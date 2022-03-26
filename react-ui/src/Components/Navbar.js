@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
 
 import logo from "./images/logo.png"
 import wallet from "./images/connectwallet.png"
@@ -19,17 +19,17 @@ import "./Navbar.css"
 import Modal from '@mui/material/Modal';
 
 import RegisterLoginModal from './RegisterLoginModal';
+import WalletContext from '../wallet-connect'
 
 const Navbar = (props) => {
-  const [open, setOpen] = React.useState(false);
+  const { wallet } = useContext(WalletContext)
+  
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
-  const [walletOpen, setWalletOpen] = React.useState(false);
-  const handleWalletOpen = () => setWalletOpen(true);
-  const handleWalletClose = () => setWalletOpen(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -39,11 +39,21 @@ const Navbar = (props) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const [walletOpen, setWalletOpen] = useState(false);
   
+  const handleWalletOpen = () => {
+    wallet.walletConnectInit();
+  }
+
+  const handleWalletClose = () => {
+
+  }
 
   let walletPopup = "";
 
   if(walletOpen){
+
+
     walletPopup = 
     <Modal
         open={walletOpen}
