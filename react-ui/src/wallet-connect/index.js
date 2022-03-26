@@ -14,7 +14,7 @@ export const WalletActionType = {
 function WalletContextProvider(props) {
     const [wallet, setWallet] = useState({
         connector: null,
-        walletID: null
+        accounts: null
     })
 
     const history = useNavigate();
@@ -26,14 +26,14 @@ function WalletContextProvider(props) {
             case WalletActionType.GET_CONNECTOR: {
                 return setWallet({
                     connector: payload.connector,
-                    walletID: null
+                    accounts: null
                 })
             }
 
             case WalletActionType.CONNECTION_ESTABLISHED: {
                 return setWallet({
-                    connector: null,
-                    walletID: payload.walletID
+                    connector: wallet.connector,
+                    accounts: payload.accounts
                 })
             }
 
@@ -48,9 +48,43 @@ function WalletContextProvider(props) {
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
             qrcodeModal: QRCodeModal
-          });
+        });
+ 
+        if (!con.connected) {
+            con.createSession();
+        }
 
-        QRCodeModal.open(con.uri);  
+        con.on("connect", (error, payload) => {
+            if (error) {
+                throw error;
+            }
+            
+            // Get provided accounts
+            const { accounts } = payload.params[0];
+
+            walletReducer({
+                type: WalletActionType.CONNECTION_ESTABLISHED,
+                payload: {
+                    accounts: accounts
+                }
+            })
+        });
+
+        connector.on("session_update", (error, payload) => {
+            if (error) {
+              throw error;
+            }
+          
+            // Get updated accounts 
+            const { accounts } = payload.params[0];
+
+            walletReducer({
+                type: WalletActionType.CONNECTION_ESTABLISHED,
+                payload: {
+                    accounts: accounts
+                }
+            })
+          });
 
         walletReducer({
             type: WalletActionType.GET_CONNECTOR,
@@ -61,6 +95,8 @@ function WalletContextProvider(props) {
 
         
     }
+
+
 
 
     return (
