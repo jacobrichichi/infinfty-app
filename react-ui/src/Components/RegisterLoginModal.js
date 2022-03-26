@@ -38,8 +38,20 @@ const RegisterLoginModal = (props) => {
 
     const handleCloseMessageModal = (event) => {
         event.stopPropagation();
-        auth.closeErrorMessage();
-        setIsMessageModalOpen(false)
+        if(auth.isWrongCredentials){
+            auth.closeErrorMessage();
+            setIsMessageModalOpen(false)
+        }
+
+        else{
+            setIsMessageModalOpen(false)
+            if(loginMode){
+                props.handleLogin()
+            }
+            else{
+                setLoginMode(true)
+            }
+        }
     }
 
     var messageModal = ""
@@ -70,6 +82,31 @@ const RegisterLoginModal = (props) => {
                 </Modal>
     }
 
+    else if(loginMode){
+        messageModal =
+            <Modal
+                    open = {isMessageModalOpen}
+                    onClose={handleCloseMessageModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >   
+                    <Box sx = 
+                        {{position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,}}
+                        >
+                        <Alert severity="success">Login Successful!</Alert>
+                        <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                    </Box>
+                </Modal>
+    }
+    
     else{
         messageModal =
             <Modal
@@ -95,7 +132,6 @@ const RegisterLoginModal = (props) => {
                 </Modal>
     }
     
-    
 
     const handleLogToReg = () => {
         setLoginMode(false)
@@ -112,7 +148,7 @@ const RegisterLoginModal = (props) => {
                 formData.get('email'),
                 formData.get('password')
             );
-            props.handleLogin()
+            setIsMessageModalOpen(true)
         }
         else{
             event.preventDefault();
