@@ -78,6 +78,8 @@ function AuthContextProvider(props) {
 
         if(response.status === 200) {
             if(response.data.success){
+                console.log(response.data.user)
+
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {

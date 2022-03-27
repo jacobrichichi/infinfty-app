@@ -24,3 +24,10 @@ export const getAssets = (account, chain) => {
         chain: chain
     })
 }
+
+const apis = {
+    addWallet,
+    getAssets
+}
+
+export default apis

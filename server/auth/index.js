@@ -4,6 +4,7 @@ const jwt_secret = require('../config/keys').jwt_secret
 function authManager() {
     verify = (req, res, next) => {
         try {
+            console.log('1')
             const token = req.cookies.token;
             if (!token) {
                 return res.status(401).json({
@@ -14,6 +15,7 @@ function authManager() {
             }
 
             const verified = jwt.verify(token, jwt_secret)
+            
             req.userId = verified.userId;
 
             next();
@@ -29,9 +31,9 @@ function authManager() {
 
     verifyUser = (req) => {
         try {
+            console.log('2')
             const token = req.cookies.token;
             if (!token) {
-                console.log('hey')
                 return null;
             }
 
@@ -44,7 +46,7 @@ function authManager() {
     }
 
     signToken = (userId) => {
-        console.log(jwt_secret)
+        console.log(userId)
         return jwt.sign({
             userId: userId
         }, jwt_secret);

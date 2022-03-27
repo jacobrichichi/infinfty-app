@@ -55,7 +55,7 @@ function WalletContextProvider(props) {
             con.createSession();
         }
 
-        con.on("connect", (error, payload) => {
+        con.on("connect", async (error, payload) => {
             if (error) {
                 throw error;
             }
@@ -63,14 +63,22 @@ function WalletContextProvider(props) {
             // Get provided accounts
             const { accounts } = payload.params[0];
 
-            walletReducer({
-                type: WalletActionType.CONNECTION_ESTABLISHED,
-                payload: {
-                    accounts: accounts
-                }
-            })
+            const response = await api.addWallet(accounts)
 
-            //const response = await api.addWallet(accounts)
+            if(response.status === 200){
+                if(response.data.success){
+                    walletReducer({
+                        type: WalletActionType.CONNECTION_ESTABLISHED,
+                        payload: {
+                            accounts: accounts
+                        }
+                    })
+                }
+            }
+
+            else{
+                console.log(response.message)
+            }
         });
 
         con.on("session_update", (error, payload) => {

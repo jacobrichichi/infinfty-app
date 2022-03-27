@@ -54,8 +54,10 @@ registerUser = async (req, res) => {
         email = email.toLowerCase()
 
         const newUser = new User({
-            firstName, lastName, userName, email, passwordHash
+            firstName: firstName, lastName: lastName, wallet: 'a',
+            userName: userName, email: email, passwordHash: passwordHash
         });
+
         const savedUser = await newUser.save();
 
         return res.status(200).json({
@@ -73,8 +75,6 @@ loginUser = async (req, res) => {
     try {
         
         const { email, password } = req.body;
-
-        console.log(email)
 
         if (!email || !password) {
             return res
@@ -105,8 +105,6 @@ loginUser = async (req, res) => {
         // LOGIN THE USER
         const token = auth.signToken(existingUser._id);
 
-        console.log(token)
-
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
@@ -117,7 +115,8 @@ loginUser = async (req, res) => {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
                 userName: existingUser.userName,
-                email: existingUser.email              
+                email: existingUser.email,
+                _id: existingUser._id           
             }
         })
 
