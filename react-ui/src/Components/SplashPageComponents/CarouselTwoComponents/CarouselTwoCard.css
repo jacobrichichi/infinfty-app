@@ -8,22 +8,15 @@
 #carTwoImg {
     display: flex;
     justify-content: center;
-
+    height: 250px;
 }
 
 #carTwoTitle {
-    width: 100%;
-    font-size: 26px;
-    height: 20%;
-    font-family: 'Montserrat', sans-serif;
-    text-align: center;
-    padding-bottom: 12px;
+        font-size: 26px;
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        position: flex;
 
-    float: left;
-    position: absolute;
-    left: 0px;
-    top: 90%;
-    z-index: 1000;
 
 }
 
