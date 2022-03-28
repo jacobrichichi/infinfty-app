@@ -58,16 +58,16 @@ getInventory = async (req, res) => {
 }
 
 const createNft = async (req, res) => {
-    User.findOne({ _id: req.userId}, async (err, user) => {
+    user = User.findOne({ _id: req.userId}, async (err, user) => {
         if(err){
             return res.status(400).json({
                 success: false,
                 error: 'The subject user was not found'
             })
         }
-
-        
-    })
+        return user
+    });
+    // Minting/Tokenize
 }
 
 
