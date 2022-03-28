@@ -24,7 +24,9 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "mime": "^3.0.0",
     "mongoose": "^6.2.8",
+    "nft.storage": "^6.1.0",
     "nodemon": "^2.0.15",
     "react-multi-carousel": "^2.8.0"
   },

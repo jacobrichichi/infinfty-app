@@ -1,8 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 
-//const baseURL = 'https://infinftapp.herokuapp.com/auth'
-const baseURL = 'http://localhost:5000/auth'
+const baseURL = 'https://infinftapp.herokuapp.com/auth'
+//const baseURL = 'http://localhost:5000/auth'
 
 /*if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     baseURL = 'http://localhost:5000/auth'

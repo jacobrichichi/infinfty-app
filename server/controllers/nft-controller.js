@@ -1,5 +1,12 @@
 const algosdk = require("algosdk")
 const User = require('../models/user-model');
+const NFTStorage = require('nft.storage').NFTStorage
+const File = require('nft.storage').File
+
+const mime = require('mime')
+const fs = require('fs')
+const path = require('path')
+
 
 addWallet = async (req, res) => {
     const body = req.body;
@@ -58,6 +65,9 @@ getInventory = async (req, res) => {
 }
 
 const createNft = async (req, res) => {
+    const { media, title, desc } = req.body;
+
+    
     user = User.findOne({ _id: req.userId}, async (err, user) => {
         if(err){
             return res.status(400).json({
