@@ -58,8 +58,9 @@ const Desktop = (props) => {
         <div>
             <DesktopMainCard/>
             <ExploreCarouselTwo data = {carouselOneData}/>
-            <AlgoRundownCard/>
             <ExploreCarouselTwo data = {carouselTwoData}/>
+            <AlgoRundownCard/>
+
         </div>
         
 
