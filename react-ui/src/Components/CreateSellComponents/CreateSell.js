@@ -30,6 +30,7 @@ function CreateSell(){
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/*, video/*, audio/*',
         onDrop: (acceptedFiles) => {
+            // doesn't append
             setFiles(
                 acceptedFiles.map( (file) => Object.assign(file, {
                     preview: URL.createObjectURL(file)
@@ -55,6 +56,7 @@ function CreateSell(){
 
         wallet.createNft(files[0], 'First NFT', 'An NFT that is the first made through this website')
         
+        // Hopefully used to mint/tokenize multiple tokens
         // // Create an object of formData
         // const formData = new FormData();
         // // Update the formData object
@@ -68,6 +70,7 @@ function CreateSell(){
         // // Request made to the backend api
         // // Send formData object
         // axios.post("api/uploadfile", formData);
+
         let path = `../inventory`; 
         navigate(path);
 	};
