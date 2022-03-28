@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
 import {useDropzone} from 'react-dropzone'
 import axios from 'axios';
 import Box from '@mui/material/Box';
@@ -16,14 +16,16 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 import hspack from '../images/hspack.png'
+import WalletContext from '../../wallet-connect'
 
 
 function CreateSell(){
+    const { wallet } = useContext(WalletContext)
 
-    const [files, setFiles]=React.useState([]);
-    const [sellingtype, setSellingType]=React.useState(' ');
-    const [price, setPrice]=React.useState(0);
-    const [days, setDays]=React.useState(0);
+    const [files, setFiles]= useState([]);
+    const [sellingtype, setSellingType]= useState(' ');
+    const [price, setPrice]= useState(0);
+    const [days, setDays]= useState(0);
 
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/*, video/*, audio/*',
@@ -50,6 +52,9 @@ function CreateSell(){
 	const onFileUpload = (e) => {
         e.preventDefault();
         console.log('pressed submit');
+
+        wallet.createNft(files[0], 'First NFT', 'An NFT that is the first made through this website')
+        
         // // Create an object of formData
         // const formData = new FormData();
         // // Update the formData object

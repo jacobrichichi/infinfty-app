@@ -65,6 +65,8 @@ function WalletContextProvider(props) {
 
             const response = await api.addWallet(accounts)
 
+            console.log(con)
+
             if(response.status === 200){
                 if(response.data.success){
                     walletReducer({
@@ -97,7 +99,9 @@ function WalletContextProvider(props) {
             })
           });
 
-        
+          con.on("disconnect", (error, payload) => {
+
+          })
 
         walletReducer({
             type: WalletActionType.GET_CONNECTOR,
@@ -106,6 +110,15 @@ function WalletContextProvider(props) {
             }
         })
 
+        
+    }
+
+    wallet.getInventory = async function() {
+        const response = await api.getInventory();
+    }
+
+    wallet.createNft = async function(nftFile, nftName, nftDesc) {
+        const response = await api.createNft(nftFile, nftName, nftDesc);
         
     }
 

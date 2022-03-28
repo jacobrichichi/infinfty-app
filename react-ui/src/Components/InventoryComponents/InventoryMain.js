@@ -41,6 +41,8 @@ const InventoryMain = (props) => {
         }
     ]
 
+    
+
     var inventoryContainer = 
         <div id = "invContainer">
             {inventoryItems.map((item, index) => (

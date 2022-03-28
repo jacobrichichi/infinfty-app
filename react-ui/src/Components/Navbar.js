@@ -47,6 +47,10 @@ const Navbar = (props) => {
     wallet.walletConnectInit();
   }
 
+  const handleInventory = () => {
+    wallet.getInventory()
+  }
+
   var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>
                     Login
                   </div> 
@@ -95,7 +99,7 @@ const Navbar = (props) => {
 
         <Grid item xs = {2} className = "textContainer " id = "invTextContainer">
           <Link to = "/inventory" className='navLink'>
-            <div className = "linkText " id = "invLinkText">
+            <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
               Inventory
             </div>
           </Link>

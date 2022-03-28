@@ -1,3 +1,4 @@
+const algosdk = require("algosdk")
 const User = require('../models/user-model');
 
 addWallet = async (req, res) => {
@@ -35,13 +36,43 @@ addWallet = async (req, res) => {
     })
 }
 
-getAssets = async (req, res) => {
+getInventory = async (req, res) => {
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                error: 'The subject user was not found'
+            })
+        }
 
+        const walletId = user.wallet
+
+        const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "");
+
+        const accountInfo = await client.accountInformation(walletId)
+                                        .setIntDecoding(algosdk.IntDecoding.BIGINT)
+                                        .do();
+        console.log(accountInfo)                                
+
+    })
+}
+
+const createNft = async (req, res) => {
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                error: 'The subject user was not found'
+            })
+        }
+
+        
+    })
 }
 
 
 
 module.exports = {
-    getAssets,
+    getInventory,
     addWallet
 }

@@ -18,16 +18,23 @@ export const addWallet = (wallet) => {
     })
 }
 
-export const getAssets = (account, chain) => {
-    return api.post(`/getAssets/`, {
-        account: account,
-        chain: chain
+export const getInventory = () => {
+    return api.post(`/getInventory/`, {
+
+    })
+}
+
+export const createNft = (nftFile, nftName, nftDesc) => {
+    return api.post(`/createNft`, {
+        nftFile: nftFile,
+        nftName: nftName,
+        nftDesc: nftDesc
     })
 }
 
 const apis = {
     addWallet,
-    getAssets
+    getInventory
 }
 
 export default apis
