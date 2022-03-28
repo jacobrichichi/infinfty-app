@@ -19,6 +19,10 @@ export const loginUser = (email, password) => {
     })
 }
 
+export const loginUserById = (id) => {
+    return api.get(`/loginById/${id}`)
+}
+
 export const registerUser = (firstName, lastName, userName, email, password, passwordVerify) => {
     return api.post(`/register/`, {
         firstName : firstName,
@@ -32,6 +36,7 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
 
 
 const apis = {
+    loginUserById,
     registerUser,
     loginUser
 }

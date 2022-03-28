@@ -20,63 +20,57 @@ import Modal from '@mui/material/Modal';
 
 import RegisterLoginModal from './RegisterLoginModal';
 import WalletContext from '../wallet-connect'
+import AuthContext from '../auth'
 
 const Navbar = (props) => {
   const { wallet } = useContext(WalletContext)
+  const { auth } = useContext(AuthContext)
   
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const [walletOpen, setWalletOpen] = useState(false);
-  
+
   const handleWalletOpen = () => {
     wallet.walletConnectInit();
   }
 
-  const handleWalletClose = () => {
+  var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>
+                    Login
+                  </div> 
 
+  if(auth.loggedIn){
+    accountInfo = <div id = "userText" onClick={handleClick} >
+        Hello {auth.user.firstName}
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={openMenu}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}>
+          <MenuItem onClick={handleMenuClose}><Link to='/account'></Link>Account Settings</MenuItem>
+          <MenuItem>Logout</MenuItem> 
+        </Menu>
+      </div>
   }
 
-  let walletPopup = "";
+  var loginModal = ""
 
-  if(walletOpen){
-
-
-    walletPopup = 
-    <Modal
-        open={walletOpen}
-        onClose={handleWalletClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <div style ={{
-          maxHeight: "400px", minHeight: "400px", 
-          maxWidth: "400px", minWidth: "400px", backgroundColor: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',}}>
-          <img src = {wallet} style = {{maxHeight: "400px", maxWidth: "400px"}}></img>
-        </div>
-        
-      </Modal> 
+  if(open){
+    loginModal = <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
   }
-
 
   return (
     <div>
@@ -112,37 +106,13 @@ const Navbar = (props) => {
               Connect
             </div>
         </Grid>
-
-        {walletPopup}
         
         
         <Grid item xs = {3} id = "userTextContainer">
-          {open ?
-          <>
-             <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
-          </>  
-            :  
-            loggedIn
-            ?
-            <div id = "userText" onClick={handleClick} >
-              Hello User
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={openMenu}
-                onClose={handleMenuClose}
-                onClick={handleMenuClose}>
-                <MenuItem onClick={handleMenuClose}><Link to='/account'></Link>Account Settings</MenuItem>
-                <MenuItem>Logout</MenuItem> 
-              </Menu>
-            </div>
-            
-            :
-            <div id = "userText" className = "navLink" onClick={handleOpen}>
-              Login
-            </div>
-            }
+          {accountInfo}
         </Grid>
+
+        {loginModal}
     </Grid>
     </div>
   )

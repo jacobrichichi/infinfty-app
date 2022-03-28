@@ -127,8 +127,8 @@ loginUser = async (req, res) => {
 }
 
 loginUserById = async (req, res) => {
-    console.log(req.userId)
-    await User.findOne({ _id: req.userId }, (err, existingUser) => {
+    console.log('hi')
+    User.findOne({ _id: req.params.id }, (err, existingUser) => {
         return res.status(200).json({
             success: true,
             user: {

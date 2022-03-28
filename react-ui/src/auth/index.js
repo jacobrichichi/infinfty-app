@@ -23,10 +23,6 @@ function AuthContextProvider(props) {
 
     const history = useNavigate();
 
-   /* useEffect (() => {
-        auth.getLoggedIn()
-    }, []);*/
-
     const authReducer = (action) => {
         const {type, payload} = action;
 
@@ -123,6 +119,24 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.loginUserById = async function(userId) {
+        const response = await api.loginUserById(userId);
+
+        if(response.status === 200){
+            if(response.data.success){
+
+                console.log(response.data)
+
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+            }
+        }
+    }
+
     auth.closeErrorMessage = async function(store) {
         authReducer({
             type: AuthActionType.REMOVE_WRONG_CREDENTIALS,
@@ -131,6 +145,14 @@ function AuthContextProvider(props) {
             }
         })
     }
+
+    useEffect(() => {
+        const loggedInUserId = localStorage.getItem("userId");
+        if (loggedInUserId && !auth.loggedIn) {
+            //auth.loginUser('','')
+            auth.loginUserById(loggedInUserId)
+        }
+      }, []);
 
     return (
         <AuthContext.Provider value={{
