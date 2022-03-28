@@ -9,6 +9,7 @@ import Inventory from './Components/Inventory'
 import ExploreCategories from './Components/ExploreComponents/ExploreCategories'
 import Account from './Components/Account'
 import Navbar from './Components/Navbar'
+import CreateSell from './Components/CreateSellComponents/CreateSell';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
               <Route path = "/inventory" element = {<Inventory/>} />
               <Route path = "/explore" element = {<ExploreCategories/>} />
               <Route path = "/account" element = {<Account/>} />
+              <Route path = "/create" element = {<CreateSell/>} />
             </Routes>
           </WalletContextProvider>
         </AuthContextProvider>
