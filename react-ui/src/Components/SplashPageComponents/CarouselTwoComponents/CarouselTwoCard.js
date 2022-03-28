@@ -1,5 +1,6 @@
 import React from 'react'
 import "./CarouselTwoCard.css"
+import Stack from '@mui/material/Stack'
 
 const CarouselTwoCard = (props) => {
 
@@ -8,19 +9,24 @@ const CarouselTwoCard = (props) => {
     const description = props.data.description;
     
     return (
-        <div id = "carTwoCardContainer">
-            <div id = "carTwoImg">
-                <img src = {imageLocation}/>
-            </div>
+        // <div id = "carTwoCardContainer">
+
+        <Stack
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="center"
+        spacing={1.5}
+        >
+            <img id = "carTwoImg" src = {imageLocation}/>
             <div id = "carTwoTitle">
                 <b>{title}</b>
-                <br/>
-                <div id = "carTwoDesc">
-                    <span>{description}</span>
-                </div>
             </div>
+            <div id = "carTwoDesc">
+                <span>{description}</span>
+            </div>  
+        </Stack>
+           
             
-        </div>
     )
 }
 
