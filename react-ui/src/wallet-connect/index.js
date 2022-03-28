@@ -45,7 +45,8 @@ function WalletContextProvider(props) {
 
     }
 
-    wallet.walletConnectInit = async function(){
+    wallet.walletConnectInit = async function() {
+
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
             qrcodeModal: QRCodeModal
@@ -119,7 +120,6 @@ function WalletContextProvider(props) {
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
         const response = await api.createNft(nftFile, nftName, nftDesc);
-        
     }
 
 

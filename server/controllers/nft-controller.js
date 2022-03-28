@@ -74,5 +74,6 @@ const createNft = async (req, res) => {
 
 module.exports = {
     getInventory,
-    addWallet
+    addWallet,
+    createNft
 }
