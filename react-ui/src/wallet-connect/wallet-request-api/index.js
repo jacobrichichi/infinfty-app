@@ -34,7 +34,8 @@ export const createNft = (nftFile, nftName, nftDesc) => {
 
 const apis = {
     addWallet,
-    getInventory
+    getInventory,
+    createNft
 }
 
 export default apis

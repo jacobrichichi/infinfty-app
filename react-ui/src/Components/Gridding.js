@@ -1,21 +1,27 @@
 import React from "react";
 import Grid from '@mui/material/Grid';
 import depp from "./images/depp.png"
+import "./Gridding.css"
 
 function Gridding(props){
     // xs (phones), sm (tablets), md (desktops), and lg (larger desktops)
     // Column widths are integer values between 1 and 12
     return (
-        <div style = {{paddingLeft: "30px"}}>
-            <Grid container spacing={6}>
-                {props.nftitems.map(({nftname, nftcost}) => (
-                    <Grid item xs={12} sm={4}>
-                        <img src = {depp} alt = ""></img>
-                        <p>{nftname}</p>
-                        <p>{nftcost}</p>
-                    </Grid>
+        <div id = "griddingContainer">
+                {props.nftitems.map(({url, name, amount}) => (
+                    <div id = "gridCell">
+                        <div id = "nftImgCont">
+                            <img src = {url} alt = "" id = "nftImg"></img>
+                        </div>
+                        <div id = "nftNameCont">
+                            <p>{name}</p>
+                        </div>
+                        <div id = "nftSupplyCont">
+                            <p>Supply: {amount}</p>
+                        </div>
+                    </div>
+                
                 ))}
-            </Grid>
         </div>
     );
 }

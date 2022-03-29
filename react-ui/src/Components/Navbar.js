@@ -99,10 +99,10 @@ const Navbar = (props) => {
 
         <Grid item xs = {2} className = "textContainer " id = "invTextContainer">
           <Link to = "/inventory" className='navLink'>
-            <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
-              Inventory
-            </div>
-          </Link>
+              <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
+                Inventory
+              </div>
+            </Link>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">

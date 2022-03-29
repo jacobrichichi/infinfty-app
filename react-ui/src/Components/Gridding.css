@@ -1,0 +1,26 @@
+#griddingContainer{
+    padding-left: 30px;
+}
+
+#gridCell {
+    width: 30%;
+}
+
+#nftImgCont {
+    height: 50%;
+}
+
+#nftImg {
+    height: 30vw;
+}
+
+#nftNameCont {
+   height:15%;
+   width: 100%;
+   text-align: center;
+}
+#nftSupplyCont {
+    height:15%;
+   width: 100%;
+   text-align: center;
+}

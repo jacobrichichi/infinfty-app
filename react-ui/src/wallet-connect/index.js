@@ -1,6 +1,6 @@
 import { getNativeSelectUtilityClasses } from "@mui/material";
 import React, { createContext, useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-dom'
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
@@ -9,16 +9,18 @@ const WalletContext = createContext();
 
 export const WalletActionType = {
     GET_CONNECTOR: "GET_CONNECTOR",
-    CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED"
+    CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
+    GET_INVENTORY: "GET_INVENTORY"
 }
 
 function WalletContextProvider(props) {
     const [wallet, setWallet] = useState({
         connector: null,
-        accounts: null
+        accounts: null,
+        inventory_assets: []
     })
 
-    const history = useNavigate();
+    const navigate = useNavigate();
 
     const walletReducer = (action) => {
         const {type, payload} = action;
@@ -27,14 +29,25 @@ function WalletContextProvider(props) {
             case WalletActionType.GET_CONNECTOR: {
                 return setWallet({
                     connector: payload.connector,
-                    accounts: null
+                    accounts: null,
+                    inventory_assets: []
                 })
             }
 
             case WalletActionType.CONNECTION_ESTABLISHED: {
                 return setWallet({
                     connector: wallet.connector,
-                    accounts: payload.accounts
+                    accounts: wallet.accounts,
+                    inventory_assets: []
+                })
+            }
+
+            case WalletActionType.GET_INVENTORY: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: payload.assets
+
                 })
             }
 
@@ -116,6 +129,19 @@ function WalletContextProvider(props) {
 
     wallet.getInventory = async function() {
         const response = await api.getInventory();
+
+        if(response.status === 200){
+            if(response.data.success){
+                walletReducer({
+                    type: WalletActionType.GET_INVENTORY,
+                    payload: {
+                        assets: response.data.assets
+                    }
+                })
+
+                navigate('../inventory')
+            }
+        }
     }
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
