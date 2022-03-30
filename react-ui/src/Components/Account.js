@@ -1,8 +1,8 @@
-import React from "react";
-import Navbar from "./Navbar";
-import Gridding from "./Gridding";
-import TextField from '@mui/material/TextField';
+import React, { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
+import AuthContext from "../auth";
+
+import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -17,7 +17,13 @@ import { Card, Grid } from "@mui/material";
 
 
 function Account() {
+    const { auth } = useContext(AuthContext)
+
+    if (!auth.loggedIn) {
+        return (<div>Log In to Access Page</div>)
+    }
     return (
+        
         <div id="container">
             <ProSidebar id = "sidebar">
                 <Menu iconShape="square">
@@ -48,7 +54,7 @@ function Account() {
                         id="firstName"
                         label="First Name"
                         name="fname"
-                        autoComplete="First Name"
+                        autoComplete={auth.user.firstName}
                         autoFocus>
                     </TextField>
 
