@@ -29,16 +29,16 @@ function WalletContextProvider(props) {
             case WalletActionType.GET_CONNECTOR: {
                 return setWallet({
                     connector: payload.connector,
-                    accounts: null,
-                    inventory_assets: []
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets
                 })
             }
 
             case WalletActionType.CONNECTION_ESTABLISHED: {
                 return setWallet({
                     connector: wallet.connector,
-                    accounts: wallet.accounts,
-                    inventory_assets: []
+                    accounts: payload.accounts,
+                    inventory_assets: wallet.inventory_assets
                 })
             }
 
@@ -146,6 +146,8 @@ function WalletContextProvider(props) {
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
         const response = await api.createNft(nftFile, nftName, nftDesc);
+    
+
     }
 
 
