@@ -2,6 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import api from './auth-request-api'
 
+
+
 const AuthContext = createContext();
 
 export const AuthActionType = {
@@ -133,6 +135,8 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 })
+
+
             }
         }
     }

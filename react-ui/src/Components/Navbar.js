@@ -48,7 +48,7 @@ const Navbar = (props) => {
   }
 
   const handleInventory = () => {
-    wallet.getInventory()
+    //wallet.getInventory()
   }
 
   var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>

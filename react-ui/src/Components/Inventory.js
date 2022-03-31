@@ -1,17 +1,23 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import Navbar from "./Navbar";
 import Gridding from "./Gridding";
 import './General.css'
+import "./Inventory.css"
+import AuthContext from '../auth'
+
 
 import WalletContext from '../wallet-connect'
 
 function Inventory(){
 
     const { wallet } = useContext(WalletContext)
+    const { auth } = useContext(AuthContext)
+    const [ isWallet, setIsWallet ] = useState(false)
 
     useEffect(() => {
+        console.log(auth.user)
         wallet.getInventory()
-    }, []);
+    }, []); 
 
     // var nftitems is some json object from backend, backend gets from database
     const testingjson=[
@@ -34,13 +40,21 @@ function Inventory(){
     ]
 
 
+    const noWalletDiv = <div id = "noWalletDiv">
+                            You don't yet have a wallet connected!
+                        </div>
+
+
 
     return (
         <div>
             <h1 style={{textAlign: 'center'}}>
                 Your Inventory
             </h1>
-            <Gridding nftitems={wallet.inventory_assets} />
+
+
+            { wallet.isWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
+            
         </div>
     );
 }

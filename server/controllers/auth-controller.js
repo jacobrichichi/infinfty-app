@@ -116,7 +116,8 @@ loginUser = async (req, res) => {
                 lastName: existingUser.lastName,  
                 userName: existingUser.userName,
                 email: existingUser.email,
-                _id: existingUser._id           
+                _id: existingUser._id ,
+                hasWallet: existingUser.wallet !== 'a'          
             }
         })
 
@@ -135,7 +136,8 @@ loginUserById = async (req, res) => {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
                 userName: existingUser.userName,
-                email: existingUser.email              
+                email: existingUser.email,
+                hasWallet: existingUser.wallet !== 'a'              
             }
         })
     })

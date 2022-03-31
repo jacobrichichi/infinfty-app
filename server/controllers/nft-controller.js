@@ -54,6 +54,15 @@ getInventory = async (req, res) => {
 
         const walletId = user.wallet
 
+        console.log(walletId)
+
+        if(user.wallet === 'a'){
+            return res.status(200).json({
+                success: false,
+                message: 'User has not added wallet'
+            })
+        }
+
         const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "");
 
         const accountInfo = await client.accountInformation(walletId)

@@ -12,8 +12,6 @@ import Navbar from './Components/Navbar'
 import CreateSell from './Components/CreateSellComponents/CreateSell';
 
 function App() {
-
-
   return (
     <BrowserRouter>
       <AuthContextProvider>

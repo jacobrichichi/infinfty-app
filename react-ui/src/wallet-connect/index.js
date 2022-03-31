@@ -17,7 +17,8 @@ function WalletContextProvider(props) {
     const [wallet, setWallet] = useState({
         connector: null,
         accounts: null,
-        inventory_assets: []
+        inventory_assets: [],
+        isWallet: false
     })
 
     const navigate = useNavigate();
@@ -30,7 +31,8 @@ function WalletContextProvider(props) {
                 return setWallet({
                     connector: payload.connector,
                     accounts: wallet.accounts,
-                    inventory_assets: wallet.inventory_assets
+                    inventory_assets: wallet.inventory_assets,
+                    isWallet: wallet.isWallet
                 })
             }
 
@@ -38,7 +40,8 @@ function WalletContextProvider(props) {
                 return setWallet({
                     connector: wallet.connector,
                     accounts: payload.accounts,
-                    inventory_assets: wallet.inventory_assets
+                    inventory_assets: wallet.inventory_assets,
+                    isWallet: true
                 })
             }
 
@@ -46,7 +49,8 @@ function WalletContextProvider(props) {
                 return setWallet({
                     connector: wallet.connector,
                     accounts: wallet.accounts,
-                    inventory_assets: payload.assets
+                    inventory_assets: payload.assets,
+                    isWallet: true
 
                 })
             }
@@ -128,6 +132,7 @@ function WalletContextProvider(props) {
     }
 
     wallet.getInventory = async function() {
+
         const response = await api.getInventory();
 
         if(response.status === 200){
@@ -146,11 +151,15 @@ function WalletContextProvider(props) {
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
         const response = await api.createNft(nftFile, nftName, nftDesc);
-    
-
     }
 
-
+    useEffect(() => {
+        const loggedInUserId = localStorage.getItem("userId");
+        if (loggedInUserId) {
+            //auth.loginUser('','')
+            //wallet.getWalletId()
+        }
+      }, []);
 
 
     return (
