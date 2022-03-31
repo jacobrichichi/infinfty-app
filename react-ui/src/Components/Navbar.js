@@ -55,19 +55,35 @@ const Navbar = (props) => {
                     Login
                   </div> 
 
+  var accountMenu = ""
+  
+  
+
   if(auth.loggedIn){
-    accountInfo = <div id = "userText" onClick={handleClick} >
+    accountInfo = 
+    <div id = "userText" onClick = {handleClick}>
         Hello {auth.user.firstName}
+    </div>    
+
+    accountMenu =
         <Menu
           anchorEl={anchorEl}
           id="account-menu"
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+          }}
           open={openMenu}
           onClose={handleMenuClose}
           onClick={handleMenuClose}>
-          <MenuItem onClick={handleMenuClose}><Link to='/account'></Link>Account Settings</MenuItem>
+          <MenuItem onClick={handleMenuClose}><Link to='/account'>Account Settings</Link></MenuItem>
           <MenuItem>Logout</MenuItem> 
         </Menu>
-      </div>
   }
 
   var loginModal = ""
@@ -116,7 +132,10 @@ const Navbar = (props) => {
           {accountInfo}
         </Grid>
 
+        
+
         {loginModal}
+        {accountMenu}
     </Grid>
     </div>
   )
