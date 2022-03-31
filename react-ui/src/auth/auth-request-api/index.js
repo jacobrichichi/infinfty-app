@@ -34,11 +34,14 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
     })
 }
 
+export const logoutUser = () => api.get(`/logout/`)
+
 
 const apis = {
     loginUserById,
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 }
 
 export default apis

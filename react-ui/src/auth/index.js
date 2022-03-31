@@ -48,6 +48,15 @@ function AuthContextProvider(props) {
                 })
             }
 
+            case AuthActionType.LOGOUT_USER: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    wrongCredentials: null,
+                    isWrongCredentials: false
+                })
+            }
+
             case AuthActionType.ADD_WRONG_CREDENTIALS: {
                 return setAuth({
                     user: null,
@@ -149,6 +158,19 @@ function AuthContextProvider(props) {
             }
         })
     }
+
+    auth.logoutUser = async function() {
+        const response = await api.logoutUser();
+        if (response.status === 200) {
+            authReducer( {
+                type: AuthActionType.LOGOUT_USER,
+                payload: null
+            })
+            history('../')
+            localStorage.removeItem('userId')
+        }
+    }
+
 
     useEffect(() => {
         const loggedInUserId = localStorage.getItem("userId");

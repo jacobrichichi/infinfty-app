@@ -10,7 +10,8 @@ const WalletContext = createContext();
 export const WalletActionType = {
     GET_CONNECTOR: "GET_CONNECTOR",
     CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
-    GET_INVENTORY: "GET_INVENTORY"
+    GET_INVENTORY: "GET_INVENTORY",
+    DISCONNECT_WALLET: "DISCONNECT_WALLET"
 }
 
 function WalletContextProvider(props) {
@@ -52,6 +53,15 @@ function WalletContextProvider(props) {
                     inventory_assets: payload.assets,
                     isWallet: true
 
+                })
+            }
+
+            case WalletActionType.DISCONNECT_WALLET: {
+                return setWallet({
+                    connector: null,
+                    accounts: null,
+                    inventory_assets: null,
+                    isWallet: false
                 })
             }
 
@@ -151,6 +161,23 @@ function WalletContextProvider(props) {
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
         const response = await api.createNft(nftFile, nftName, nftDesc);
+    }
+
+    wallet.disconnectWallet = function(){
+        const con = new WalletConnect({
+            bridge: "https://bridge.walletconnect.org",
+            qrcodeModal: QRCodeModal
+        });
+ 
+        if (con.connected) {
+            con.killSession()
+            walletReducer({
+                type: WalletActionType.DISCONNECT_WALLET,
+                payload: {
+                    
+                }
+            })
+        }
     }
 
     useEffect(() => {

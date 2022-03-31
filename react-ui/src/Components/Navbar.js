@@ -51,6 +51,11 @@ const Navbar = (props) => {
     //wallet.getInventory()
   }
 
+  const handleLogout = () => {
+    wallet.disconnectWallet()
+    auth.logoutUser();
+  }
+
   var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>
                     Login
                   </div> 
@@ -82,7 +87,7 @@ const Navbar = (props) => {
           onClose={handleMenuClose}
           onClick={handleMenuClose}>
           <MenuItem onClick={handleMenuClose}><Link to='/account'>Account Settings</Link></MenuItem>
-          <MenuItem>Logout</MenuItem> 
+          <MenuItem onClick = {handleLogout}>Logout</MenuItem> 
         </Menu>
   }
 
