@@ -10,6 +10,7 @@ import ExploreCategories from './Components/ExploreComponents/ExploreCategories'
 import Account from './Components/Account'
 import Navbar from './Components/Navbar'
 import CreateSell from './Components/CreateSellComponents/CreateSell';
+import ViewNFT from './Components/ViewComponents/ViewNFT';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path = "/explore" element = {<ExploreCategories/>} />
               <Route path = "/account" element = {<Account/>} />
               <Route path = "/create" element = {<CreateSell/>} />
+              <Route path = "/view" element = {<ViewNFT/>} />
             </Routes>
           </WalletContextProvider>
         </AuthContextProvider>
