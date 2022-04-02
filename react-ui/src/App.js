@@ -11,6 +11,7 @@ import Account from './Components/Account'
 import Navbar from './Components/Navbar'
 import CreateSell from './Components/CreateSellComponents/CreateSell';
 import ViewNFT from './Components/ViewComponents/ViewNFT';
+import SellAuctionNFT from './Components/CreateSellComponents/SellAuctionNFT';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path = "/account" element = {<Account/>} />
               <Route path = "/create" element = {<CreateSell/>} />
               <Route path = "/view" element = {<ViewNFT/>} />
+              <Route path = "/sell" element = {<SellAuctionNFT/>} />
             </Routes>
           </WalletContextProvider>
         </AuthContextProvider>

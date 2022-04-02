@@ -60,11 +60,11 @@ function ExploreCategories(){
 
     return (
         <div id = "mainContainer">
-            <div id = "titleTextContainer">
-                <span id = "titleText">
-                    Explore Our Collections!
-                </span>
-            </div>
+                <div id = "titleTextContainer">
+                    <span id = "titleText">
+                        Explore Our Collections!
+                    </span>
+                </div>
 
             {categoryComponents}
         </div>

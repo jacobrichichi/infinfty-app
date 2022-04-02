@@ -11,7 +11,9 @@ export const WalletActionType = {
     GET_CONNECTOR: "GET_CONNECTOR",
     CONNECTION_ESTABLISHED: "CONNECTION_ESTABLISHED",
     GET_INVENTORY: "GET_INVENTORY",
-    DISCONNECT_WALLET: "DISCONNECT_WALLET"
+    DISCONNECT_WALLET: "DISCONNECT_WALLET",
+    RECONNECT_WALLET: "RECONNECT_WALLET",
+    SET_CURRENT_NFT: "SET_CURRENT_NFT"
 }
 
 function WalletContextProvider(props) {
@@ -19,7 +21,8 @@ function WalletContextProvider(props) {
         connector: null,
         accounts: null,
         inventory_assets: [],
-        isWallet: false
+        isWallet: false,
+        currentNFT: null
     })
 
     const navigate = useNavigate();
@@ -33,7 +36,8 @@ function WalletContextProvider(props) {
                     connector: payload.connector,
                     accounts: wallet.accounts,
                     inventory_assets: wallet.inventory_assets,
-                    isWallet: wallet.isWallet
+                    isWallet: wallet.isWallet,
+                    currentNFT: wallet.currentNFT
                 })
             }
 
@@ -42,7 +46,8 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: payload.accounts,
                     inventory_assets: wallet.inventory_assets,
-                    isWallet: true
+                    isWallet: true,
+                    currentNFT: wallet.currentNFT
                 })
             }
 
@@ -51,7 +56,8 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: wallet.accounts,
                     inventory_assets: payload.assets,
-                    isWallet: true
+                    isWallet: true,
+                    currentNFT: wallet.currentNFT
 
                 })
             }
@@ -61,7 +67,28 @@ function WalletContextProvider(props) {
                     connector: null,
                     accounts: null,
                     inventory_assets: null,
-                    isWallet: false
+                    isWallet: false,
+                    currentNFT: wallet.currentNFT
+                })
+            }
+
+            case WalletActionType.RECONNECT_WALLET: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    isWallet: true,
+                    currentNFT: wallet.currentNFT
+                })
+            }
+
+            case WalletActionType.SET_CURRENT_NFT: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    isWallet: wallet.isWallet,
+                    currentNFT: payload.currentNFT
                 })
             }
 
@@ -72,72 +99,87 @@ function WalletContextProvider(props) {
 
     }
 
-    wallet.walletConnectInit = async function() {
-
+    wallet.reconnectWallet = function(){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
             qrcodeModal: QRCodeModal
         });
- 
-        if (!con.connected) {
-            con.createSession();
-        }
-
-        con.on("connect", async (error, payload) => {
-            if (error) {
-                throw error;
-            }
-            
-            // Get provided accounts
-            const { accounts } = payload.params[0];
-
-            const response = await api.addWallet(accounts)
-
-            console.log(con)
-
-            if(response.status === 200){
-                if(response.data.success){
-                    walletReducer({
-                        type: WalletActionType.CONNECTION_ESTABLISHED,
-                        payload: {
-                            accounts: accounts
-                        }
-                    })
-                }
-            }
-
-            else{
-                console.log(response.message)
-            }
-        });
-
-        con.on("session_update", (error, payload) => {
-            if (error) {
-              throw error;
-            }
-          
-            // Get updated accounts 
-            const { accounts } = payload.params[0];
-
-            walletReducer({
-                type: WalletActionType.CONNECTION_ESTABLISHED,
-                payload: {
-                    accounts: accounts
-                }
-            })
-          });
-
-          con.on("disconnect", (error, payload) => {
-
-          })
 
         walletReducer({
-            type: WalletActionType.GET_CONNECTOR,
+            type: WalletActionType.RECONNECT_WALLET,
             payload: {
-                connector: con
+                
             }
         })
+    }
 
+    wallet.walletConnectInit = async function() {
+
+        if(!wallet.isWallet){
+            const con = new WalletConnect({
+                bridge: "https://bridge.walletconnect.org",
+                qrcodeModal: QRCodeModal
+            });
+            
+            if (!con.connected) {
+                con.createSession();
+            }
+
+            con.on("connect", async (error, payload) => {
+                if (error) {
+                    throw error;
+                }
+                
+                // Get provided accounts
+                const { accounts } = payload.params[0];
+
+                const response = await api.addWallet(accounts)
+
+                console.log(con)
+
+                if(response.status === 200){
+                    if(response.data.success){
+                        walletReducer({
+                            type: WalletActionType.CONNECTION_ESTABLISHED,
+                            payload: {
+                                accounts: accounts
+                            }
+                        })
+                    }
+                }
+
+                else{
+                    console.log(response.message)
+                }
+            });
+
+            con.on("session_update", (error, payload) => {
+                if (error) {
+                throw error;
+                }
+            
+                // Get updated accounts 
+                const { accounts } = payload.params[0];
+
+                walletReducer({
+                    type: WalletActionType.CONNECTION_ESTABLISHED,
+                    payload: {
+                        accounts: accounts
+                    }
+                })
+            });
+
+            con.on("disconnect", (error, payload) => {
+
+            })
+
+            walletReducer({
+                type: WalletActionType.GET_CONNECTOR,
+                payload: {
+                    connector: con
+                }
+            })
+        }
         
     }
 
@@ -180,9 +222,32 @@ function WalletContextProvider(props) {
         }
     }
 
+
+    // user for sale of NFT
+    wallet.setCurrentNFT = function(url, name, amount, id) {
+        walletReducer({
+            type: WalletActionType.SET_CURRENT_NFT,
+            payload: {
+                currentNFT: { url, name, amount, id }
+            }
+        })
+
+        localStorage.setItem("currentNFTUrl", url)
+        localStorage.setItem("currentNFTName", name)
+        localStorage.setItem("currentNFTAmount", amount)
+        localStorage.setItem("currentNFTId", id)
+
+
+        navigate('../sell')
+    }
+
     useEffect(() => {
-        const loggedInUserId = localStorage.getItem("userId");
-        if (loggedInUserId) {
+        const currentNFTUrl = localStorage.getItem("currentNFTUrl");
+        if (currentNFTUrl) {
+            wallet.setCurrentNFT(currentNFTUrl, 
+                localStorage.getItem("currentNFTName"), 
+                localStorage.getItem("currentNFTAmount"), 
+                localStorage.getItem("currentNFTId"))
             //auth.loginUser('','')
             //wallet.getWalletId()
         }

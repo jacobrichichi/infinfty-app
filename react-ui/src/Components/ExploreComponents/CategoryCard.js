@@ -33,6 +33,7 @@ const CategoryCard = (props) => {
     var collectionCards =
     <div id = "collectionComponents">
          <Carousel swipeable={false}
+        // width = "100"
         draggable={false}
         showDots={true}
         responsive={responsive}
@@ -46,7 +47,8 @@ const CategoryCard = (props) => {
         containerClass="carousel-container"
         removeArrowOnDeviceType={["tablet", "mobile"]}
         dotListClass="custom-dot-list-style"
-        itemClass="carousel-item-padding-40-px">
+        itemClass="carousel-item-padding-40-px hello"
+        >
         {collectionData.map((collection, index) => (
             <CollectionCard data = {collection}/>
         ))}
@@ -65,11 +67,11 @@ const CategoryCard = (props) => {
             </div>
             {collectionCards}
 
-            <div id = "exploreButtonContainer">
+            {/* <div id = "exploreButtonContainer">
                 <Button variant = "contained" style = {{backgroundColor: "#CE4257", fontSize: "24px"}}>
                     Explore More
                 </Button>
-            </div>
+            </div> */}
 
         </div>
     )

@@ -53,7 +53,7 @@ function Inventory(){
             </h1>
 
 
-            { wallet.isWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
+            { auth.user !== null && auth.user.hasWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
             
         </div>
     );
