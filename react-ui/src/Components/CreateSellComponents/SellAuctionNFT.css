@@ -1,0 +1,71 @@
+#saMainCont {
+    height: 100%;
+    width: 100%;
+    padding: 40px;
+}
+
+#saHeadingCont {
+    height: 15%;
+    width: 50%;
+    font-size: 30px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+
+}
+#saBodyCont {
+    height: 85%;
+    width: 100%;
+    display: flex;
+}
+
+#saTextInputCont {
+    height: 100%;
+    width: 50%;
+}
+
+#saNFTCardCont {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+#saNFTCard {
+    background-color: white;
+    width: 40%;
+    height: 95%;
+    border: 1px solid rgb(49, 49, 49); 
+    border-radius: 20px;
+    padding: 20px;
+}
+
+#saNFTImgCont {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 12px;
+    padding-top: 10px;
+}
+
+#saNFTImg {
+    height: 30vh;
+}
+
+#saNFTTitleCont {
+    width: 100%;
+    font-size: 26px;
+    height: 20%;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    padding-bottom: 12px;
+}
+
+#saNFTAmountCont {
+    width: 100%;
+    height: 30%;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    justify-content: center;
+}
