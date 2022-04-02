@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 #titleTextContainer {
-    margin-top: 25px;
+    margin-top: 35px;
+    margin-bottom: 35px;
     width: 100%;
     height: 15%;
     text-align: center;
@@ -12,4 +13,10 @@
     font-size: 38px;
     width: 100%;
     height: 100%;
+}
+
+#categoryComponents{
+    padding-left: 45px;
+    padding-right: 45px;
+    /* padding-bottom: 50px; */
 }

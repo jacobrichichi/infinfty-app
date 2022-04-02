@@ -131,6 +131,7 @@
     color: rgb(28, 121, 184);
     transition: all 1s ease;
     -webkit-transition: all 1s ease;
+    cursor: pointer;
   
 }
 .navLink:before {
