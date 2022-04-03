@@ -32,10 +32,22 @@ export const createNft = (nftFile, nftName, nftDesc) => {
     })
 }
 
+export const listNFTSale = (id, price, duration) => {
+    return api.post(`listNFTSale`, {
+        id, price, duration
+    })
+}
+
+export const testPython = () => {
+    return api.get(`testPython`)
+}
+
 const apis = {
     addWallet,
     getInventory,
-    createNft
+    createNft,
+    listNFTSale,
+    testPython
 }
 
 export default apis

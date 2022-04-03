@@ -6,6 +6,9 @@ const File = require('nft.storage').File
 const mime = require('mime')
 const fs = require('fs')
 const path = require('path')
+const {spawn} = require('child_process');
+
+//const { createNFTSaleListing } = require('./nft-controller-helpers/operations')
 
 
 addWallet = async (req, res) => {
@@ -104,7 +107,7 @@ getInventory = async (req, res) => {
     })
 }
 
-const createNft = async (req, res) => {
+createNft = async (req, res) => {
     const { media, title, desc } = req.body;
     const nftStorage_key = require('../config/keys').nftstorage_key
 
@@ -123,10 +126,73 @@ const createNft = async (req, res) => {
     // Minting/Tokenize
 }
 
+listNFTSale = async(req, res) => {
+    const { id, price, duration } = req.body
 
+    const nftID = id
+
+    if(!id || !price || !duration) {
+        return res.status(200).json({
+            success: false,
+            message: "All necessary variables (id, price, duration) were not given"
+        })
+    }
+
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: 'The subject user was not found'
+            })
+        }
+
+        const walletId = user.wallet
+
+        if(user.wallet === 'a'){
+            return res.status(200).json({
+                success: false,
+                message: 'User has not added wallet'
+            })
+        }
+
+        const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "");
+        
+        const date = new Date()
+        const startTime = date.getTime()/1000 + 10
+        const endTime = startTime + duration * 24 * 60 * 60
+
+        //createNFTSaleListing(client, walletId, walletId, nftID, price, startTime, endTime)
+
+    })
+}
+
+testPython = async(req, res) => {
+    var dataToSend
+    const python = spawn('python', ['./server/controllers/testPython.py'])
+    python.stdout.on('data', function(data){
+        console.log('Pipe data from python script')
+        dataToSend = data.toString()
+    })
+
+    python.stderr.on('data', function(data){
+        console.log('Error')
+        dataToSend = data.toString()
+
+    })
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        return res.status(200).json({
+            success: true,
+            data: dataToSend
+        })
+    })
+}
 
 module.exports = {
     getInventory,
     addWallet,
-    createNft
+    createNft,
+    listNFTSale,
+    testPython
 }

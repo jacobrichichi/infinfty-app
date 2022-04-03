@@ -241,6 +241,18 @@ function WalletContextProvider(props) {
         navigate('../sell')
     }
 
+    wallet.auctionNFT = async function(startPrice, reserve, duration){
+
+    }
+
+    wallet.sellNFT = async function(price, duration){
+        const response = await api.testPython()
+
+        console.log(response.data)
+
+        //const response = await api.listNFTSale(wallet.currentNFT.id, price, duration)
+    }
+
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         if (currentNFTUrl) {
