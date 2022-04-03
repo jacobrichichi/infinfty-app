@@ -161,7 +161,7 @@ listNFTSale = async(req, res) => {
         const startTime = date.getTime()/1000 + 10
         const endTime = startTime + duration * 24 * 60 * 60
 
-        //createNFTSaleListing(client, walletId, walletId, nftID, price, startTime, endTime)
+       // createNFTSaleListing(client, walletId, walletId, nftID, price, startTime, endTime)
 
     })
 }
