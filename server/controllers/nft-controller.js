@@ -118,12 +118,21 @@ createNft = async (req, res) => {
                 error: 'The subject user was not found'
             })
         }
-
-
-
-        return user
+        // Minting/Tokenize
+        /*
+        {
+            nftFile: nftFile,
+            nftName: nftName,
+            nftDesc: nftDesc
+        }
+        */
+        nftFile=res.body.nftFile
+        nftName=res.body.nftName
+        nftDesc=res.body.nftDesc
+        console.log(nftFile);
+        console.log(nftName);
+        console.log(nftName);
     });
-    // Minting/Tokenize
 }
 
 listNFTSale = async(req, res) => {
