@@ -54,24 +54,10 @@ function CreateSell(){
         e.preventDefault();
         console.log('pressed submit');
 
+        // Will have to add parameters for price, sellingtype, price, days
         wallet.createNft(files[0], 'First NFT', 'An NFT that is the first made through this website')
         
-        // Hopefully used to mint/tokenize multiple tokens
-        // // Create an object of formData
-        // const formData = new FormData();
-        // // Update the formData object
-        // formData.append(
-        //     "myFile",
-        //     this.state.selectedFile,
-        //     this.state.selectedFile.name
-        // );
-        // // Details of the uploaded file
-        // console.log(this.state.selectedFile);
-        // // Request made to the backend api
-        // // Send formData object
-        // axios.post("api/uploadfile", formData);
-
-        let path = `../inventory`; 
+        let path = `/inventory`; 
         navigate(path);
 	};
 
@@ -109,11 +95,11 @@ function CreateSell(){
                             >
                                 <FormControlLabel value="selling" control={<Radio />} label="Selling" />
                                 <FormControlLabel value="auction" control={<Radio />} label="Auction" />
-                                <FormControlLabel value="keeps" control={<Radio />} label="Keeping" />
+                                <FormControlLabel value="keeping" control={<Radio />} label="Keeping" />
                             </RadioGroup>
                         </FormControl>
 
-                        <FormControl variant="standard">
+                        <FormControl disabled={sellingtype=="keeping"} variant="standard">
                             <InputLabel htmlFor="input-with-icon-adornment">
                                 Price
                             </InputLabel>
@@ -128,7 +114,7 @@ function CreateSell(){
                             />
                         </FormControl>
 
-                        <FormControl variant="standard">
+                        <FormControl disabled={sellingtype=="keeping"} variant="standard">
                             <InputLabel htmlFor="input-with-icon-adornment">
                                 Duration
                             </InputLabel>
@@ -142,6 +128,7 @@ function CreateSell(){
                             }
                             />
                         </FormControl>
+
                         <Button variant="contained" size='small' onClick={onFileUpload}>Submit</Button>
                     </FormGroup>
                 </div>
