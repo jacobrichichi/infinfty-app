@@ -11,6 +11,7 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
+    EDIT_USER: "EDIT_USER",
     ADD_WRONG_CREDENTIALS: "ADD_WRONG_CREDENTIALS",
     REMOVE_WRONG_CREDENTIALS: "REMOVE_WRONG_CREDENTIALS" 
 }
@@ -52,6 +53,15 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: null,
                     loggedIn: false,
+                    wrongCredentials: null,
+                    isWrongCredentials: false
+                })
+            }
+
+            case AuthActionType.EDIT_USER: {
+                return setAuth({
+                    user: payload.user,
+                    loggedIn: true,
                     wrongCredentials: null,
                     isWrongCredentials: false
                 })
@@ -148,6 +158,22 @@ function AuthContextProvider(props) {
 
 
             }
+        }
+    }
+
+    auth.editUser = async function(newFirstName, newLastName, newEmail) {
+        const response = await api.getLoggedIn();
+        if (response.status === 200) {
+            let user = response.data.user;
+            user.firstName = newFirstName;
+            user.lastName = newLastName;
+            user.email = newEmail;
+            authReducer( {
+                type: AuthActionType.EDIT_USER,
+                payload: {
+                    user: user
+                }
+            })
         }
     }
 
