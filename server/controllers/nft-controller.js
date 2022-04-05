@@ -7,6 +7,7 @@ const mime = require('mime')
 const fs = require('fs')
 const path = require('path')
 const {spawn} = require('child_process');
+const shell = require('shelljs')
 
 //const { createNFTSaleListing } = require('./nft-controller-helpers/operations')
 
@@ -166,6 +167,36 @@ listNFTSale = async(req, res) => {
     })
 }
 
+runTestAuction = async(req, res) => {
+    var dataToSend = ''
+
+    var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
+
+    child.stdout.on('data', function(data) {
+        console.log('Pipe data from python script')
+        dataToSend = dataToSend + data.toString()
+    })
+
+    child.stderr.on('data', function(data) {
+        console.log('Error')
+        dataToSend = dataToSend + data.toString()
+    })
+
+    child.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        console.log(dataToSend)
+
+        return res.status(200).json({
+            success: true,
+            data: dataToSend
+        })
+    })
+
+
+    
+}
+
 testPython = async(req, res) => {
     var dataToSend
     const python = spawn('python', ['./server/controllers/testPython.py'])
@@ -194,5 +225,6 @@ module.exports = {
     addWallet,
     createNft,
     listNFTSale,
-    testPython
+    testPython,
+    runTestAuction
 }

@@ -29,7 +29,8 @@
     "mongoose": "^6.2.8",
     "nft.storage": "^6.1.0",
     "nodemon": "^2.0.15",
-    "react-multi-carousel": "^2.8.0"
+    "react-multi-carousel": "^2.8.0",
+    "shelljs": "^0.8.5"
   },
   "repository": {
     "type": "git",

@@ -204,7 +204,6 @@ function WalletContextProvider(props) {
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
         const response = await api.createNft(nftFile, nftName, nftDesc);
     }
-
     wallet.disconnectWallet = function(){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
@@ -241,12 +240,21 @@ function WalletContextProvider(props) {
         navigate('../sell')
     }
 
+    wallet.resetCurrentNFT = function(url, name, amount, id) {
+        walletReducer({
+            type: WalletActionType.SET_CURRENT_NFT,
+            payload: {
+                currentNFT: { url, name, amount, id }
+            }
+        })
+    }
+
     wallet.auctionNFT = async function(startPrice, reserve, duration){
 
     }
 
     wallet.sellNFT = async function(price, duration){
-        const response = await api.testPython()
+        const response = await api.testAuction()
 
         console.log(response.data)
 
@@ -256,7 +264,7 @@ function WalletContextProvider(props) {
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         if (currentNFTUrl) {
-            wallet.setCurrentNFT(currentNFTUrl, 
+            wallet.resetCurrentNFT(currentNFTUrl, 
                 localStorage.getItem("currentNFTName"), 
                 localStorage.getItem("currentNFTAmount"), 
                 localStorage.getItem("currentNFTId"))
