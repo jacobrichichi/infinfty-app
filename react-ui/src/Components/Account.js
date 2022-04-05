@@ -19,8 +19,20 @@ import { Card, Grid } from "@mui/material";
 function Account() {
     const { auth } = useContext(AuthContext)
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        auth.editUser(
+            formData.get('fname'),
+            formData.get('lname'),
+            formData.get('email'),
+        )
+    
+    };
+
     if (!auth.loggedIn) {
-        return (<div>Log In to Access Page</div>)
+        console.log("Not Logged In")
+        return (<div></div>)
     }
     return (
         
@@ -46,6 +58,8 @@ function Account() {
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}
+                component="form"
+                onSubmit={handleSubmit}
                 >
                     <h2>Profile</h2>
                     <TextField
@@ -54,7 +68,8 @@ function Account() {
                         id="firstName"
                         label="First Name"
                         name="fname"
-                        autoComplete={auth.user.firstName}
+                        autoComplete="First Name"
+                        defaultValue={auth.user.firstName}
                         autoFocus>
                     </TextField>
 
@@ -65,6 +80,7 @@ function Account() {
                         label="Last Name"
                         name="lname"
                         autoComplete="Last Name"
+                        defaultValue={auth.user.lastName}
                         autoFocus>
                     </TextField>
 
@@ -75,9 +91,11 @@ function Account() {
                         label="Email"
                         name="email"
                         autoComplete="Email"
+                        defaultValue={auth.user.email}
                         autoFocus>
                     </TextField>
-                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }}>
+                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }}
+                            type="submit">
                             Submit Changes
                     </Button>
                 </Box>
