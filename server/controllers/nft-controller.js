@@ -181,39 +181,39 @@ runTestAuction = async(req, res) => {
 
     var dataToSend = ''
 
-    try{
-        var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
-
-        child.stdout.on('data', function(data) {
-            console.log('Pipe data from python script')
-            dataToSend = dataToSend + data.toString()
-        })
-
-        child.stderr.on('data', function(data) {
-            console.log('Error')
-            dataToSend = dataToSend + data.toString()
-        })
-
-        child.on('close', (code) => {
-            console.log(`child process close all stdio with code ${code}`);
-            // send data to browser
-            console.log(dataToSend)
-
+    var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
+        .on('error', function(err) {
+            console.log(err)
             return res.status(200).json({
-                success: true,
-                data: dataToSend
+                success: false,
+                data: err
             })
-        })
-    }
-    catch(err){
-        console.log(err)
-        return res.status(200).json({
-            success: false,
-            data: err
-        })
-    }
 
+        })
     
+
+
+    child.stdout.on('data', function(data) {
+        console.log('Pipe data from python script')
+        dataToSend = dataToSend + data.toString()
+    })
+
+    child.stderr.on('data', function(data) {
+        console.log('Error')
+        dataToSend = dataToSend + data.toString()
+    })
+
+    child.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        // send data to browser
+        console.log(dataToSend)
+
+        return res.status(200).json({
+            success: true,
+            data: dataToSend
+        })
+    })
+
 
     
 }
