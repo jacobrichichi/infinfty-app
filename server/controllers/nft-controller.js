@@ -181,7 +181,7 @@ runTestAuction = async(req, res) => {
 
     var dataToSend = ''
 
-    var child = spawn('wsl', ['--list', '--verbose'], { cwd: './contollers/reach/reach-auction'})
+    var child = spawn('wsl')
         .on('error', function(err) {
             console.log(err)
             return res.status(200).json({
