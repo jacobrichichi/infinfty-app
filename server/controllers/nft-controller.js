@@ -178,13 +178,10 @@ listNFTSale = async(req, res) => {
 
 runTestAuction = async(req, res) => {
 
-    fs.chmod('./server/controllers/reach/reach-auction/reach', '751', (err) => {
-        if(err){
-            console.log(err)
-        }
 
+    var dataToSend = ''
 
-        var dataToSend = ''
+    try{
         var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
 
         child.stdout.on('data', function(data) {
@@ -207,9 +204,14 @@ runTestAuction = async(req, res) => {
                 data: dataToSend
             })
         })
-
-
-    })
+    }
+    catch(err){
+        console.log(err)
+        return res.status(200).json({
+            success: false,
+            data: err
+        })
+    }
 
     
 
