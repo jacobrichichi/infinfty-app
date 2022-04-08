@@ -31,11 +31,6 @@ const DescripNFT = (props) => {
 const DisplayNFT = (props) => {
 
     return(
-<<<<<<< Updated upstream
-        <div id = "viewNFT">
-            <DisplayNFT/>
-            <DescripNFT/>
-=======
         <div>
             <img src = {test}/>
         </div>
@@ -92,7 +87,6 @@ const ViewNFT = (props) => {
                 <Grid item xs={2}>
                 </Grid>
             </Grid>
->>>>>>> Stashed changes
         </div>
     )
 }
