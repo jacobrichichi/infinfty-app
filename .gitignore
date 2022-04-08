@@ -1,6 +1,7 @@
 # Node build artifacts
 node_modules
 npm-debug.log
+venv
 
 # Local development
 *.env
@@ -8,4 +9,3 @@ npm-debug.log
 .DS_Store
 
 .vscode/*
-/venv/
