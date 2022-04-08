@@ -177,21 +177,9 @@ listNFTSale = async(req, res) => {
 }
 
 runTestAuction = async(req, res) => {
-
-
     var dataToSend = ''
 
-    var child = spawn('./reach', ['run'], { cwd: './server/contollers/reach/reach-auction'})
-        .on('error', function(err) {
-            console.log(err)
-            return res.status(200).json({
-                success: false,
-                data: err
-            })
-
-        })
-    
-
+    var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
 
     child.stdout.on('data', function(data) {
         console.log('Pipe data from python script')
@@ -213,9 +201,6 @@ runTestAuction = async(req, res) => {
             data: dataToSend
         })
     })
-
-
-    
 }
 
 testPython = async(req, res) => {

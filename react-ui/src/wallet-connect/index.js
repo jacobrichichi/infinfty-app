@@ -254,7 +254,7 @@ function WalletContextProvider(props) {
     }
 
     wallet.sellNFT = async function(price, duration){
-        const response = await api.testAuction()
+        const response = await api.testPython()
 
         console.log(response.data)
 
