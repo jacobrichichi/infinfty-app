@@ -7,8 +7,7 @@
   },
   "scripts": {
     "start": "node server",
-    "build": "cd react-ui/ && npm install && npm run build",
-    "postinstall": "pip install pyteal"
+    "build": "cd react-ui/ && npm install && npm run build"
   },
   "cacheDirectories": [
     "node_modules",
