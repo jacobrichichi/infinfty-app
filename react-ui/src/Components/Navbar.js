@@ -6,6 +6,7 @@ import searchBarIcon from "./images/searchBarIcon.png"
 
 import accountImg from "./images/accountImg.png"
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -101,6 +102,26 @@ const Navbar = (props) => {
     loginModal = <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
   }
 
+  let navigate = useNavigate();
+  var walletconnect = () => {
+    if(auth.loggedIn && auth.user.hasWallet && wallet.isWallet){
+      return(
+        <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
+            <div className = "linkText navLink" id = "conLinkText" onClick = {() => {navigate(`/create`)}}>
+              Create
+            </div>
+        </Grid>
+      )
+    }
+    return(
+        <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
+            <div className = "linkText navLink" id = "conLinkText" onClick = {handleWalletOpen}>
+              Connect
+            </div>
+        </Grid>
+      )
+  };
+
   return (
     <div>
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
@@ -130,11 +151,7 @@ const Navbar = (props) => {
             </Link>
         </Grid>
 
-        <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
-            <div className = "linkText navLink" id = "conLinkText" onClick = {handleWalletOpen}>
-              Connect
-            </div>
-        </Grid>
+        {walletconnect()}
         
         
         <Grid item xs = {3} id = "userTextContainer">

@@ -11,9 +11,37 @@ const SellAuctionNFT = (props) => {
     const { wallet } = useContext(WalletContext)
 
     const [ isAuction, setIsAuction ] = useState(false)
+    const [ error, setError ] = useState("")
 
     const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
 
+        if(isAuction){
+            const startPrice = formData.get('startPrice')
+            const reserve = formData.get('reserve')
+            const duration = formData.get('duration')
+            
+            if(startPrice === "" || reserve === "" || duration === ""){
+                setError("All Fields Must Be Filled")
+            }
+
+            else{
+                wallet.auctionNFT(startPrice, reserve, duration)
+            }
+        }
+        else{
+            const price = formData.get('price')
+            const duration = formData.get('duration')
+
+            if(price === "" || duration === ""){
+                setError("All Fields Must Be Filled")
+            }
+
+            else{
+                wallet.sellNFT(price, duration)
+            }
+        }
     }
 
     const handleSwitch = (event) => {
@@ -24,6 +52,7 @@ const SellAuctionNFT = (props) => {
     var heading = "List Your NFT"
     var headingColor = "#000000"
     var switchLabel = "Sell"
+    var errorMessage = ""
 
     var inputFields = 
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -34,6 +63,7 @@ const SellAuctionNFT = (props) => {
                 id="price"
                 label="Price"
                 name="price"
+                type="number"
                 autoComplete="100"
                 autoFocus
             />
@@ -44,6 +74,7 @@ const SellAuctionNFT = (props) => {
                 name="duration"
                 label="Duration"
                 id="duration"
+                type="number"
                 autoComplete="5"
             />
             <Button
@@ -71,6 +102,7 @@ const SellAuctionNFT = (props) => {
                     label="Start Price"
                     name="startPrice"
                     autoComplete="10"
+                    type="number"
                     autoFocus
                 />
 
@@ -81,6 +113,7 @@ const SellAuctionNFT = (props) => {
                     name="reserve"
                     label="Reserve"
                     id="reserve"
+                    type="number"
                     autoComplete="10"
                 />
 
@@ -91,6 +124,7 @@ const SellAuctionNFT = (props) => {
                     name="duration"
                     label="Duration"
                     id="duration"
+                    type="number"
                     autoComplete="5"
                 />
                 <Button
@@ -134,6 +168,7 @@ const SellAuctionNFT = (props) => {
                 <div id = "saTextInputCont">
                     <hr></hr>
                     {inputFields}
+                    {error}
                 </div>
 
                 <div id = "saNFTCardCont">
