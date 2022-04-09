@@ -25,8 +25,8 @@ const EditNFT = (props) => {
         sx={{
           height: 233,
           width: 350,
-          maxHeight: { xs: 233, md: 167 },
-          maxWidth: { xs: 350, md: 250 },
+          maxHeight: { xs: 400, md: 500 },
+          maxWidth: { xs: 400, md: 500 },
         }}
         src = {test}
         />

@@ -1,6 +1,7 @@
 import React from 'react'
 import test from "../images/test_nft.png"
 import Grid from '@mui/material/Grid';
+import Box from "@mui/material/Box";
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { green, purple, blue } from '@mui/material/colors';
@@ -31,9 +32,16 @@ const DescripNFT = (props) => {
 const DisplayNFT = (props) => {
 
     return(
-        <div>
-            <img src = {test}/>
-        </div>
+        <Box
+        component="img"
+        sx={{
+          height: 233,
+          width: 350,
+          maxHeight: { xs: 400, md: 500 },
+          maxWidth: { xs: 400, md: 500 },
+        }}
+        src = {test}
+        />
     )
 }
 
