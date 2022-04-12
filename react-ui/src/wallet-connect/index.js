@@ -257,7 +257,7 @@ function WalletContextProvider(props) {
         });
 
         if(con.connected){
-            createAuction(wallet.accounts, wallet.accounts, wallet.currentNFT.id, reserve, .1, duration)
+            createAuction(con, wallet.accounts, wallet.accounts, wallet.currentNFT.id, reserve, .1, duration)
         }
     }
 
