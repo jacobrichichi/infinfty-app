@@ -1,8 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 
-const baseURL = 'https://infinftapp.herokuapp.com/nft'
-//const baseURL = 'http://localhost:5000/nft'
+//const baseURL = 'https://infinftapp.herokuapp.com/nft'
+const baseURL = 'http://localhost:5000/nft'
 
 /*if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     baseURL = 'http://localhost:5000/auth'
@@ -15,6 +15,12 @@ const api = axios.create({
 export const addWallet = (wallet) => {
     return api.post(`/addWallet`, {
         wallet: wallet
+    })
+}
+
+export const walletConnect = (QRCodeModal) => {
+    return api.post(`/walletConnect/`, {
+        QRCodeModal: QRCodeModal
     })
 }
 
@@ -52,7 +58,8 @@ const apis = {
     createNft,
     listNFTSale,
     testPython,
-    testAuction
+    testAuction,
+    walletConnect
 }
 
 export default apis

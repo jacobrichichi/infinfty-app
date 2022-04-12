@@ -104,6 +104,9 @@ function AuthContextProvider(props) {
                     }
                 })
                 localStorage.setItem('userId', response.data.user._id)
+                if(response.data.user.hasWallet){
+                    localStorage.setItem('wallet', response.data.user.wallet)
+                }
 
             }
 
@@ -186,8 +189,10 @@ function AuthContextProvider(props) {
         })
     }
 
+    // Remove wallet from data base on logout
+
     auth.logoutUser = async function() {
-        const response = await api.logoutUser();
+        const response = await api.logoutUser(auth.user._id);
         if (response.status === 200) {
             authReducer( {
                 type: AuthActionType.LOGOUT_USER,
@@ -195,6 +200,7 @@ function AuthContextProvider(props) {
             })
             history('../')
             localStorage.removeItem('userId')
+            localStorage.removeItem('wallet')
         }
     }
 

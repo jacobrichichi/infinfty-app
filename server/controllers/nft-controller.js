@@ -2,14 +2,14 @@ const algosdk = require("algosdk")
 const User = require('../models/user-model');
 const NFTStorage = require('nft.storage').NFTStorage
 const File = require('nft.storage').File
+const WalletConnect = require("@walletconnect/client");
+const QRCodeModal = require("algorand-walletconnect-qrcode-modal");
 
 const mime = require('mime')
 const fs = require('fs')
 const path = require('path')
 const {spawn, exec} = require('child_process');
 const shell = require('shelljs')
-
-//const { createNFTSaleListing } = require('./nft-controller-helpers/operations')
 
 
 addWallet = async (req, res) => {
@@ -137,7 +137,7 @@ createNft = async (req, res) => {
 }
 
 listNFTSale = async(req, res) => {
-    const { id, price, duration } = req.body
+    const { id, reserve, minBidIncrement, duration } = req.body
 
     const nftID = id
 
@@ -171,35 +171,10 @@ listNFTSale = async(req, res) => {
         const startTime = date.getTime()/1000 + 10
         const endTime = startTime + duration * 24 * 60 * 60
 
-       // createNFTSaleListing(client, walletId, walletId, nftID, price, startTime, endTime)
+        var dataToSend = ''
+        var python = spawn('python', ['./server/controllers/pythonScripts/createNFTSaleListing.py', walletId, walletId, nftID, reserve, minBidIncrement, startTime, endTime])
+    
 
-    })
-}
-
-runTestAuction = async(req, res) => {
-    var dataToSend = ''
-
-    var child = spawn('wsl', ['./reach', 'run'], { cwd: './server/controllers/reach/reach-auction'})
-
-    child.stdout.on('data', function(data) {
-        console.log('Pipe data from python script')
-        dataToSend = dataToSend + data.toString()
-    })
-
-    child.stderr.on('data', function(data) {
-        console.log('Error')
-        dataToSend = dataToSend + data.toString()
-    })
-
-    child.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
-        // send data to browser
-        console.log(dataToSend)
-
-        return res.status(200).json({
-            success: true,
-            data: dataToSend
-        })
     })
 }
 
@@ -231,6 +206,5 @@ module.exports = {
     addWallet,
     createNft,
     listNFTSale,
-    testPython,
-    runTestAuction
+    testPython
 }

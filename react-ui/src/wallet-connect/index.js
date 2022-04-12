@@ -4,6 +4,7 @@ import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-do
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
+import { createAuction } from './algo-sdk-transactions/nftAuction'
 
 const WalletContext = createContext();
 
@@ -75,7 +76,7 @@ function WalletContextProvider(props) {
             case WalletActionType.RECONNECT_WALLET: {
                 return setWallet({
                     connector: wallet.connector,
-                    accounts: wallet.accounts,
+                    accounts: payload.wallet,
                     inventory_assets: wallet.inventory_assets,
                     isWallet: true,
                     currentNFT: wallet.currentNFT
@@ -108,7 +109,7 @@ function WalletContextProvider(props) {
         walletReducer({
             type: WalletActionType.RECONNECT_WALLET,
             payload: {
-                
+                wallet: localStorage.getItem("wallet")
             }
         })
     }
@@ -250,7 +251,14 @@ function WalletContextProvider(props) {
     }
 
     wallet.auctionNFT = async function(startPrice, reserve, duration){
+        const con = new WalletConnect({
+            bridge: "https://bridge.walletconnect.org",
+            qrcodeModal: QRCodeModal
+        });
 
+        if(con.connected){
+            createAuction(wallet.accounts, wallet.accounts, wallet.currentNFT.id, reserve, .1, duration)
+        }
     }
 
     wallet.sellNFT = async function(price, duration){
@@ -263,6 +271,7 @@ function WalletContextProvider(props) {
 
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
+       // const currentWallet = localStorage.getItem("wallet");
         if (currentNFTUrl) {
             wallet.resetCurrentNFT(currentNFTUrl, 
                 localStorage.getItem("currentNFTName"), 
@@ -271,6 +280,10 @@ function WalletContextProvider(props) {
             //auth.loginUser('','')
             //wallet.getWalletId()
         }
+
+       // if(currentWallet){
+       //     wallet.readdWallet(currentWallet)
+       // }
       }, []);
 
 

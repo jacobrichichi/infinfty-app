@@ -21,8 +21,8 @@ router.get('/testPython', function(req, res) {
     NftController.testPython(req, res)
 })
 
-router.post('/testAuction', function(req, res) {
+/*router.post('/testAuction', function(req, res) {
     NftController.runTestAuction(req, res)
-})
+})*/
 
 module.exports = router

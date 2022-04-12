@@ -116,8 +116,9 @@ loginUser = async (req, res) => {
                 lastName: existingUser.lastName,  
                 userName: existingUser.userName,
                 email: existingUser.email,
-                _id: existingUser._id ,
-                hasWallet: existingUser.wallet !== 'a'          
+                _id: existingUser._id,
+                hasWallet: existingUser.wallet !== 'a',      
+                wallet: existingUser.wallet    
             }
         })
 
@@ -137,18 +138,45 @@ loginUserById = async (req, res) => {
                 lastName: existingUser.lastName,  
                 userName: existingUser.userName,
                 email: existingUser.email,
-                hasWallet: existingUser.wallet !== 'a'              
+                hasWallet: existingUser.wallet !== 'a',      
+                wallet: existingUser.wallet             
             }
         })
     })
 }
+
+// Remove the wallet from database on logout to correspond with disconnecting from Pera Wallet
+// this needs to be GET, pass in params. req.params.id is not passed into auth same way its passed to nft
 logoutUser = async (req, res) => {
-    res.cookie("token", "", {
-        httpOnly: true,
-        expires: new Date(0),
-        secure: true,
-        sameSite: "none"
-    }).send();
+    User.findOne({ _id: req.params.id }, (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                error: 'The subject user was not found'
+            })
+        }
+
+        user.wallet = "a";
+
+        user.save().then(() => {
+            res.cookie("token", "", {
+                httpOnly: true,
+                expires: new Date(0),
+                secure: true,
+                sameSite: "none"
+            }).send();
+
+        }).catch(error => {
+            res.cookie("token", "", {
+                httpOnly: true,
+                expires: new Date(0),
+                secure: true,
+                sameSite: "none"
+            }).send();
+        })
+
+        
+    })
 }
 
 getLoggedIn = async (req, res) => {
