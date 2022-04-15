@@ -38,13 +38,15 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
 
 export const logoutUser = (id) => api.get(`/logout/${id}`)
 
+export const refreshUser = () => api.get(`/refreshUser/`)
 
 const apis = {
     getLoggedIn,
     loginUserById,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshUser
 }
 
 export default apis

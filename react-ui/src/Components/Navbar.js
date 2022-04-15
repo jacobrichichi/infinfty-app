@@ -66,10 +66,20 @@ const Navbar = (props) => {
   
 
   if(auth.loggedIn){
+
+    console.log(auth.user)
+    console.log(wallet)
+
     if(auth.user.hasWallet && !wallet.isWallet){
         wallet.reconnectWallet()
     }
 
+    if(!auth.user.hasWallet && wallet.isWallet){
+      auth.refreshUser();
+    }
+
+    console.log(auth.user)
+    console.log(wallet)
     accountInfo = 
     <div id = "userText" onClick = {handleClick}>
         Hello {auth.user.firstName}

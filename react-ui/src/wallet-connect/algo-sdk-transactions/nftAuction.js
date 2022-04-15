@@ -1,8 +1,10 @@
 import algosdk from 'algosdk'
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
-import rawApprove from "../auction_contracts/approval.bin"
-import rawClear from "../auction_contracts/clear.bin"
+import rawApprove from "../auction_contracts/approvalnew.txt"
+import rawClear from "../auction_contracts/clearnew.txt"
+
+import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
 export const createAuction = async (con, sender, seller, nftID, reserve, minBidIncrement, duration) => {
 
@@ -31,29 +33,50 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc
     let utf8Encode = new TextEncoder();
     const appArgs = [
-        algosdk.decodeAddress(seller),
-        utf8Encode(nftID),
-        utf8Encode(startTime),
-        utf8Encode(endTime),
-        utf8Encode(reserve),
-        utf8Encode(minBidIncrement)
+        algosdk.decodeAddress(sender).publicKey,
+        utf8Encode.encode(nftID),
+        utf8Encode.encode(startTime),
+        utf8Encode.encode(endTime),
+        utf8Encode.encode(reserve),
+        utf8Encode.encode(minBidIncrement)
     ]
 
     // get the approval smart contract from its' file
     fetch(rawApprove)
-        .then(response => response.text())
-        .then(approval=> {
+        .then(async response => response.text())
+        .then(async approval=> {
             // get the clear contract from its file
             fetch(rawClear)
-                .then(responseTwo => responseTwo.text())
-                .then((clear) => {
+                .then(async responseTwo => responseTwo.text())
+                .then(async (clear) => {
                     // create a new auction, with the sender being the creator, default params, 
                     //how the app behaves on completion, contracts, data partitioning between local and global, and args passed in
+                    let approvalNew = client.compile(approval)
+                    let clearNew = client.compile(clear)
+                    
+                    let approvalTwo = Buffer.from(new Uint8Array(approval))
+                    let clearTwo = Buffer.from(new Uint8Array(clear))
+
+
+                    let approvalFinal = new Uint8Array(Buffer.from(approval, "base64"))
+                    let clearFinal = new Uint8Array(Buffer.from(clear, "base64"))
+                    
                     let txn = algosdk.makeApplicationCreateTxn(sender, params,
-                            algosdk.OnApplicationComplete.NoOpOC, approval, clear,
+                            algosdk.OnApplicationComplete.NoOpOC, approvalFinal, clearFinal,
                             0, 0, 7, 2, appArgs)
-                    // figure out how 2 properly sign
-                    let signedTxn = conTemp.signTransaction(txn)
+
+                    let encoding = algosdk.encodeUnsignedTransaction(txn)
+                    let buffering = Buffer.from(encoding)
+                    let finalToString = buffering.toString("base64")
+
+                    const walletTxns = [{txn: finalToString}]
+                    
+                    const requestParams = [walletTxns];
+                    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+                    const result = await conTemp.sendCustomRequest(request);
+                    console.log(result)
+                    
+
                     
                 })
             

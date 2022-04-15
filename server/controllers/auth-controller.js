@@ -179,6 +179,38 @@ logoutUser = async (req, res) => {
     })
 }
 
+refreshUser = async (req, res) => {
+    try {
+        let userId = auth.verifyUser(req);
+        if (!userId) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "?"
+            })
+        }
+
+        const existingUser = await User.findOne({ _id: userId });
+
+        return res.status(200).json({
+            loggedIn: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,  
+                userName: existingUser.userName,
+                email: existingUser.email,
+                _id: existingUser._id,
+                hasWallet: existingUser.wallet !== 'a',      
+                wallet: existingUser.wallet    
+                
+            }
+        })
+    } catch (err) {
+        console.log("err: " + err);
+        res.json(false);
+    }
+}
+
 getLoggedIn = async (req, res) => {
     try {
         let userId = auth.verifyUser(req);
@@ -211,5 +243,6 @@ module.exports = {
     loginUser,
     loginUserById,
     logoutUser,
-    getLoggedIn
+    getLoggedIn,
+    refreshUser
 }

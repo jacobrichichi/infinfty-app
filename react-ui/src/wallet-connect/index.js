@@ -21,7 +21,7 @@ function WalletContextProvider(props) {
     const [wallet, setWallet] = useState({
         connector: null,
         accounts: null,
-        inventory_assets: [],
+        inventory_assets: ['a'],
         isWallet: false,
         currentNFT: null
     })
@@ -57,7 +57,7 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: wallet.accounts,
                     inventory_assets: payload.assets,
-                    isWallet: true,
+                    isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT
 
                 })
@@ -67,7 +67,7 @@ function WalletContextProvider(props) {
                 return setWallet({
                     connector: null,
                     accounts: null,
-                    inventory_assets: null,
+                    inventory_assets: ['a'],
                     isWallet: false,
                     currentNFT: wallet.currentNFT
                 })
@@ -146,6 +146,8 @@ function WalletContextProvider(props) {
                                 accounts: accounts
                             }
                         })
+
+                        localStorage.setItem("wallet", accounts)
                     }
                 }
 
@@ -186,6 +188,7 @@ function WalletContextProvider(props) {
 
     wallet.getInventory = async function() {
 
+        console.log('heulgs')
         const response = await api.getInventory();
 
         if(response.status === 200){
@@ -213,6 +216,7 @@ function WalletContextProvider(props) {
  
         if (con.connected) {
             con.killSession()
+            con.accounts = []
             walletReducer({
                 type: WalletActionType.DISCONNECT_WALLET,
                 payload: {
@@ -250,6 +254,15 @@ function WalletContextProvider(props) {
         })
     }
 
+    wallet.readdWallet = async function(wallet){
+        walletReducer({
+            type: WalletActionType.CONNECTION_ESTABLISHED,
+            payload: {
+                accounts: wallet
+            }
+        })
+    }
+
     wallet.auctionNFT = async function(startPrice, reserve, duration){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
@@ -271,7 +284,7 @@ function WalletContextProvider(props) {
 
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
-       // const currentWallet = localStorage.getItem("wallet");
+        const currentWallet = localStorage.getItem("wallet");
         if (currentNFTUrl) {
             wallet.resetCurrentNFT(currentNFTUrl, 
                 localStorage.getItem("currentNFTName"), 
@@ -281,9 +294,9 @@ function WalletContextProvider(props) {
             //wallet.getWalletId()
         }
 
-       // if(currentWallet){
-       //     wallet.readdWallet(currentWallet)
-       // }
+        if(currentWallet){
+            wallet.readdWallet(currentWallet)
+        }
       }, []);
 
 

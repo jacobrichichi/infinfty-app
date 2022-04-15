@@ -13,7 +13,8 @@ export const AuthActionType = {
     REGISTER_USER: "REGISTER_USER",
     EDIT_USER: "EDIT_USER",
     ADD_WRONG_CREDENTIALS: "ADD_WRONG_CREDENTIALS",
-    REMOVE_WRONG_CREDENTIALS: "REMOVE_WRONG_CREDENTIALS" 
+    REMOVE_WRONG_CREDENTIALS: "REMOVE_WRONG_CREDENTIALS",
+    ADD_BACK_WALLET: "ADD_BACK_WALLET"
 }
 
 function AuthContextProvider(props) {
@@ -84,6 +85,14 @@ function AuthContextProvider(props) {
                     isWrongCredentials: false
                 })
             }
+            case AuthActionType.ADD_BACK_WALLET: {
+                return setAuth({
+                    user: payload.user,
+                    loggedIn: true,
+                    wrongCredentials: null,
+                    isWrongCredentials: false
+                })
+            }
 
             default:
                 return auth;
@@ -144,6 +153,27 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.refreshUser = async function(){
+        const response = await api.refreshUser();
+
+        if(response.status === 200){
+            if(response.data.success){
+
+                console.log(response.data)
+
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+
+
+            }
+        }
+
+    }
+
     auth.loginUserById = async function(userId) {
         const response = await api.loginUserById(userId);
 
@@ -192,7 +222,8 @@ function AuthContextProvider(props) {
     // Remove wallet from data base on logout
 
     auth.logoutUser = async function() {
-        const response = await api.logoutUser(auth.user._id);
+        console.log(localStorage.getItem("userId"))
+        const response = await api.logoutUser(localStorage.getItem("userId"));
         if (response.status === 200) {
             authReducer( {
                 type: AuthActionType.LOGOUT_USER,
@@ -204,11 +235,28 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.addBackWallet = function(wallet){
+        let newUser = auth.user
+        newUser.hasWallet = true
+        newUser.wallet = wallet
+        authReducer( {
+            type: AuthActionType.ADD_BACK_WALLET,
+            payload: {
+                user: newUser
+            }
+        })
+    }
+
 
     useEffect(() => {
         const loggedInUserId = localStorage.getItem("userId");
+        const walletSaved = localStorage.getItem("wallet")
         if (loggedInUserId && !auth.loggedIn) {
             //auth.loginUser('','')
+            auth.loginUserById(loggedInUserId)
+        }
+
+        if(walletSaved && !auth.user.hasWallet){
             auth.loginUserById(loggedInUserId)
         }
       }, []);

@@ -14,11 +14,6 @@ function Inventory(){
     const { auth } = useContext(AuthContext)
     const [ isWallet, setIsWallet ] = useState(false)
 
-    useEffect(() => {
-        console.log(auth.user)
-        wallet.getInventory()
-    }, []); 
-
     // var nftitems is some json object from backend, backend gets from database
     const testingjson=[
         {
@@ -51,8 +46,6 @@ function Inventory(){
             <h1 style={{textAlign: 'center'}}>
                 Your Inventory
             </h1>
-
-
             { auth.user !== null && auth.user.hasWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
             
         </div>

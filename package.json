@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@json-rpc-tools/utils": "^1.7.6",
     "@mui/material": "^5.5.0",
     "@walletconnect/client": "^1.7.7",
     "algorand-walletconnect-qrcode-modal": "^1.7.4",
