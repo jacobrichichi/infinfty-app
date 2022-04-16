@@ -256,7 +256,7 @@ function AuthContextProvider(props) {
             auth.loginUserById(loggedInUserId)
         }
 
-        if(walletSaved && !auth.user.hasWallet){
+        if(walletSaved && auth.user !== null && !auth.user.hasWallet){
             auth.loginUserById(loggedInUserId)
         }
       }, []);
