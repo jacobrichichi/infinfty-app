@@ -14,46 +14,36 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
         qrcodeModal: QRCodeModal
     });
 
-    // Work out start and end times based on duration
-    const date = new Date()
-    const startTime = date.getTime()/1000 + 10
-    const endTime = startTime + duration * 24 * 60 * 60
-
-    // create a client to interact with blockchain
-    // const token={
-    //     "x-api-key": "DAvynGYXzzaY8IMPxgcH32wok98nqPS49wnjv2El" // fill in yours
-    // };
-    // let client = new algosdk.Algodv2(token, "https://testnet-algorand.api.purestake.io", "");
+    //create a client to interact with blockchain
+    //  const token={
+    //      "x-api-key": "DAvynGYXzzaY8IMPxgcH32wok98nqPS49wnjv2El" // fill in yours
+    //  };
+    //  let client = new algosdk.Algodv2(token, "https://testnet-algorand.api.purestake.io/ps2", "");
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "");
 
     // get default parameters for an smart contract
     let params = await client.getTransactionParams().do()
-
     // set transaction fee for writing to the contract to minimum
     params.fee = algosdk.ALGORAND_MIN_TX_FEE
     params.flatFee = true
 
+    // Work out start and end times based on duration
+    const date = new Date()
+    const startTime = parseInt(date.getTime()/1000 + 100)
+  //  const endTime = startTime + duration * 24 * 60 * 60
+    const endTime = startTime + 30
+    let microReserve = parseInt(reserve * 100000)
+    let microIncrement = parseInt(minBidIncrement * 100000)
 
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc
-    let utf8Encode = new TextEncoder();
     const appArgs = [
         algosdk.decodeAddress(sender).publicKey,
         algosdk.encodeUint64(nftID),
-        // algosdk.encodeUint64(startTime),
-        // algosdk.encodeUint64(endTime),
-        // algosdk.encodeUint64(reserve),
-        // algosdk.encodeUint64(minBidIncrement)
-        // new Uint8Array(Buffer.from(nftID, "base64")),
-        // new Uint8Array(Buffer.from(startTime, "base64")),
-        // new Uint8Array(Buffer.from(endTime, "base64")),
-        // new Uint8Array(Buffer.from(reserve, "base64")),
-        // new Uint8Array(Buffer.from(minBidIncrement, "base64"))
-        // utf8Encode.encode(nftID),
-        // utf8Encode.encode(startTime),
-        // utf8Encode.encode(endTime),
-        // utf8Encode.encode(reserve),
-        // utf8Encode.encode(minBidIncrement)
+        algosdk.encodeUint64(startTime),
+        algosdk.encodeUint64(endTime),
+        algosdk.encodeUint64(microReserve),
+        algosdk.encodeUint64(microIncrement)
     ]
 
     // get the approval smart contract from its' file
@@ -86,43 +76,16 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                     const request = formatJsonRpcRequest("algo_signTxn", requestParams);
                     const result = await conTemp.sendCustomRequest(request)
 
-
-                    const decodedResult = result.map(element => {
-                        return element ? new Uint8Array(Buffer.from(element, "base64")) : null;
-                      });
-
-                    let stThree = Buffer.from(result).toString("base64")
-                    
-                    console.log(stThree)
-
-                    let stFour = new Uint8Array(result[0])
-                    console.log(stFour)
-
-
-                    const { txid } = await client.sendRawTransaction(stFour).do()
-
-
-                    let appIndex = 0
-                    // let lastStatus = await client.status().do()
-                    // let lastRound = lastStatus["last-round"]
-                    // let startRound = lastRound
-                    // let appIndex
-
-                    // while(lastRound < startRound + 10){
-                    //     let pendingTxn = await client.pendingTransactionInformation(txn.txID()).do()
-                    //     if(pendingTxn["confirmed-round"] > 0){
-                    //         appIndex = pendingTxn["application-index"]
-                    //     }
-                    //     lastStatus = await client.statusAfterBlock(lastRound + 1).do()
-                    //     lastRound += 1
-                    
-                    // }
+                    const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
                 
-                    let confirmedTxn = await algosdk.waitForConfirmation(client, txid, 4);
+                    let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
+                    const appIndex = confirmedTxn['application-index']
 
                     let appAddr = algosdk.getApplicationAddress(appIndex)
 
                     let sug_params = await client.getTransactionParams().do()
+                   // sug_params.fee = algosdk.ALGORAND_MIN_TX_FEE
+                   // sug_params.flatFee = true
 
                     let fundingAmount = (
                         // min account balance
@@ -134,25 +97,48 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                     )
                     //seller, appAddr, fundingAmount, seller, new Uint8Array(Buffer.from("Amount necessary for txn fees")
 
-                    let fundAppTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({ from: seller, to: appAddr, suggestedParams: sug_params, amount: 1 })
+                    let fundAppTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({ from: seller, to: appAddr, suggestedParams: sug_params, amount: fundingAmount, note: new Uint8Array(Buffer.from("example note value")),})
+                    let utf8Encode = new TextEncoder();
                     let setupTxn = algosdk.makeApplicationCallTxnFromObject({from: sender, suggestedParams: sug_params, appIndex: appIndex, onComplete: algosdk.OnApplicationComplete.NoOpOC, foreignAssets:[nftID], appArgs: [new Uint8Array(Buffer.from("setup"))] })
-                    let fundNftTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({from: seller, to: appAddr, assetIndex: nftID, amount: 1, suggestedParams: sug_params })
-                    algosdk.assignGroupID([fundAppTxn, setupTxn, fundNftTxn])
+                    let fundNftTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({from: seller, to: appAddr, assetIndex: nftID, amount: 1, suggestedParams: sug_params, note: new Uint8Array(Buffer.from("example note value")) })
+                    
+                    
+                   // algosdk.assignGroupID([fundAppTxn, setupTxn, fundNftTxn])
 
-                    const fundAppTxns = [{txn: fundAppTxn}]
+                    const fundAppTxnEncoded = (Buffer.from(algosdk.encodeUnsignedTransaction(fundAppTxn))).toString("base64")
+                    const fundAppTxns = [{txn: fundAppTxnEncoded, message: "This is a message"}]
                     const fundAppParams = [fundAppTxns]
                     const fundAppRequest = formatJsonRpcRequest("algo_signTxn", fundAppParams);
                     const fundAppResult = await conTemp.sendCustomRequest(fundAppRequest);
+                    const fundAppAdded = await client.sendRawTransaction(new Uint8Array(fundAppResult[0])).do()
+                    let confirmedFundAppTxn = await algosdk.waitForConfirmation(client, fundAppAdded.txId, 5);
 
-                    const setupTxns = [{txn: setupTxn}]
+                    const setupTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(setupTxn)).toString("base64")
+                    const setupTxns = [{txn: setupTxnEncoded}]
                     const setupParams = [setupTxns]
                     const setupRequest = formatJsonRpcRequest("algo_signTxn", setupParams);
                     const setupResult = await conTemp.sendCustomRequest(setupRequest);
+                    const setupAdded = await client.sendRawTransaction(new Uint8Array(setupResult[0])).do()
+                    let confirmedSetupTxn = await algosdk.waitForConfirmation(client, setupAdded.txId, 5);
 
-                    const fundNftTxns = [{txn: fundAppTxn}]
+                    const fundNftTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(fundNftTxn)).toString("base64")
+                    const fundNftTxns = [{txn: fundNftTxnEncoded}]
                     const fundNftParams = [fundNftTxns]
                     const fundNftRequest = formatJsonRpcRequest("algo_signTxn", fundNftParams);
                     const fundNftResult = await conTemp.sendCustomRequest(fundNftRequest);
+
+                    const fundNftAdded = await client.sendRawTransaction(new Uint8Array(fundNftResult[0])).do()
+                    let confirmedFundNftTxn = await algosdk.waitForConfirmation(client, fundNftAdded.txId, 5);
+
+                    // const batchTxnMint = await client.sendRawTransaction(
+                    //     [new Uint8Array(fundAppResult[0]),
+                    //     new Uint8Array(setupResult[0]),
+                    //     new Uint8Array(fundNftResult[0]),
+                    // ]).do()
+
+                    // let confirmedBatchTxns = await algosdk.waitForConfirmation(client, batchTxnMint.txId, 5);
+
+            
                 })
             
         })
