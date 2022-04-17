@@ -2,6 +2,7 @@
 node_modules
 npm-debug.log
 venv
+react-ui/build/*
 
 # Local development
 *.env
