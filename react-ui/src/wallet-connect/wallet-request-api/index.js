@@ -52,6 +52,10 @@ export const testAuction = () => {
     return api.post(`testAuction`, { })
 }
 
+export const storeCreatedAuction = (appID) => {
+    return api.post(`/storeCreatedAuction/`, { appID: appID })
+}
+
 const apis = {
     addWallet,
     getInventory,
@@ -59,7 +63,8 @@ const apis = {
     listNFTSale,
     testPython,
     testAuction,
-    walletConnect
+    walletConnect,
+    storeCreatedAuction
 }
 
 export default apis

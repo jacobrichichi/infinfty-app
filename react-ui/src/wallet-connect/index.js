@@ -4,7 +4,7 @@ import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-do
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
-import { createAuction } from './algo-sdk-transactions/nftAuction'
+import { bidOnAuction, createAuction, deleteAuctions, getAuctionDetails } from './algo-sdk-transactions/nftAuction'
 
 const WalletContext = createContext();
 
@@ -23,7 +23,8 @@ function WalletContextProvider(props) {
         accounts: null,
         inventory_assets: ['a'],
         isWallet: false,
-        currentNFT: null
+        currentNFT: null,
+        currentSale: null
     })
 
     const navigate = useNavigate();
@@ -38,7 +39,8 @@ function WalletContextProvider(props) {
                     accounts: wallet.accounts,
                     inventory_assets: wallet.inventory_assets,
                     isWallet: wallet.isWallet,
-                    currentNFT: wallet.currentNFT
+                    currentNFT: wallet.currentNFT,
+                    currentSale: wallet.currentSale
                 })
             }
 
@@ -48,7 +50,8 @@ function WalletContextProvider(props) {
                     accounts: payload.accounts,
                     inventory_assets: wallet.inventory_assets,
                     isWallet: true,
-                    currentNFT: wallet.currentNFT
+                    currentNFT: wallet.currentNFT,
+                    currentSale: wallet.currentSale
                 })
             }
 
@@ -58,7 +61,8 @@ function WalletContextProvider(props) {
                     accounts: wallet.accounts,
                     inventory_assets: payload.assets,
                     isWallet: wallet.isWallet,
-                    currentNFT: wallet.currentNFT
+                    currentNFT: wallet.currentNFT,
+                    currentSale: wallet.currentSale
 
                 })
             }
@@ -69,7 +73,8 @@ function WalletContextProvider(props) {
                     accounts: null,
                     inventory_assets: ['a'],
                     isWallet: false,
-                    currentNFT: wallet.currentNFT
+                    currentNFT: wallet.currentNFT,
+                    currentSale: wallet.currentSale
                 })
             }
 
@@ -79,7 +84,8 @@ function WalletContextProvider(props) {
                     accounts: payload.wallet,
                     inventory_assets: wallet.inventory_assets,
                     isWallet: true,
-                    currentNFT: wallet.currentNFT
+                    currentNFT: wallet.currentNFT,
+                    currentSale: wallet.currentSale
                 })
             }
 
@@ -89,8 +95,13 @@ function WalletContextProvider(props) {
                     accounts: wallet.accounts,
                     inventory_assets: wallet.inventory_assets,
                     isWallet: wallet.isWallet,
-                    currentNFT: payload.currentNFT
+                    currentNFT: payload.currentNFT,
+                    currentSale: wallet.currentSale
                 })
+            }
+
+            case WalletActionType.SET_CURRENT_SALE: {
+
             }
 
             default:
@@ -270,8 +281,26 @@ function WalletContextProvider(props) {
         });
 
         if(con.connected){
-            createAuction(con, wallet.accounts, wallet.accounts, wallet.currentNFT.id, reserve, .1, duration)
+            const auctionCreationResponse = await createAuction(con, wallet.accounts, wallet.accounts, wallet.currentNFT.id, reserve, .1, duration)
+
+            console.log(auctionCreationResponse)
+
+            if(auctionCreationResponse && auctionCreationResponse.success){
+                const auctionStorageResponse = await api.storeCreatedAuction(auctionCreationResponse.appID)
+
+                if(auctionStorageResponse.status === 200){
+                    if(auctionStorageResponse.data.success){
+                        wallet.setCurrentAuction(auctionCreationResponse.appID, wallet.accounts)
+                    }
+                }
+            }
         }
+    }
+
+
+    // this is usually called before entering the auction page, general info like NFT being sold, seller, highest current bid etc etc
+    wallet.setCurrentAuction = async function(appID, creatorWallet){
+        getAuctionDetails(appID, creatorWallet)
     }
 
     wallet.sellNFT = async function(price, duration){

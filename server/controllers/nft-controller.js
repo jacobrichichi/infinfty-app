@@ -1,5 +1,6 @@
 const algosdk = require("algosdk")
 const User = require('../models/user-model');
+const Sale = require('../models/sale-model');
 const NFTStorage = require('nft.storage').NFTStorage
 const File = require('nft.storage').File
 const WalletConnect = require("@walletconnect/client");
@@ -9,8 +10,7 @@ const mime = require('mime')
 const fs = require('fs')
 const path = require('path')
 const {spawn, exec} = require('child_process');
-const shell = require('shelljs')
-
+const shell = require('shelljs');
 
 addWallet = async (req, res) => {
     const body = req.body;
@@ -112,7 +112,7 @@ createNft = async (req, res) => {
     const { media, title, desc } = req.body;
     const nftStorage_key = require('../config/keys').nftstorage_key
 
-    user = User.findOne({ _id: req.userId}, async (err, user) => {
+    let user = User.findOne({ _id: req.userId}, async (err, user) => {
         if(err){
             return res.status(400).json({
                 success: false,
@@ -178,26 +178,44 @@ listNFTSale = async(req, res) => {
     })
 }
 
-testPython = async(req, res) => {
-    var dataToSend
-    const python = spawn('python', ['./server/controllers/testPython.py'])
-    python.stdout.on('data', function(data){
-        console.log('Pipe data from python script')
-        dataToSend = data.toString()
-    })
-
-    python.stderr.on('data', function(data){
-        console.log('Error')
-        dataToSend = data.toString()
-
-    })
-    python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
-        // send data to browser
+    // TODO: Add a check on the backend to confirm that this auction exists
+    // prevents person from calling route and storing non existent auction
+    // this will not be an issue if called in the way frontend calls it though,
+    // so for now, on the back burner
+storeCreatedAuction = async(req, res) => {
+    const { appID } = req.body
+    if(!appID) {
         return res.status(200).json({
-            success: true,
-            data: dataToSend
+            success: false,
+            message: "App ID was not given"
         })
+    }
+
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: 'The subject user was not found'
+            })
+        }
+        const wallet = user.wallet
+
+        if(user.wallet === 'a'){
+            return res.status(200).json({
+                success: false,
+                message: 'User wallet not found'
+            })
+        }
+
+        const newSale = new Sale({
+            appID: appID, creatorWallet: wallet
+        });
+
+        const savedSale = await newSale.save()
+        return res.status(200).json({
+            success: true
+        })
+
     })
 }
 
@@ -206,5 +224,5 @@ module.exports = {
     addWallet,
     createNft,
     listNFTSale,
-    testPython
+    storeCreatedAuction
 }

@@ -17,12 +17,8 @@ router.post('/createNft', auth.verify, function(req, res){
 router.post('/listNFTSale', auth.verify, function(req, res) {
     NftController.listNFTSale(req, res)
 })
-router.get('/testPython', function(req, res) {
-    NftController.testPython(req, res)
+router.post('/storeCreatedAuction', auth.verify, function(req, res) {
+    NftController.storeCreatedAuction(req, res)
 })
-
-/*router.post('/testAuction', function(req, res) {
-    NftController.runTestAuction(req, res)
-})*/
 
 module.exports = router
