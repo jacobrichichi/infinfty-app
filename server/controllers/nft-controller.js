@@ -58,8 +58,6 @@ getInventory = async (req, res) => {
 
         const walletId = user.wallet
 
-        console.log(walletId)
-
         if(user.wallet === 'a'){
             return res.status(200).json({
                 success: false,
@@ -71,8 +69,7 @@ getInventory = async (req, res) => {
 
         const accountInfo = await client.accountInformation(walletId)
                                         .setIntDecoding(algosdk.IntDecoding.BIGINT)
-                                        .do();
-        console.log(accountInfo)   
+                                        .do();   
         
         const assetsFromRes = accountInfo.assets;
 
@@ -84,9 +81,6 @@ getInventory = async (req, res) => {
             decimals: 0
         }))
 
-        console.log('mid')
-        console.log(assets)
-
         await Promise.all(
             assets.map(async asset => {
                 const { params } = await client.getAssetByID(asset.id).do()
@@ -97,13 +91,56 @@ getInventory = async (req, res) => {
             })
         )
 
-        console.log('final')
-        console.log(assets)
+        // GET THE ACTIVE AUCTIONS CREATED AND THEIR DETAILS
+        const auctions = user.auctions
+        let auctionsMapped = []
+            let auctionDetails = []
+
+        auctions.forEach(auctionID => {
+            auctionsMapped.push({ 'id': auctionID })
+        })
+
+        await Promise.all(
+            auctionsMapped.map(async auction => {
+                console.log(auction['id'])
+                auction.state = await client.accountApplicationInformation(walletId, auction['id']).do()
+                auction.state = auction.state['created-app']['global-state']
+            })
+        )
+
+        auctionsMapped.forEach(auction => {
+            auction.state.map((stateVar) => {
+                stateVar.key = atob(stateVar.key)
+            })
+            
+            let stateCompiled = {}
+
+            auction.state.forEach((stateVar) => {
+                stateCompiled[stateVar.key] = stateVar['value']
+            })
+            console.log(stateCompiled)
+
+            stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
+            stateCompiled['end'] = stateCompiled['end']['uint']
+            stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
+            stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
+            stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
+            stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
+            stateCompiled['start'] = stateCompiled['start']['uint']
+
+            auction.state = stateCompiled
+
+            auctionDetails.push(auction)
+        })
+
+        console.log(auctionDetails)
 
         return res.status(200).json({
             success: true,
-            assets: assets
+            assets: assets,
+            auctions: auctionDetails
         })
+        
 
     })
 }
@@ -211,7 +248,15 @@ storeCreatedAuction = async(req, res) => {
             appID: appID, creatorWallet: wallet
         });
 
+        user.auctions.push(appID)
+
         const savedSale = await newSale.save()
+
+        if(typeof user.auction === 'undefined' || user.auction === null){
+            user.auction = []
+        }
+        const savedUser = await user.save()
+
         return res.status(200).json({
             success: true
         })

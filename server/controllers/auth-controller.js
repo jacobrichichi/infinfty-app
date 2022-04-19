@@ -55,7 +55,8 @@ registerUser = async (req, res) => {
 
         const newUser = new User({
             firstName: firstName, lastName: lastName, wallet: 'a',
-            userName: userName, email: email, passwordHash: passwordHash
+            userName: userName, email: email, passwordHash: passwordHash,
+            auctions: []
         });
 
         const savedUser = await newUser.save();

@@ -10,6 +10,7 @@ const UserSchema = new Schema(
         email: { type: String, required: true },
         userName: { type: String, required: true},
         passwordHash: { type: String, required: true },
+        auctions: { type: [String], required: true }
 
     },
     { timestamps: true },

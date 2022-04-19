@@ -22,6 +22,7 @@ function WalletContextProvider(props) {
         connector: null,
         accounts: null,
         inventory_assets: ['a'],
+        auctions: [],
         isWallet: false,
         currentNFT: null,
         currentSale: null
@@ -38,6 +39,7 @@ function WalletContextProvider(props) {
                     connector: payload.connector,
                     accounts: wallet.accounts,
                     inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale
@@ -49,6 +51,7 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: payload.accounts,
                     inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale
@@ -60,6 +63,7 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: wallet.accounts,
                     inventory_assets: payload.assets,
+                    auctions: payload.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale
@@ -72,6 +76,7 @@ function WalletContextProvider(props) {
                     connector: null,
                     accounts: null,
                     inventory_assets: ['a'],
+                    auctions: wallet.auctions,
                     isWallet: false,
                     currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale
@@ -83,6 +88,7 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: payload.wallet,
                     inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale
@@ -94,6 +100,7 @@ function WalletContextProvider(props) {
                     connector: wallet.connector,
                     accounts: wallet.accounts,
                     inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: payload.currentNFT,
                     currentSale: wallet.currentSale
@@ -207,7 +214,8 @@ function WalletContextProvider(props) {
                 walletReducer({
                     type: WalletActionType.GET_INVENTORY,
                     payload: {
-                        assets: response.data.assets
+                        assets: response.data.assets,
+                        auctions: response.data.auctions
                     }
                 })
 
@@ -300,7 +308,7 @@ function WalletContextProvider(props) {
 
     // this is usually called before entering the auction page, general info like NFT being sold, seller, highest current bid etc etc
     wallet.setCurrentAuction = async function(appID, creatorWallet){
-        getAuctionDetails(appID, creatorWallet)
+        const auctionDetails = getAuctionDetails(appID, creatorWallet)
     }
 
     wallet.sellNFT = async function(price, duration){

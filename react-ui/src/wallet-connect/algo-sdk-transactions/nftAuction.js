@@ -20,6 +20,8 @@ export const bidOnAuction = async (auctionID, bidder, bidAmount) => {
     let appInfo = await client.accountApplicationInformation(bidder, userInfo['created-apps'][10].id).do()
 
     console.log(appInfo)
+
+
 }
 
 export const getAuctionDetails = async(auctionID, creatorWallet) => {
@@ -31,9 +33,11 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
     let auctionInfo = await client.accountApplicationInformation(creatorWallet, auctionID).do()
-    
+        
     // TODO: Decode the app state into human readable form
     // first need to decode the variable names, then the variable values
+
+    console.log(auctionInfo)
 }
 
 // This will be repurposed to delete an auction SC given an application ID
@@ -79,6 +83,7 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     });
 
     //create a client to interact with blockchain
+    //  this switches to test net
     //  const token={
     //      "x-api-key": "DAvynGYXzzaY8IMPxgcH32wok98nqPS49wnjv2El" // fill in yours
     //  };
@@ -96,11 +101,10 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     const date = new Date()
     const startTime = parseInt(date.getTime()/1000 + 100)
 
-  //  const endTime = startTime + duration * 24 * 60 * 60
+    //const endTime = startTime + duration * 24 * 60 * 60
     const endTime = startTime + 30
     let microReserve = parseInt(reserve * 100000)
     let microIncrement = parseInt(minBidIncrement * 100000)
-
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc
     const appArgs = [
         algosdk.decodeAddress(sender).publicKey,
@@ -134,7 +138,7 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                     let txn = algosdk.makeApplicationCreateTxn(sender, params,
                             algosdk.OnApplicationComplete.NoOpOC, approvalEncoded, clearEncoded,
                             0, 0, 7, 2, appArgs)
-
+                    
                     // encode the txn
                     let encoding = algosdk.encodeUnsignedTransaction(txn)
                     let buffering = Buffer.from(encoding)
@@ -206,7 +210,7 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                     let confirmedSetupTxn = await algosdk.waitForConfirmation(client, setupAdded.txId, 5);
 
                     const fundNftTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(fundNftTxn)).toString("base64")
-                    const fundNftTxns = [{txn: fundNftTxnEncoded}]
+                    const fundNftTxns = [{ txn: fundNftTxnEncoded }]
                     const fundNftParams = [fundNftTxns]
                     const fundNftRequest = formatJsonRpcRequest("algo_signTxn", fundNftParams);
                     const fundNftResult = await conTemp.sendCustomRequest(fundNftRequest);
