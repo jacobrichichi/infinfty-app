@@ -57,53 +57,53 @@ const Navbar = (props) => {
     auth.logoutUser();
   }
 
-  var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>
-                    Login
-                  </div> 
+  var accountInfo = (
+    <div id = "userText" className = "navLink" onClick={handleOpen}>
+      Login
+    </div> 
+  )
 
   var accountMenu = ""
-  
-  
 
   if(auth.loggedIn){
-
-    console.log(auth.user)
-    console.log(wallet)
-
     if(auth.user.hasWallet && !wallet.isWallet){
-        wallet.reconnectWallet()
+      console.log('Reconnecting wallet')
+      wallet.reconnectWallet()
     }
-
     if(!auth.user.hasWallet && wallet.isWallet){
+      console.log('Refreshing User info')
       auth.refreshUser();
     }
-
+    console.log('Refreshing login')
     console.log(auth.user)
     console.log(wallet)
-    accountInfo = 
-    <div id = "userText" onClick = {handleClick}>
-        Hello {auth.user.firstName}
-    </div>    
 
-    accountMenu =
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          anchorOrigin={{
+    accountInfo = (
+      <div id = "userText" onClick = {handleClick}>
+        Hello {auth.user.firstName}
+      </div>
+    )
+
+    accountMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
             vertical: 'top',
             horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-          }}
-          open={openMenu}
-          onClose={handleMenuClose}
-          onClick={handleMenuClose}>
-          <MenuItem onClick={handleMenuClose}><Link to='/account'>Account Settings</Link></MenuItem>
-          <MenuItem onClick = {handleLogout}>Logout</MenuItem> 
-        </Menu>
+        }}
+        open={openMenu}
+        onClose={handleMenuClose}
+        onClick={handleMenuClose}>
+        <MenuItem onClick={handleMenuClose}><Link to='/account'>Account Settings</Link></MenuItem>
+        <MenuItem onClick = {handleLogout}>Logout</MenuItem> 
+      </Menu>
+    )
   }
 
   var loginModal = ""
@@ -147,18 +147,18 @@ const Navbar = (props) => {
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">
           <Link to = "/explore" className='navLink'>
-              <div className = "linkText" id = "expLinkText">
-                Explore
-              </div>
-            </Link>
+            <div className = "linkText" id = "expLinkText">
+              Explore
+            </div>
+          </Link>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer " id = "invTextContainer">
           <Link to = "/inventory" className='navLink'>
-              <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
-                Inventory
-              </div>
-            </Link>
+            <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
+              Inventory
+            </div>
+          </Link>
         </Grid>
 
         {walletconnect()}

@@ -130,7 +130,7 @@ loginUser = async (req, res) => {
 }
 
 loginUserById = async (req, res) => {
-    console.log('hi')
+    console.log('loginUserById hi')
     User.findOne({ _id: req.params.id }, (err, existingUser) => {
         return res.status(200).json({
             success: true,
@@ -140,7 +140,7 @@ loginUserById = async (req, res) => {
                 userName: existingUser.userName,
                 email: existingUser.email,
                 hasWallet: existingUser.wallet !== 'a',      
-                wallet: existingUser.wallet             
+                wallet: existingUser.wallet
             }
         })
     })
@@ -149,6 +149,7 @@ loginUserById = async (req, res) => {
 // Remove the wallet from database on logout to correspond with disconnecting from Pera Wallet
 // this needs to be GET, pass in params. req.params.id is not passed into auth same way its passed to nft
 logoutUser = async (req, res) => {
+    console.log('logoutUser')
     User.findOne({ _id: req.params.id }, (err, user) => {
         if(err){
             return res.status(400).json({

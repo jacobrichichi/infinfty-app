@@ -40,13 +40,19 @@ export const logoutUser = (id) => api.get(`/logout/${id}`)
 
 export const refreshUser = () => api.get(`/refreshUser/`)
 
+export const setUp2FA = (user) => api.post(`/synctotp`, user)
+
+export const verifyTOTP = (user) => api.post(`/verifytotp`, user)
+
 const apis = {
     getLoggedIn,
     loginUserById,
     registerUser,
     loginUser,
     logoutUser,
-    refreshUser
+    refreshUser,
+    setUp2FA,
+    verifyTOTP,
 }
 
 export default apis
