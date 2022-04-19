@@ -7,13 +7,14 @@ import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import './General.css';
 import './Account.css';
 
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
-import { Card, Grid } from "@mui/material";
+import { Card, Checkbox, Grid } from "@mui/material";
 
 
 function Account() {
@@ -101,7 +102,7 @@ function Account() {
                 </Box>
 
                 <Divider/>
-
+                
                 <Box sx={{
                     mt: 2,
                     width: 300,
@@ -133,7 +134,16 @@ function Account() {
                             Submit Changes
                     </Button>
                 </Box>
+                <Link to = "/twofactorsetup">
+                    <Button variant="outlined">
+                        <div className = "linkText" id = "expLinkText">
+                            Configure 2 Factor
+                        </div>
+                    </Button>
+                </Link>
             </Container>
+            <br></br>
+            <br></br>
         </div>
     );
 }

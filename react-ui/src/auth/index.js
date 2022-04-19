@@ -14,7 +14,7 @@ export const AuthActionType = {
     EDIT_USER: "EDIT_USER",
     ADD_WRONG_CREDENTIALS: "ADD_WRONG_CREDENTIALS",
     REMOVE_WRONG_CREDENTIALS: "REMOVE_WRONG_CREDENTIALS",
-    ADD_BACK_WALLET: "ADD_BACK_WALLET"
+    ADD_BACK_WALLET: "ADD_BACK_WALLET",
 }
 
 function AuthContextProvider(props) {
@@ -104,6 +104,7 @@ function AuthContextProvider(props) {
 
         if(response.status === 200) {
             if(response.data.success){
+                console.log('auth.loginUser')
                 console.log(response.data.user)
 
                 authReducer({
@@ -159,7 +160,7 @@ function AuthContextProvider(props) {
         if(response.status === 200){
             if(response.data.success){
 
-                console.log(response.data)
+                console.log(response.data);
 
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
@@ -247,16 +248,37 @@ function AuthContextProvider(props) {
         })
     }
 
+    auth.setUp2FA = async function(){
+        let user = auth.user
+        const response = await api.setUp2FA(user)
+        if(response.status===200){
+            if(response.data.success){
+                console.log("auth.setUp2FA  " + response.data.message)
+                return response.data.qrcode
+            }
+        }
+    }
+
+    auth.verifyTOTP = async function(totpToken){
+        let user = auth.user
+        user.totpToken=totpToken
+        const response = await api.verifyTOTP(user)
+        console.log(response)
+        return response.data
+    }
+
 
     useEffect(() => {
         const loggedInUserId = localStorage.getItem("userId");
         const walletSaved = localStorage.getItem("wallet")
         if (loggedInUserId && !auth.loggedIn) {
             //auth.loginUser('','')
+            console.log('auth.userEffect1')
             auth.loginUserById(loggedInUserId)
         }
 
         if(walletSaved && auth.user !== null && !auth.user.hasWallet){
+            console.log('auth.userEffect2')
             auth.loginUserById(loggedInUserId)
         }
       }, []);

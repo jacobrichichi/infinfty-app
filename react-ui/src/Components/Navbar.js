@@ -57,9 +57,11 @@ const Navbar = (props) => {
     auth.logoutUser();
   }
 
-  var accountInfo =<div id = "userText" className = "navLink" onClick={handleOpen}>
-                    Login
-                  </div> 
+  var accountInfo = (
+    <div id = "userText" className = "navLink" onClick={handleOpen}>
+      Login
+    </div> 
+  )
 
   var accountMenu = ""
   
@@ -147,18 +149,18 @@ const Navbar = (props) => {
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">
           <Link to = "/explore" className='navLink'>
-              <div className = "linkText" id = "expLinkText">
-                Explore
-              </div>
-            </Link>
+            <div className = "linkText" id = "expLinkText">
+              Explore
+            </div>
+          </Link>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer " id = "invTextContainer">
           <Link to = "/inventory" className='navLink'>
-              <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
-                Inventory
-              </div>
-            </Link>
+            <div className = "linkText " id = "invLinkText" onClick = {handleInventory}>
+              Inventory
+            </div>
+          </Link>
         </Grid>
 
         {walletconnect()}

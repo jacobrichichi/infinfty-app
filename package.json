@@ -6,7 +6,7 @@
     "node": "16.x"
   },
   "scripts": {
-    "start": "node server",
+    "start": "./node_modules/.bin/nodemon server",
     "build": "cd react-ui/ && npm install && npm run build"
   },
   "cacheDirectories": [
@@ -31,6 +31,7 @@
     "mime": "^3.0.0",
     "mongoose": "^6.2.8",
     "nft.storage": "^6.1.0",
+    "node-2fa": "^2.0.3",
     "nodemon": "^2.0.15",
     "react-multi-carousel": "^2.8.0",
     "shelljs": "^0.8.5",
