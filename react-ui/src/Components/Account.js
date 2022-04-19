@@ -31,6 +31,10 @@ function Account() {
     
     };
 
+    var disableTwoAuth = () => {
+        console.log('weeerooo');
+    }
+
     if (!auth.loggedIn) {
         console.log("Not Logged In")
         return (<div></div>)
@@ -137,10 +141,15 @@ function Account() {
                 <Link to = "/twofactorsetup">
                     <Button variant="outlined">
                         <div className = "linkText" id = "expLinkText">
-                            Configure 2 Factor
+                            Enable 2 Factor
                         </div>
                     </Button>
                 </Link>
+                <Button variant="outlined" onClick={disableTwoAuth}>
+                    <div className = "linkText" id = "expLinkText">
+                        Disable 2 Factor
+                    </div>
+                </Button>
             </Container>
             <br></br>
             <br></br>

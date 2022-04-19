@@ -104,8 +104,7 @@ function AuthContextProvider(props) {
 
         if(response.status === 200) {
             if(response.data.success){
-                console.log('auth.loginUser')
-                console.log(response.data.user)
+                console.log('auth.loginUser  ' + response.data.user)
 
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
@@ -160,7 +159,7 @@ function AuthContextProvider(props) {
         if(response.status === 200){
             if(response.data.success){
 
-                console.log(response.data);
+                console.log('refreshUser  ' + response.data);
 
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
@@ -180,9 +179,7 @@ function AuthContextProvider(props) {
 
         if(response.status === 200){
             if(response.data.success){
-
-                console.log(response.data)
-
+                // console.log('loginUserById  ' + response.data)
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
@@ -223,7 +220,7 @@ function AuthContextProvider(props) {
     // Remove wallet from data base on logout
 
     auth.logoutUser = async function() {
-        console.log(localStorage.getItem("userId"))
+        console.log('logoutUser  ' + localStorage.getItem("userId"))
         const response = await api.logoutUser(localStorage.getItem("userId"));
         if (response.status === 200) {
             authReducer( {
@@ -259,11 +256,13 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.verifyTOTP = async function(totpToken){
-        let user = auth.user
-        user.totpToken=totpToken
+    auth.verifyTOTP = async function(useremail, totpToken){
+        let user = {
+            email: useremail,
+            totpToken: totpToken
+        }
         const response = await api.verifyTOTP(user)
-        console.log(response)
+        console.log('verifyTOTP  ' + response)
         return response.data
     }
 
@@ -272,12 +271,14 @@ function AuthContextProvider(props) {
         const loggedInUserId = localStorage.getItem("userId");
         const walletSaved = localStorage.getItem("wallet")
         if (loggedInUserId && !auth.loggedIn) {
+            // If there exist localstorage of userID and user is not logged in
             //auth.loginUser('','')
             console.log('auth.userEffect1')
             auth.loginUserById(loggedInUserId)
         }
 
         if(walletSaved && auth.user !== null && !auth.user.hasWallet){
+            // If there is a walletSaved onto localstorage, and user not null and doesn't have wallet
             console.log('auth.userEffect2')
             auth.loginUserById(loggedInUserId)
         }

@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
-import AuthContext from "../../auth";
 import { QRCodeCanvas } from 'qrcode.react';
+import { Button, TextField } from '@mui/material';
 
+import AuthContext from "../../auth";
 import '../General.css';
 import '../Account.css';
-import { FormGroup } from '@material-ui/core';
-import { Button, TextField } from '@mui/material';
 
 /**
  * Page to setup 2F of Account
@@ -34,7 +32,8 @@ function TwoFactorSetup(){
     }
 
     var handleSubmit = async function() {
-        const result = await auth.verifyTOTP(totpToken)
+        const result = await auth.verifyTOTP(auth.user.email, totpToken)
+        // {success: Boolean, message: String}
         setTokenmatch(result.message)
     }
 
