@@ -36,7 +36,7 @@ function Account() {
     }
 
     if (!auth.loggedIn) {
-        console.log("Not Logged In")
+        // console.log("Not Logged In")
         return (<div></div>)
     }
     return (

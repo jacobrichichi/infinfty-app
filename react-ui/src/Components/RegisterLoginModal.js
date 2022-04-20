@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import AuthContext from '../auth'
-
 import './RegisterLoginModal.css'
 
 import Alert from '@mui/material/Alert';
@@ -35,20 +35,25 @@ const RegisterLoginModal = (props) => {
     const [registerSuccess, setRegisterSuccess] = useState(false)
     const [ isMessageModalOpen, setIsMessageModalOpen ] = useState(false)
 
-
-    const handleCloseMessageModal = (event) => {
+    let navigate = useNavigate()
+    const handleCloseMessageModal = (event) => {      
         event.stopPropagation();
         if(auth.isWrongCredentials){
             auth.closeErrorMessage();
             setIsMessageModalOpen(false)
-        }
-
-        else{
+        }else{
             setIsMessageModalOpen(false)
             if(loginMode){
+                // If currently login mode
+                console.log(auth)
+                // props.handleLogin() just closes RegisterLoginModal
                 props.handleLogin()
-            }
-            else{
+                if(!auth.twoFactorPass){
+                    navigate(`/twofactorverify`)
+                }
+            }else{
+                // If not login mode (hence registering mode),
+                // Set(loginmode) so messageModal has login fields
                 setLoginMode(true)
             }
         }
@@ -58,78 +63,75 @@ const RegisterLoginModal = (props) => {
 
     if(auth.isWrongCredentials){
         const errorMessage = auth.wrongCredentials
-
-        messageModal = <Modal
-                    open = {isMessageModalOpen}
-                    onClose={handleCloseMessageModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >   
-                    <Box sx = 
-                        {{position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,}}
-                        >
-                        <Alert severity="warning">{errorMessage}</Alert>
-                        <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
-                    </Box>
-                </Modal>
-    }
-
-    else if(loginMode){
-        messageModal =
+        messageModal = (
             <Modal
-                    open = {isMessageModalOpen}
-                    onClose={handleCloseMessageModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >   
-                    <Box sx = 
-                        {{position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,}}
-                        >
-                        <Alert severity="success">Login Successful!</Alert>
-                        <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
-                    </Box>
-                </Modal>
-    }
-    
-    else{
-        messageModal =
+            open = {isMessageModalOpen}
+            onClose={handleCloseMessageModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >   
+                <Box sx = 
+                {{position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,}}
+                >
+                    <Alert severity="warning">{errorMessage}</Alert>
+                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                </Box>
+            </Modal>
+        )
+    }else if(loginMode){
+        messageModal =(
             <Modal
-                    open = {isMessageModalOpen}
-                    onClose={handleCloseMessageModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >   
-                    <Box sx = 
-                        {{position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,}}
-                        >
-                        <Alert severity="success">Registration Successful!</Alert>
-                        <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
-                    </Box>
-                </Modal>
+            open = {isMessageModalOpen}
+            onClose={handleCloseMessageModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >   
+                <Box sx = {{position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,}}
+                >
+                    <Alert severity="success">Login Found!</Alert>
+                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                </Box>
+            </Modal>
+        )
+    }else{
+        messageModal = (
+            <Modal
+            open = {isMessageModalOpen}
+            onClose={handleCloseMessageModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >   
+                <Box sx = {{position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,}}
+                >
+                    <Alert severity="success">Registration Successful!</Alert>
+                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                </Box>
+            </Modal>
+        )
     }
     
 
@@ -141,16 +143,19 @@ const RegisterLoginModal = (props) => {
         setLoginMode(true)
     }
     const handleSubmit= (event) => {
+        // Checks which type of form is being submitted
         if(loginMode){
+            // Logging in
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             auth.loginUser(
                 formData.get('email'),
                 formData.get('password')
             );
+            // Direct users to 2FA if possible
             setIsMessageModalOpen(true)
-        }
-        else{
+        }else{
+            // Registering
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             auth.registerUser(
@@ -167,91 +172,87 @@ const RegisterLoginModal = (props) => {
     }
 
 
-    var modal = 
+    var modal = (
         <Modal
-            open={props.open && loginMode}
-            onClose={props.handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-            >
+        open={props.open && loginMode}
+        onClose={props.handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        >
             <Box sx={boxStyle}>
-            <Box
-                    sx={{
-                        my: 8,
-                        mx: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
+                <Box sx={{
+                my: 8,
+                mx: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                }}
                 >
-
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                         <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
                         />
                         <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
                         />
                         <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
                         >
                             Sign In
                         </Button>
                         <span onClick = {handleLogToReg}>Register</span>  
-
                     </Box>
                 </Box>
-                </Box>
-        </Modal>   
+            </Box>
+        </Modal>
+    )
 
     if(!loginMode){
-        modal = 
-        <Modal
+        modal = (
+            <Modal
             open={props.open && !loginMode}
             onClose={props.handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
             >
-            <Box sx={boxStyle}>
-            <Box
-                    sx={{
-                        my: 8,
-                        mx: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                <Box sx={boxStyle}>
+                    <Box sx={{
+                    my: 8,
+                    mx: 4,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                     }}
-                >
-
-                    <Typography component="h1" variant="h5">
-                        Register
-                    </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <TextField
+                    >
+                        <Typography component="h1" variant="h5">
+                            Register
+                        </Typography>
+                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -260,8 +261,8 @@ const RegisterLoginModal = (props) => {
                             name="email"
                             autoComplete="email"
                             autoFocus
-                        />
-                        <TextField
+                            />
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -270,8 +271,8 @@ const RegisterLoginModal = (props) => {
                             name="username"
                             autoComplete="username"
                             autoFocus
-                        />
-                        <TextField
+                            />
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -280,8 +281,8 @@ const RegisterLoginModal = (props) => {
                             name="firstName"
                             autoComplete="firstName"
                             autoFocus
-                        />
-                        <TextField
+                            />
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -290,9 +291,8 @@ const RegisterLoginModal = (props) => {
                             name="lastName"
                             autoComplete="lastName"
                             autoFocus
-                        />
-
-                        <TextField
+                            />
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -301,8 +301,8 @@ const RegisterLoginModal = (props) => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                        />
-                        <TextField
+                            />
+                            <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -311,25 +311,25 @@ const RegisterLoginModal = (props) => {
                             type="password"
                             id="passwordVerify"
                             autoComplete="current-password"
-                        />
-                        <FormControlLabel
+                            />
+                            <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
-                        />
-                        <Button
+                            />
+                            <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                        >
-                            Register
-                        </Button>
-                        <span onClick = {handleRegToLog}>Log In</span>  
-
+                            >
+                                Register
+                            </Button>
+                            <span onClick = {handleRegToLog}>Log In</span>  
+                        </Box>
                     </Box>
                 </Box>
-                </Box>
-        </Modal>   
+            </Modal>
+        )
     }
 
 
