@@ -122,14 +122,12 @@ function AuthContextProvider(props) {
         const response = await api.loginUser(email, password);
         if(response.status === 200) {
             if(response.data.success){
-                console.log('auth.loginUser  ' + response.data.user)
-
+                console.log('auth.loginUser  reponse  ' + response.data.user)
                 if(!response.data.user.twofactorsecret){
                     localStorage.setItem('userId', response.data.user._id)
                     if(response.data.user.hasWallet){
                         localStorage.setItem('wallet', response.data.user.wallet)
                     }
-
                     authReducer({
                         type: AuthActionType.LOGIN_USER,
                         payload: {
@@ -139,23 +137,15 @@ function AuthContextProvider(props) {
                     authReducer({
                         type: AuthActionType.TWO_FACT_PASS,
                     })
-                }
-
-            }
-
-           /* else if(!response.data.user.twofactorsecret) {
-                // Want users with 2FA to go through 2FA
-                    // If no 2FA
-                    // Keep userId in local storage
-                    localStorage.setItem('userId', response.data.user._id)
-                    if(response.data.user.hasWallet){
-                        localStorage.setItem('wallet', response.data.user.wallet)
-                    }
+                }else{
                     authReducer({
-                        type: AuthActionType.TWO_FACT_PASS,
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: response.data.user
+                        }
                     })
-                }*/
-            else{
+                }
+            }else{
                 authReducer({
                     type: AuthActionType.ADD_WRONG_CREDENTIALS,
                     payload: {

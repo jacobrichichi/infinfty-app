@@ -17,6 +17,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import hspack from '../images/hspack.png'
 import WalletContext from '../../wallet-connect'
+import { TextField } from '@mui/material';
 
 
 function CreateSell(){
@@ -85,50 +86,7 @@ function CreateSell(){
             <form id='form'>
                 <div style={{width: '50%', float: 'left'}}>
                     <FormGroup sx={{width: '50%', padding: '2%'}}>
-                        <FormControl>
-                            <FormLabel id="demo-radio-buttons-group-label">Are you...</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="some"
-                                name="radio-buttons-group"
-                                onChange={changeRadioButton}
-                            >
-                                <FormControlLabel value="selling" control={<Radio />} label="Selling" />
-                                <FormControlLabel value="auction" control={<Radio />} label="Auction" />
-                                <FormControlLabel value="keeping" control={<Radio />} label="Keeping" />
-                            </RadioGroup>
-                        </FormControl>
-
-                        <FormControl disabled={sellingtype=="keeping"} variant="standard">
-                            <InputLabel htmlFor="input-with-icon-adornment">
-                                Price
-                            </InputLabel>
-                            <Input
-                            onChange={changePrice}
-                            id="input-with-icon-adornment1"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <img src=''></img>
-                                </InputAdornment>
-                            }
-                            />
-                        </FormControl>
-
-                        <FormControl disabled={sellingtype=="keeping"} variant="standard">
-                            <InputLabel htmlFor="input-with-icon-adornment">
-                                Duration
-                            </InputLabel>
-                            <Input
-                            onChange={changeDuration}
-                            id="input-with-icon-adornment2"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <img src={hspack} style={{width: '20px'}}></img>
-                                </InputAdornment>
-                            }
-                            />
-                        </FormControl>
-
+                        <TextField name='nftname'></TextField>
                         <Button variant="contained" size='small' onClick={onFileUpload}>Submit</Button>
                     </FormGroup>
                 </div>

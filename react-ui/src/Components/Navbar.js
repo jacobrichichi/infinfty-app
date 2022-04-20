@@ -22,7 +22,6 @@ import Modal from '@mui/material/Modal';
 import RegisterLoginModal from './RegisterLoginModal';
 import WalletContext from '../wallet-connect'
 import AuthContext from '../auth'
-import { useEffect } from 'react';
 
 const Navbar = (props) => {
   const { wallet } = useContext(WalletContext)
