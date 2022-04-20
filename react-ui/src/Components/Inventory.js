@@ -48,13 +48,13 @@ function Inventory(){
             <h1 style={{textAlign: 'center'}}>
                 Your Inventory
             </h1>
-            { auth.user !== null && auth.user.hasWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
+            { auth.user !== null && (auth.user.hasWallet || wallet.isWallet) ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
             
             <h1 style={{textAlign: 'center'}}>
                 Your Auctions
             </h1>
 
-            { auth.user !== null && auth.user.hasWallet ? <AuctionGridding auctions={wallet.auctions} /> : noWalletDiv}
+            { auth.user !== null && (auth.user.hasWallet || wallet.isWallet) ? <AuctionGridding auctions={wallet.auctions} /> : noWalletDiv}
 
         </div>
     );

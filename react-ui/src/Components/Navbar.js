@@ -119,7 +119,7 @@ const Navbar = (props) => {
 
   let navigate = useNavigate();
   var walletconnect = () => {
-    if(auth.loggedIn && auth.user.hasWallet && wallet.isWallet){
+    if(auth.loggedIn && (auth.user.hasWallet || wallet.isWallet)){
       return(
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
             <div className = "linkText navLink" id = "conLinkText" onClick = {() => {navigate(`/create`)}}>

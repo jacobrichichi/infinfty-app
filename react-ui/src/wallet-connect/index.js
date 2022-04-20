@@ -252,7 +252,7 @@ function WalletContextProvider(props) {
             qrcodeModal: QRCodeModal
         });
  
-        if (con.connected) {
+       // if (con.connected) {
             con.killSession()
             con.accounts = []
             walletReducer({
@@ -261,7 +261,7 @@ function WalletContextProvider(props) {
                     
                 }
             })
-        }
+      //  }
     }
 
 
