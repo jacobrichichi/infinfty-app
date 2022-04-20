@@ -67,10 +67,11 @@ getInventory = async (req, res) => {
 
         const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "");
 
+        // Assets in inventory
         const accountInfo = await client.accountInformation(walletId)
                                         .setIntDecoding(algosdk.IntDecoding.BIGINT)
                                         .do();   
-        
+
         const assetsFromRes = accountInfo.assets;
 
         console.log(assetsFromRes)

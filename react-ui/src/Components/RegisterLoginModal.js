@@ -152,6 +152,7 @@ const RegisterLoginModal = (props) => {
                 formData.get('email'),
                 formData.get('password')
             );
+            console.log('handleSubmit  ' + auth.user)
             // Direct users to 2FA if possible
             setIsMessageModalOpen(true)
         }else{
