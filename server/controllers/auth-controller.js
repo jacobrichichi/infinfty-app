@@ -188,6 +188,7 @@ refreshUser = async (req, res) => {
         const existingUser = await User.findOne({ _id: userId });
         return res.status(200).json({
             loggedIn: true,
+            success: true,
             user: {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  

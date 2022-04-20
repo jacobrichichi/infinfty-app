@@ -206,15 +206,23 @@ function AuthContextProvider(props) {
         const response = await api.refreshUser();
         if(response.status === 200){
             if(response.data.success){
-                console.log('refreshUser  ' + response.data);
-                authReducer({
-                    type: AuthActionType.LOGIN_USER,
-                    payload: {
-                        user: response.data.user
+
+                if(!response.data.user.twofactorsecret){
+                    localStorage.setItem('userId', response.data.user._id)
+                    if(response.data.user.hasWallet){
+                        localStorage.setItem('wallet', response.data.user.wallet)
                     }
-                })
 
-
+                    authReducer({
+                        type: AuthActionType.LOGIN_USER,
+                        payload: {
+                            user: response.data.user
+                        }
+                    })
+                    authReducer({
+                        type: AuthActionType.TWO_FACT_PASS,
+                    })
+                }
             }
         }
     }

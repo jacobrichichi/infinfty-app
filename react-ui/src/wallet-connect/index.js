@@ -151,7 +151,7 @@ function WalletContextProvider(props) {
 
     wallet.walletConnectInit = async function() {
 
-        if(!wallet.isWallet){
+        //if(!wallet.isWallet){
             const con = new WalletConnect({
                 bridge: "https://bridge.walletconnect.org",
                 qrcodeModal: QRCodeModal
@@ -217,7 +217,7 @@ function WalletContextProvider(props) {
                     connector: con
                 }
             })
-        }
+        //}
         
     }
 
