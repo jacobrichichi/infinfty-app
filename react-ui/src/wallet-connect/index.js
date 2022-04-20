@@ -178,7 +178,7 @@ function WalletContextProvider(props) {
                         walletReducer({
                             type: WalletActionType.CONNECTION_ESTABLISHED,
                             payload: {
-                                accounts: accounts
+                                accounts: accounts[0]
                             }
                         })
 
@@ -202,7 +202,7 @@ function WalletContextProvider(props) {
                 walletReducer({
                     type: WalletActionType.CONNECTION_ESTABLISHED,
                     payload: {
-                        accounts: accounts
+                        accounts: accounts[0]
                     }
                 })
             });

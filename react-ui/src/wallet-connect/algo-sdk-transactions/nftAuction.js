@@ -90,7 +90,6 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     //  let client = new algosdk.Algodv2(token, "https://testnet-algorand.api.purestake.io/ps2", "");
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
-
     // get default parameters for an smart contract
     let params = await client.getTransactionParams().do()
     // set transaction fee for writing to the contract to minimum

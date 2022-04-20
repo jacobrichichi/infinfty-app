@@ -73,6 +73,8 @@ getInventory = async (req, res) => {
         
         const assetsFromRes = accountInfo.assets;
 
+        console.log(assetsFromRes)
+
         var assets = assetsFromRes.map((asset) => ({
             id: Number(asset['asset-id']),
             amount: Number(asset.amount),
@@ -80,6 +82,8 @@ getInventory = async (req, res) => {
             frozen: asset['is-frozen'],
             decimals: 0
         }))
+
+        
 
         await Promise.all(
             assets.map(async asset => {
