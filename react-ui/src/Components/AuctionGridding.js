@@ -18,6 +18,10 @@ function AuctionGridding(props){
     const handleSell = (url, name, amount, id) => {
         wallet.setCurrentNFT(url, name, amount, id)
     }
+
+    const handleEnd = () => {
+
+    }
     
     // xs (phones), sm (tablets), md (desktops), and lg (larger desktops)
     // Column widths are integer values between 1 and 12
@@ -37,6 +41,11 @@ function AuctionGridding(props){
                </div>
                <div id = "nftEndCont">
                     <p>End's at: {auction.state.end}</p>
+               </div>
+               <div id = "endAuctionCont">
+                   <Button onClick = {() => handleEnd()}>
+                       End
+                   </Button>
                </div>
 
            </div>

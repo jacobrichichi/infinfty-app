@@ -106,16 +106,17 @@ function AuthContextProvider(props) {
             if(response.data.success){
                 console.log('auth.loginUser  ' + response.data.user)
 
+                localStorage.setItem('userId', response.data.user._id)
+                if(response.data.user.hasWallet){
+                    localStorage.setItem('wallet', response.data.user.wallet)
+                }
+
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
                         user: response.data.user
                     }
                 })
-                localStorage.setItem('userId', response.data.user._id)
-                if(response.data.user.hasWallet){
-                    localStorage.setItem('wallet', response.data.user.wallet)
-                }
 
             }
 

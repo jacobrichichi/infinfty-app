@@ -3,6 +3,7 @@ const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
 registerUser = async (req, res) => {
+    console.log('hey')
     try {
         let { firstName, lastName, userName, email, password, passwordVerify } = req.body;
         if (!firstName || !lastName || !userName || !email || !password || !passwordVerify) {

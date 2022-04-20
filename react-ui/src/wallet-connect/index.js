@@ -14,7 +14,8 @@ export const WalletActionType = {
     GET_INVENTORY: "GET_INVENTORY",
     DISCONNECT_WALLET: "DISCONNECT_WALLET",
     RECONNECT_WALLET: "RECONNECT_WALLET",
-    SET_CURRENT_NFT: "SET_CURRENT_NFT"
+    SET_CURRENT_NFT: "SET_CURRENT_NFT",
+    SET_EXPLORE_AUCTIONS: "SET_EXPLORE_AUCTIONS"
 }
 
 function WalletContextProvider(props) {
@@ -25,7 +26,8 @@ function WalletContextProvider(props) {
         auctions: [],
         isWallet: false,
         currentNFT: null,
-        currentSale: null
+        currentSale: null,
+        exploreAuctions: []
     })
 
     const navigate = useNavigate();
@@ -42,7 +44,8 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
                 })
             }
 
@@ -54,7 +57,8 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
                 })
             }
 
@@ -66,7 +70,8 @@ function WalletContextProvider(props) {
                     auctions: payload.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
 
                 })
             }
@@ -79,7 +84,8 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: false,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
                 })
             }
 
@@ -91,7 +97,8 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
                 })
             }
 
@@ -103,12 +110,22 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: payload.currentNFT,
-                    currentSale: wallet.currentSale
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: wallet.exploreAuctions
                 })
             }
 
-            case WalletActionType.SET_CURRENT_SALE: {
-
+            case WalletActionType.SET_EXPLORE_AUCTIONS: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: wallet.isWallet,
+                    currentNFT: payload.currentNFT,
+                    currentSale: wallet.currentSale,
+                    exploreAuctions: payload.exploreAuctions
+                })
             }
 
             default:
@@ -328,7 +345,8 @@ function WalletContextProvider(props) {
             wallet.resetCurrentNFT(currentNFTUrl, 
                 localStorage.getItem("currentNFTName"), 
                 localStorage.getItem("currentNFTAmount"), 
-                localStorage.getItem("currentNFTId"))
+                localStorage.getItem("currentNFTId")
+            )
             //auth.loginUser('','')
             //wallet.getWalletId()
         }

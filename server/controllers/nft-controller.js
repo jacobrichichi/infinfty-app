@@ -126,8 +126,6 @@ getInventory = async (req, res) => {
             stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
             stateCompiled['start'] = stateCompiled['start']['uint']
 
-            console.log(stateCompiled['bid_amount'])
-            //stateCompiled['bid_amount'] !== null
             // if no bid was placed yet, then bid_amount isn't a variable
             if(typeof stateCompiled['bid_amount'] !== "undefined"){
                 stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
