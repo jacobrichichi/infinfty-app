@@ -22,15 +22,19 @@ import Modal from '@mui/material/Modal';
 import RegisterLoginModal from './RegisterLoginModal';
 import WalletContext from '../wallet-connect'
 import AuthContext from '../auth'
+import { useEffect } from 'react';
 
 const Navbar = (props) => {
   const { wallet } = useContext(WalletContext)
   const { auth } = useContext(AuthContext)
   
+  // open State to close RegisterLoginModal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  // handleLogin -> setLoggedIn -> open State close RegisterLoginModal for to refresh navbar
+  // ^ Purpose of loggedIn State is trivial
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
 
@@ -65,7 +69,7 @@ const Navbar = (props) => {
 
   var accountMenu = ""
 
-  if(auth.loggedIn){
+  if(auth.loggedIn && auth.twoFactorPass){
     if(auth.user.hasWallet && !wallet.isWallet){
       console.log('Reconnecting wallet')
       wallet.reconnectWallet()
@@ -74,9 +78,9 @@ const Navbar = (props) => {
       console.log('Refreshing User info')
       auth.refreshUser();
     }
-    console.log('Refreshing login')
-    console.log(auth.user)
-    console.log(wallet)
+    // console.log('Refreshing login')
+    // console.log(auth.user)
+    // console.log(wallet)
 
     accountInfo = (
       <div id = "userText" onClick = {handleClick}>
@@ -109,6 +113,7 @@ const Navbar = (props) => {
   var loginModal = ""
 
   if(open){
+    // open State to close RegisterLoginModal
     loginModal = <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
   }
 

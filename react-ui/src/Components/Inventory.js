@@ -35,9 +35,11 @@ function Inventory(){
     ]
 
 
-    const noWalletDiv = <div id = "noWalletDiv">
-                            You don't yet have a wallet connected!
-                        </div>
+    const noWalletDiv = (
+        <div id = "noWalletDiv">
+            You don't yet have a wallet connected!
+        </div>
+    )
 
 
 

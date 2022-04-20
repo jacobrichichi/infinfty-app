@@ -67,7 +67,7 @@ const auth = require("../auth")
  */
 verifyTOTP = (req, res) => {
     const {email, totpToken} = req.body
-    // console.log([email, totpToken])
+    console.log([email, totpToken])
     User.findOne({email: email}, (err, user) => {
         if(err || !user){
             return res.status(400).json({

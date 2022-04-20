@@ -10,6 +10,7 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
+    TWO_FACT_PASS: "TWO_FACT_PASS",
     REGISTER_USER: "REGISTER_USER",
     EDIT_USER: "EDIT_USER",
     ADD_WRONG_CREDENTIALS: "ADD_WRONG_CREDENTIALS",
@@ -22,7 +23,8 @@ function AuthContextProvider(props) {
         user: null,
         loggedIn: false,
         wrongCredentials: null,
-        isWrongCredentials: false
+        isWrongCredentials: false,
+        twoFactorPass: false,
     })
 
     const history = useNavigate();
@@ -37,52 +39,69 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: false,
                 })
             }
-
+            case AuthActionType.TWO_FACT_PASS: {
+                return setAuth((prevState) => ({
+                    ...prevState,
+                    twoFactorPass: true,
+                }))
+            }
+            case AuthActionType.TWO_FACT_FAIL: {
+                // Resets to default state
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    wrongCredentials: null,
+                    isWrongCredentials: false,
+                    twoFactorPass: false,
+                })
+            }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: false,
                 })
             }
-
             case AuthActionType.LOGOUT_USER: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: false,
                 })
             }
-
             case AuthActionType.EDIT_USER: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: true,
                 })
             }
-
             case AuthActionType.ADD_WRONG_CREDENTIALS: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
                     wrongCredentials: payload.message,
-                    isWrongCredentials: true
+                    isWrongCredentials: true,
+                    twoFactorPass: false,
                 })
             }
-
             case AuthActionType.REMOVE_WRONG_CREDENTIALS: {
                 return setAuth({
                     user: null,
                     loggedIn: false,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: false,
                 })
             }
             case AuthActionType.ADD_BACK_WALLET: {
@@ -90,10 +109,10 @@ function AuthContextProvider(props) {
                     user: payload.user,
                     loggedIn: true,
                     wrongCredentials: null,
-                    isWrongCredentials: false
+                    isWrongCredentials: false,
+                    twoFactorPass: true,
                 })
             }
-
             default:
                 return auth;
         }
@@ -101,25 +120,29 @@ function AuthContextProvider(props) {
 
     auth.loginUser = async function(email, password) {
         const response = await api.loginUser(email, password);
-
         if(response.status === 200) {
             if(response.data.success){
-                console.log('auth.loginUser  ' + response.data.user)
-
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
                         user: response.data.user
                     }
                 })
-                localStorage.setItem('userId', response.data.user._id)
-                if(response.data.user.hasWallet){
-                    localStorage.setItem('wallet', response.data.user.wallet)
+                // Want users with 2FA to go through 2FA
+                if(!response.data.user.twofactorsecret){
+                    // If no 2FA
+                    // Keep userId in local storage
+                    localStorage.setItem('userId', response.data.user._id)
+                    if(response.data.user.hasWallet){
+                        localStorage.setItem('wallet', response.data.user.wallet)
+                    }
+                    authReducer({
+                        type: AuthActionType.TWO_FACT_PASS,
+                    })
+                }else{
+                    console.log('has2fa')
                 }
-
-            }
-
-            else {
+            }else{
                 authReducer({
                     type: AuthActionType.ADD_WRONG_CREDENTIALS,
                     payload: {
@@ -130,19 +153,31 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.passTwoFact = async function(){
+        authReducer({
+            type: AuthActionType.TWO_FACT_PASS,
+        })
+        localStorage.setItem('userId', auth.user._id)
+        if(auth.user.hasWallet){
+            localStorage.setItem('wallet', auth.user.hasWallet)
+        }
+    }
+
+    auth.failTwoFact = async function(){
+        authReducer({
+            type: AuthActionType.TWO_FACT_FAIL,
+        })
+    }
+
     auth.registerUser = async function(firstName, lastName, userName, email, password, passwordVerify) {
         const response = await api.registerUser(firstName, lastName, userName, email, password, passwordVerify); 
-        
         if (response.status === 200) {
             if(response.data.success) {
                 authReducer({
                     type:AuthActionType.REGISTER_USER,
-                    payload: {
-
-                    }
+                    payload: {}
                 })
-            }
-            else{
+            }else{
                 authReducer({
                     type: AuthActionType.ADD_WRONG_CREDENTIALS,
                     payload: {
@@ -155,12 +190,9 @@ function AuthContextProvider(props) {
 
     auth.refreshUser = async function(){
         const response = await api.refreshUser();
-
         if(response.status === 200){
             if(response.data.success){
-
                 console.log('refreshUser  ' + response.data);
-
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
@@ -171,12 +203,11 @@ function AuthContextProvider(props) {
 
             }
         }
-
     }
 
     auth.loginUserById = async function(userId) {
+        // Log in by userID in localstorage
         const response = await api.loginUserById(userId);
-
         if(response.status === 200){
             if(response.data.success){
                 // console.log('loginUserById  ' + response.data)
@@ -186,8 +217,9 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 })
-
-
+                authReducer({
+                    type: AuthActionType.TWO_FACT_PASS,
+                })
             }
         }
     }
@@ -218,9 +250,8 @@ function AuthContextProvider(props) {
     }
 
     // Remove wallet from data base on logout
-
     auth.logoutUser = async function() {
-        console.log('logoutUser  ' + localStorage.getItem("userId"))
+        // console.log('logoutUser  ' + localStorage.getItem("userId"))
         const response = await api.logoutUser(localStorage.getItem("userId"));
         if (response.status === 200) {
             authReducer( {
@@ -272,11 +303,9 @@ function AuthContextProvider(props) {
         const walletSaved = localStorage.getItem("wallet")
         if (loggedInUserId && !auth.loggedIn) {
             // If there exist localstorage of userID and user is not logged in
-            //auth.loginUser('','')
             console.log('auth.userEffect1')
             auth.loginUserById(loggedInUserId)
         }
-
         if(walletSaved && auth.user !== null && !auth.user.hasWallet){
             // If there is a walletSaved onto localstorage, and user not null and doesn't have wallet
             console.log('auth.userEffect2')

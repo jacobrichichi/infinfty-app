@@ -54,9 +54,14 @@ registerUser = async (req, res) => {
         email = email.toLowerCase()
 
         const newUser = new User({
-            firstName: firstName, lastName: lastName, wallet: 'a',
-            userName: userName, email: email, passwordHash: passwordHash,
-            auctions: []
+            firstName: firstName,
+            lastName: lastName,
+            wallet: 'a',
+            userName: userName,
+            email: email,
+            passwordHash: passwordHash,
+            auctions: [],
+            twofactorsecret: !!existingUser.twofactorsecret,
         });
 
         const savedUser = await newUser.save();
@@ -74,38 +79,30 @@ registerUser = async (req, res) => {
 
 loginUser = async (req, res) => {
     try {
-        
         const { email, password } = req.body;
-
         if (!email || !password) {
-            return res
-                .status(200)
-                .json({ success: false, errorMessage: "Please enter all required fields." });
+            return res.status(200).json({
+                success: false, 
+                errorMessage: "Please enter all required fields." 
+            });
         }
-
         const existingUser = await User.findOne({ email: email });
         if (!existingUser) {
-            return res
-                .status(200)
-                .json({
-                    success: false,
-                    errorMessage: "Wrong email or password provided."
-                })
+            return res.status(200).json({
+                success: false,
+                errorMessage: "Wrong email or password provided."
+            })
         }
         const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
         if (!passwordCorrect) {
             console.log("Incorrect password");
-            return res
-                .status(200)
-                .json({
-                    success: false,
-                    errorMessage: "Wrong email or password provided."
-                })
+            return res.status(200).json({
+                success: false,
+                errorMessage: "Wrong email or password provided."
+            })
         }
-
         // LOGIN THE USER
         const token = auth.signToken(existingUser._id);
-
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
@@ -119,10 +116,10 @@ loginUser = async (req, res) => {
                 email: existingUser.email,
                 _id: existingUser._id,
                 hasWallet: existingUser.wallet !== 'a',      
-                wallet: existingUser.wallet    
+                wallet: existingUser.wallet,
+                twofactorsecret: !!existingUser.twofactorsecret,
             }
         })
-
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -140,7 +137,8 @@ loginUserById = async (req, res) => {
                 userName: existingUser.userName,
                 email: existingUser.email,
                 hasWallet: existingUser.wallet !== 'a',      
-                wallet: existingUser.wallet
+                wallet: existingUser.wallet,
+                twofactorsecret: !!existingUser.twofactorsecret,
             }
         })
     })
@@ -157,9 +155,7 @@ logoutUser = async (req, res) => {
                 error: 'The subject user was not found'
             })
         }
-
         user.wallet = "a";
-
         user.save().then(() => {
             res.cookie("token", "", {
                 httpOnly: true,
@@ -167,7 +163,6 @@ logoutUser = async (req, res) => {
                 secure: true,
                 sameSite: "none"
             }).send();
-
         }).catch(error => {
             res.cookie("token", "", {
                 httpOnly: true,
@@ -176,8 +171,6 @@ logoutUser = async (req, res) => {
                 sameSite: "none"
             }).send();
         })
-
-        
     })
 }
 
@@ -191,9 +184,7 @@ refreshUser = async (req, res) => {
                 errorMessage: "?"
             })
         }
-
         const existingUser = await User.findOne({ _id: userId });
-
         return res.status(200).json({
             loggedIn: true,
             user: {
@@ -203,8 +194,8 @@ refreshUser = async (req, res) => {
                 email: existingUser.email,
                 _id: existingUser._id,
                 hasWallet: existingUser.wallet !== 'a',      
-                wallet: existingUser.wallet    
-                
+                wallet: existingUser.wallet,
+                twofactorsecret: !!existingUser.twofactorsecret,
             }
         })
     } catch (err) {
@@ -223,15 +214,14 @@ getLoggedIn = async (req, res) => {
                 errorMessage: "?"
             })
         }
-
         const loggedInUser = await User.findOne({ _id: userId });
-
         return res.status(200).json({
             loggedIn: true,
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                twofactorsecret: !!existingUser.twofactorsecret,
             }
         })
     } catch (err) {
