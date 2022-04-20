@@ -62,7 +62,6 @@ registerUser = async (req, res) => {
             email: email,
             passwordHash: passwordHash,
             auctions: [],
-            twofactorsecret: !!existingUser.twofactorsecret,
         });
 
         const savedUser = await newUser.save();

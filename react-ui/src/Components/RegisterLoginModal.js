@@ -45,7 +45,6 @@ const RegisterLoginModal = (props) => {
             setIsMessageModalOpen(false)
             if(loginMode){
                 // If currently login mode
-                console.log(auth)
                 // props.handleLogin() just closes RegisterLoginModal
                 props.handleLogin()
                 if(!auth.twoFactorPass){
@@ -152,7 +151,6 @@ const RegisterLoginModal = (props) => {
                 formData.get('email'),
                 formData.get('password')
             );
-            console.log('handleSubmit  ' + auth.user)
             // Direct users to 2FA if possible
             setIsMessageModalOpen(true)
         }else{
