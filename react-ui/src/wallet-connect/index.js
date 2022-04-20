@@ -211,6 +211,8 @@ function WalletContextProvider(props) {
 
         if(response.status === 200){
             if(response.data.success){
+                console.log(response.data)
+
                 walletReducer({
                     type: WalletActionType.GET_INVENTORY,
                     payload: {

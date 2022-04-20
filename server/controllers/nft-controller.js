@@ -102,7 +102,6 @@ getInventory = async (req, res) => {
 
         await Promise.all(
             auctionsMapped.map(async auction => {
-                console.log(auction['id'])
                 auction.state = await client.accountApplicationInformation(walletId, auction['id']).do()
                 auction.state = auction.state['created-app']['global-state']
             })
@@ -118,7 +117,6 @@ getInventory = async (req, res) => {
             auction.state.forEach((stateVar) => {
                 stateCompiled[stateVar.key] = stateVar['value']
             })
-            console.log(stateCompiled)
 
             stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
             stateCompiled['end'] = stateCompiled['end']['uint']
@@ -128,12 +126,30 @@ getInventory = async (req, res) => {
             stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
             stateCompiled['start'] = stateCompiled['start']['uint']
 
+            console.log(stateCompiled['bid_amount'])
+            //stateCompiled['bid_amount'] !== null
+            // if no bid was placed yet, then bid_amount isn't a variable
+            if(typeof stateCompiled['bid_amount'] !== "undefined"){
+                stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+            }
+            else{
+                stateCompiled['bid_amount'] = 0
+            }
+
             auction.state = stateCompiled
 
             auctionDetails.push(auction)
         })
 
-        console.log(auctionDetails)
+        await Promise.all(
+            auctionDetails.map(async auction => {
+                const { params } = await client.getAssetByID(auction.state['nft_id']).do()
+                auction.state.nftName = params.name
+                auction.state.nftUnitName = params["unit-name"];
+                auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
+                auction.state.nftDecimals = params.decimals;
+            })
+        )
 
         return res.status(200).json({
             success: true,

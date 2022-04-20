@@ -8,7 +8,7 @@
 }
 
 #nftImgCont {
-    height: 60%;
+    height: 55%;
     display: flex;
     justify-content: center;
 }
@@ -18,15 +18,21 @@
 }
 
 #nftNameCont {
-   height:10%;
+   height:5%;
    width: 100%;
    text-align: center;
 }
-#nftSupplyCont {
-    height:10%;
+#nftBidCont {
+   height:5%;
    width: 100%;
    text-align: center;
 }
+#nftEndCont {
+    height:5%;
+    width: 100%;
+    text-align: center;
+ }
+ 
 
 #sellButtonCont {
     height: 10%;

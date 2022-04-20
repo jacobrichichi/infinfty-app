@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
-import Navbar from "./Navbar";
 import Gridding from "./Gridding";
+import AuctionGridding from "./AuctionGridding";
 import './General.css'
 import "./Inventory.css"
 import AuthContext from '../auth'
@@ -48,6 +48,12 @@ function Inventory(){
             </h1>
             { auth.user !== null && auth.user.hasWallet ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
             
+            <h1 style={{textAlign: 'center'}}>
+                Your Auctions
+            </h1>
+
+            { auth.user !== null && auth.user.hasWallet ? <AuctionGridding auctions={wallet.auctions} /> : noWalletDiv}
+
         </div>
     );
 }
