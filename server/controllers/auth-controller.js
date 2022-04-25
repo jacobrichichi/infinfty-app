@@ -116,7 +116,7 @@ loginUser = async (req, res) => {
                 _id: existingUser._id,
                 hasWallet: existingUser.wallet !== 'a',      
                 wallet: existingUser.wallet,
-                twofactorsecret: !!existingUser.twofactorsecret,
+                twofactorsecret: existingUser.twofactorsecret,
             }
         })
     } catch (err) {
