@@ -338,6 +338,10 @@ function WalletContextProvider(props) {
         //const response = await api.listNFTSale(wallet.currentNFT.id, price, duration)
     }
 
+    wallet.getExploreAuctions = async function() {
+        const response = await api.getExploreAuctions()
+    }
+
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         const currentWallet = localStorage.getItem("wallet");
