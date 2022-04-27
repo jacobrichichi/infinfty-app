@@ -13,6 +13,8 @@ const SellAuctionNFT = (props) => {
     const [ isAuction, setIsAuction ] = useState(false)
     const [ error, setError ] = useState("")
 
+    const [disable, setDisable] = React.useState(false);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -27,6 +29,7 @@ const SellAuctionNFT = (props) => {
             }
 
             else{
+                setDisable(true)
                 wallet.auctionNFT(startPrice, reserve, duration)
             }
         }
@@ -39,6 +42,7 @@ const SellAuctionNFT = (props) => {
             }
 
             else{
+                setDisable(true)
                 wallet.sellNFT(price, duration)
             }
         }
@@ -82,6 +86,7 @@ const SellAuctionNFT = (props) => {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={disable}
             >
                 Complete Listing
             </Button>
@@ -132,6 +137,7 @@ const SellAuctionNFT = (props) => {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    disabled={disable}
                 >
                     Complete Listing
                 </Button>

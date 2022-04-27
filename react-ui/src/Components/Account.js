@@ -28,6 +28,7 @@ function Account() {
         auth.editUser(
             formData.get('fname'),
             formData.get('lname'),
+            formData.get('userName'),
             formData.get('email'),
         )
     
@@ -88,6 +89,17 @@ function Account() {
                         name="lname"
                         autoComplete="Last Name"
                         defaultValue={auth.user.lastName}
+                        autoFocus>
+                    </TextField>
+
+                    <TextField 
+                        margin="normal"
+                        fullWidth
+                        id="userName"
+                        label="User Name"
+                        name="userName"
+                        autoComplete="User Name"
+                        defaultValue={auth.user.userName}
                         autoFocus>
                     </TextField>
 
