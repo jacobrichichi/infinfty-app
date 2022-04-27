@@ -10,3 +10,5 @@ react-ui/build/*
 .DS_Store
 
 .vscode/*
+
+config

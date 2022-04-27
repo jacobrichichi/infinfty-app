@@ -1,5 +1,0 @@
-module.exports = {
-    mongoURI: "mongodb+srv://infinftyadmin:iNfInFtY123@infinfty.unupw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    jwt_secret: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJpbmZpbmZ0eWFwcCIsIm5hbWUiOiJmcm9udGVuZCIsImlhdCI6MTUxNjIzOTAyMn0.QZUcRrYQPQX_uldH5lqub-poQjRrRNIvb0oZsoifRqo",
-    nftstorage_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGJGMjk4OUZmNzNBNDc2N0QzOGY2RkExNTNGMmY1Q2E1MjJCMEM5MTMiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0ODUxMjQyMzgwMSwibmFtZSI6IkluZmlORlR5IEtleSJ9.RZvDwGvqmwRb1lPPF-WqeQx9BCiTc5OPbXayXwpKsHI"
-};

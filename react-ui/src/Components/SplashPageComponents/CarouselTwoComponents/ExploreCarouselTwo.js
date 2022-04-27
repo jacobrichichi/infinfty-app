@@ -33,7 +33,7 @@ const ExploreCarouselTwo = (props) => {
     <div id = "carTwoComponents">
          <Carousel swipeable={false}
         draggable={false}
-        showDots={true}
+        showDots={false}
         responsive={responsive}
         ssr={false} // means to render carousel on server-side.
         infinite={true}
