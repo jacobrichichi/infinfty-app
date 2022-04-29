@@ -47,7 +47,7 @@ const CategoryCard = (props) => {
         containerClass="carousel-container"
         removeArrowOnDeviceType={["tablet", "mobile"]}
         dotListClass="custom-dot-list-style"
-        itemClass="carousel-item-padding-40-px hello"
+        itemClass="carousel-item-padding-40-px"
         >
         {collectionData.map((collection, index) => (
             <CollectionCard data = {collection}/>
