@@ -122,7 +122,7 @@ function WalletContextProvider(props) {
                     inventory_assets: wallet.inventory_assets,
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
-                    currentNFT: payload.currentNFT,
+                    currentNFT: wallet.currentNFT,
                     currentSale: wallet.currentSale,
                     exploreAuctions: payload.exploreAuctions
                 })
@@ -340,11 +340,42 @@ function WalletContextProvider(props) {
 
     wallet.getExploreAuctions = async function() {
         const response = await api.getExploreAuctions()
+
+        if(response.status === 200){
+            if(response.data.success){
+
+                let exploreAuctions = response.data.auctions
+                exploreAuctions.map(auction => {
+                    
+                })
+
+                console.log(exploreAuctions)
+                walletReducer({
+                    type: WalletActionType.SET_EXPLORE_AUCTIONS,
+                    payload: {
+                        exploreAuctions: {exploreAuctions: exploreAuctions }
+                    }
+                })
+
+                localStorage.setItem('exploreAuctions', exploreAuctions)
+        
+            }
+        }
+    }
+
+    wallet.readdExplore = async function(auctions) {
+        walletReducer({
+            type: WalletActionType.SET_EXPLORE_AUCTIONS,
+            payload: {
+                exploreAuctions: {exploreAuctions: auctions }
+            }
+        })
     }
 
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         const currentWallet = localStorage.getItem("wallet");
+        //const exploreAuctions = localStorage.getItem("exploreAuctions")
         if (currentNFTUrl) {
             wallet.resetCurrentNFT(currentNFTUrl, 
                 localStorage.getItem("currentNFTName"), 
@@ -358,6 +389,8 @@ function WalletContextProvider(props) {
         if(currentWallet){
             wallet.readdWallet(currentWallet)
         }
+
+        wallet.getExploreAuctions()
       }, []);
 
 

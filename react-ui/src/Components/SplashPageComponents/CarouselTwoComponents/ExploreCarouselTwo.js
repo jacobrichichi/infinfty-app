@@ -9,6 +9,9 @@ import 'react-multi-carousel/lib/styles.css';
 
 const ExploreCarouselTwo = (props) => {
 
+  let collections = props.data.collections.exploreAuctions
+
+
     const responsive = {
         desktop: {
           breakpoint: { max: 2400, min: 1024 },
@@ -47,9 +50,9 @@ const ExploreCarouselTwo = (props) => {
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px">
 
-            {props.data.collections.map((collection, index) => (
+            {typeof collections !== 'undefined' ? collections.map((collection, index) => (
                 <CarouselTwoCard data = {collection}/>
-            ))}
+            )) : <div></div>}
         </Carousel>
     </div>
 

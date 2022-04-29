@@ -82,7 +82,7 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
         qrcodeModal: QRCodeModal
     });
 
-    //create a client to interact with blockchain
+    //  create a client to interact with blockchain
     //  this switches to test net
     //  const token={
     //      "x-api-key": "DAvynGYXzzaY8IMPxgcH32wok98nqPS49wnjv2El" // fill in yours

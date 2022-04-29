@@ -4,9 +4,9 @@ import Stack from '@mui/material/Stack'
 
 const CarouselTwoCard = (props) => {
 
-    const title = props.data.collectionTitle;
-    const imageLocation = require("../../images/" + props.data.image);
-    const description = props.data.description;
+    const title = props.data.state.nftName;
+    const imageLocation = props.data.state.nftURL;
+    const description = props.data.state.description;
     
     return (
         // <div id = "carTwoCardContainer">

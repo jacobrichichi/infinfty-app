@@ -7,8 +7,18 @@ import WalletContext from '../../wallet-connect'
 const Desktop = (props) => {
     const { wallet } = useContext(WalletContext)
 
-    if(wallet.exploreAuctions === []){
-        wallet.getExploreAuctions()
+   // if(wallet.exploreAuctions === []){
+   //     wallet.getExploreAuctions()
+   // }
+
+    const carouselOneDataNew = {
+        "carouselTitle": "Trending Auctions",
+        "collections": wallet.exploreAuctions
+    }
+
+    const carouselTwoDataNew = {
+        "carouselTitle": "Trending Auctions",
+        "collections": wallet.exploreAuctions
     }
 
     const carouselOneData =
@@ -63,8 +73,8 @@ const Desktop = (props) => {
     return (
         <div>
             <DesktopMainCard/>
-            <ExploreCarouselTwo data = {carouselOneData}/>
-            <ExploreCarouselTwo data = {carouselTwoData}/>
+            <ExploreCarouselTwo data = {carouselOneDataNew}/>
+            <ExploreCarouselTwo data = {carouselTwoDataNew}/>
             <AlgoRundownCard/>
 
         </div>
