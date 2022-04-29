@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom'
 
 const CollectionCard = (props) => {
 
-    const title = props.data.collectionTitle;
-    
-    console.log(process.env.PUBLIC_URL)
-    const imageLocation = require("../images/" + props.data.image);
-    const description = props.data.description;
+    const title = props.data.state.nftName;
+    const imageLocation = props.data.state.nftURL;
+    let description = props.data.state.description;
+    if(title === 'Cow Getting Abducted'){
+        description += 'ifgugvbjkasbnl swhflksanvjkls slafhklsvb a uslafkshlic'
+    }
+    console.log(props.data.state)
 
     
 
