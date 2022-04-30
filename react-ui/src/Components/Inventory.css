@@ -1,3 +1,10 @@
 #noWalletDiv {
+    margin-left: 45px;
+    margin-right: 45px;
+    min-height: 150px;
     text-align: center;
+    background-color: #F5F5F5;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }

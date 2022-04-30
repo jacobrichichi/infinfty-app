@@ -45,12 +45,12 @@ function Inventory(){
 
     return (
         <div>
-            <h1 style={{textAlign: 'center'}}>
+            <h1 style={{textAlign: 'center', color:' #DA762F'}}>
                 Your Inventory
             </h1>
             { auth.user !== null && (auth.user.hasWallet || wallet.isWallet) ? <Gridding nftitems={wallet.inventory_assets} /> : noWalletDiv}
             
-            <h1 style={{textAlign: 'center'}}>
+            <h1 style={{textAlign: 'center', color:' #DA762F'}}>
                 Your Auctions
             </h1>
 
