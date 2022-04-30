@@ -58,6 +58,7 @@ const Navbar = (props) => {
   const handleLogout = () => {
     wallet.disconnectWallet()
     auth.logoutUser();
+    wallet.doneLoggingOut();
   }
 
   var accountInfo = (
@@ -69,7 +70,10 @@ const Navbar = (props) => {
   var accountMenu = ""
 
   if(auth.loggedIn && auth.twoFactorPass){
-    if(auth.user.hasWallet && !wallet.isWallet){
+    const localWallet = localStorage.getItem("wallet")
+    if(auth.user.hasWallet && !wallet.isWallet && !wallet.disconnecting && localWallet !== null){
+
+      // repeatedly reconnecting wallet when there is no
       console.log('Reconnecting wallet')
       wallet.reconnectWallet()
     }

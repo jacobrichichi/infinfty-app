@@ -7,6 +7,8 @@ const CarouselTwoCard = (props) => {
     const title = props.data.state.nftName;
     const imageLocation = props.data.state.nftURL;
     const description = props.data.state.description;
+    const topBid = props.data.state.bid_amount;
+    console.log(props.data.state)
     
     return (
         // <div id = "carTwoCardContainer">
@@ -21,6 +23,9 @@ const CarouselTwoCard = (props) => {
             <div id = "carTwoTitle">
                 <b>{title}</b>
             </div>
+            <div id = "carTwoTopBid">
+                <span>Top Bid: {topBid} Algos</span>
+            </div>  
             <div id = "carTwoDesc">
                 <span>{description}</span>
             </div>  

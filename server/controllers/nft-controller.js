@@ -283,6 +283,9 @@ storeCreatedAuction = async(req, res) => {
     })
 }
 
+
+// TODO, If for some reason auction is deleted from chain, but not from mongoDB database,
+// need a way to catch this error, and handle it
 getExploreAuctions = async(req, res) => {
     Sale.find({ }, async (err, auctions) => {
         if (err) {
@@ -295,12 +298,17 @@ getExploreAuctions = async(req, res) => {
         }
         else{
             const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
-            let auctionsMapped = []
+            let unshuffledAuctionsMapped = []
             let auctionDetails = []
 
             auctions.forEach(auction => {
-                auctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet })
+                unshuffledAuctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet })
             })
+
+            let auctionsMapped = unshuffledAuctionsMapped
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value)
 
             await Promise.all(
                 auctionsMapped.map(async auction => {
@@ -360,11 +368,77 @@ getExploreAuctions = async(req, res) => {
     })
 }
 
+endAuction = async(req, res) => {
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: 'The subject user was not found'
+            })
+        }
+
+        const callerWallet = user.wallet
+        if(callerWallet === 'a'){
+            return res.status(200).json({
+                success: false,
+                message: 'User wallet not found'
+            })
+        }
+
+        Sale.findOne({ appID: req.body.auctionID }, (err, auction) => {
+            if(err){
+                return res.status(400).json({
+                    success: false,
+                    message: 'The subject auction was not found'
+                })
+            }
+
+            if(auction.creatorWallet !== callerWallet) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'You can only close auctions with which you have created'
+                })
+            }
+
+            // If i delete user list auction first, possibility of leaving hanging sale that has been closed
+            // Would show up on explore page, even though it doesnt exist
+            // attempt to fetch would lead to error
+
+            // If vice versa
+
+
+            callerAuctions = user.auctions
+            
+            for(let i = 0; i<callerAuctions.length; i++){
+                if(callerAuctions[i] === auction.appID){
+                    callerAuctions.splice(i, 1)
+                    break;
+                }
+            }
+
+            user.auctions = callerAuctions
+            user.save()
+                .then(() => {
+                    Sale.findOneAndDelete({ appID: auction.appID }, () => {
+                        return res.status(200).json({
+                            success: true
+                        })
+                    })
+                })
+
+        })
+
+
+    })
+
+}
+
 module.exports = {
     getInventory,
     addWallet,
     createNft,
     listNFTSale,
     storeCreatedAuction,
-    getExploreAuctions
+    getExploreAuctions,
+    endAuction
 }

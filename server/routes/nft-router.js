@@ -24,4 +24,8 @@ router.get('/getExploreAuctions', auth.verify, function(req, res) {
     NftController.getExploreAuctions(req, res)
 })
 
+router.post('/endAuction', auth.verify, function(req, res) {
+    NftController.endAuction(req, res)
+})
+
 module.exports = router

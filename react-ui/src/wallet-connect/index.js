@@ -4,7 +4,7 @@ import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-do
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
-import { bidOnAuction, createAuction, deleteAuctions, getAuctionDetails } from './algo-sdk-transactions/nftAuction'
+import { bidOnAuction, createAuction, deleteAuctions, getAuctionDetails, endAuction } from './algo-sdk-transactions/nftAuction'
 
 const WalletContext = createContext();
 
@@ -15,7 +15,9 @@ export const WalletActionType = {
     DISCONNECT_WALLET: "DISCONNECT_WALLET",
     RECONNECT_WALLET: "RECONNECT_WALLET",
     SET_CURRENT_NFT: "SET_CURRENT_NFT",
-    SET_EXPLORE_AUCTIONS: "SET_EXPLORE_AUCTIONS"
+    SET_EXPLORE_AUCTIONS: "SET_EXPLORE_AUCTIONS",
+    SET_CURRENT_AUCTION: "SET_CURRENT_AUCTION",
+    DONE_DISCONNECTING: "DONE_DISCONNECTING"
 }
 
 function WalletContextProvider(props) {
@@ -26,14 +28,16 @@ function WalletContextProvider(props) {
         auctions: [],
         isWallet: false,
         currentNFT: null,
-        currentSale: null,
-        exploreAuctions: []
+        currentAuction: null,
+        exploreAuctions: [],
+        disconnecting: false
     })
 
     const navigate = useNavigate();
 
     const walletReducer = (action) => {
-        const {type, payload} = action;
+        const { type, payload } = action;
+        console.log(type)
 
         switch(type) {
             case WalletActionType.GET_CONNECTOR: {
@@ -44,8 +48,9 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting
                 })
             }
 
@@ -57,8 +62,9 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting 
                 })
             }
 
@@ -70,8 +76,9 @@ function WalletContextProvider(props) {
                     auctions: payload.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting
 
                 })
             }
@@ -84,8 +91,9 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: false,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: true
                 })
             }
 
@@ -97,8 +105,9 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: true,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting
                 })
             }
 
@@ -110,8 +119,9 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: payload.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: wallet.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting
                 })
             }
 
@@ -123,8 +133,38 @@ function WalletContextProvider(props) {
                     auctions: wallet.auctions,
                     isWallet: wallet.isWallet,
                     currentNFT: wallet.currentNFT,
-                    currentSale: wallet.currentSale,
-                    exploreAuctions: payload.exploreAuctions
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: payload.exploreAuctions,
+                    disconnecting: wallet.disconnecting
+                })
+            }
+            case WalletActionType.SET_CURRENT_AUCTION: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: wallet.isWallet,
+                    currentNFT: wallet.currentNFT,
+                    currentAuction: payload.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: wallet.disconnecting
+
+                })
+            }
+
+            case WalletActionType.DONE_DISCONNECTING: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: null,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: false,
+                    currentNFT: wallet.currentNFT,
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    disconnecting: false
+
                 })
             }
 
@@ -141,12 +181,27 @@ function WalletContextProvider(props) {
             qrcodeModal: QRCodeModal
         });
 
-        walletReducer({
-            type: WalletActionType.RECONNECT_WALLET,
-            payload: {
-                wallet: localStorage.getItem("wallet")
-            }
-        })
+        //const wallet = localStorage.getItem("wallet")
+       // if(wallet !== null){
+            walletReducer({
+                type: WalletActionType.RECONNECT_WALLET,
+                payload: {
+                    wallet: con.accounts[0]
+                }
+            })
+      //  }
+
+        // else{
+        //     const response = await api.removeWallet()
+
+        //     if(response.status === 200){
+        //         if(response.data.success){
+                    
+        //         }
+        //     }
+        // }
+
+        
     }
 
     wallet.walletConnectInit = async function() {
@@ -255,6 +310,7 @@ function WalletContextProvider(props) {
        // if (con.connected) {
             con.killSession()
             con.accounts = []
+            localStorage.removeItem('wallet')
             walletReducer({
                 type: WalletActionType.DISCONNECT_WALLET,
                 payload: {
@@ -263,6 +319,16 @@ function WalletContextProvider(props) {
             })
       //  }
     }
+
+    wallet.doneLoggingOut = function() {
+        walletReducer({
+            type: WalletActionType.DONE_DISCONNECTING,
+            payload: {
+
+            }
+        })
+    }
+    
 
 
     // user for sale of NFT
@@ -326,8 +392,23 @@ function WalletContextProvider(props) {
 
 
     // this is usually called before entering the auction page, general info like NFT being sold, seller, highest current bid etc etc
-    wallet.setCurrentAuction = async function(appID, creatorWallet){
-        const auctionDetails = getAuctionDetails(appID, creatorWallet)
+    wallet.setCurrentAuction = async function(auction){
+        walletReducer({
+            type: WalletActionType.SET_CURRENT_AUCTION,
+            payload: {
+                currentAuction: auction
+            }
+        })
+
+        //const auctionDetails = getAuctionDetails(appID, creatorWallet)
+    }
+
+    wallet.endAuction = async function() {
+        const response = await endAuction(parseInt(wallet.currentAuction.id), wallet.accounts, wallet.currentAuction.state.nft_id)
+        if(response.success){
+            const backendResponse = await api.endAuction(parseInt(wallet.currentAuction.id), wallet.currentAuction.state.nft_id)
+        }
+
     }
 
     wallet.sellNFT = async function(price, duration){
@@ -345,9 +426,6 @@ function WalletContextProvider(props) {
             if(response.data.success){
 
                 let exploreAuctions = response.data.auctions
-                exploreAuctions.map(auction => {
-                    
-                })
 
                 console.log(exploreAuctions)
                 walletReducer({
