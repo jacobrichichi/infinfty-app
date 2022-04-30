@@ -21,7 +21,7 @@ const AlgoRundownCard = (props) => {
                     </div>
                     <div className = "rdReasonDesc">
                         <span>
-                        Algorand’s PoS system means that every transaction commited is much more eco-friendly then it’s PoW counterparts
+                        Algorand’s PoS system means that every transaction committed is carbon neutral, a major difference in comparison to PoW counterparts
                         </span>
                     </div>
                 </div>
