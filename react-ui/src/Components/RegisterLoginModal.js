@@ -56,9 +56,8 @@ const RegisterLoginModal = (props) => {
         messageModal = (
             <Modal open = {isMessageModalOpen} onClose={handleCloseMessageModal} aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">   
-                <Box sx = {boxStyle}>
-                    <Alert severity="warning">{errorMessage}</Alert>
-                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                <Box sx = {{...boxStyle, p:2}}>
+                    <Alert severity="warning" >{errorMessage}</Alert>
                 </Box>
             </Modal>
         )
@@ -66,9 +65,8 @@ const RegisterLoginModal = (props) => {
         messageModal =(
             <Modal open = {isMessageModalOpen} onClose={handleCloseMessageModal} aria-labelledby="modal-modal-title" 
                 aria-describedby="modal-modal-description">   
-                <Box sx = {boxStyle}>
-                    <Alert severity="success">Login Found!</Alert>
-                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
+                <Box sx = {{...boxStyle, p:2}}>
+                    <Alert severity="success" >Login Found!</Alert>
                 </Box>
             </Modal>
         )
@@ -76,9 +74,8 @@ const RegisterLoginModal = (props) => {
         messageModal = (
             <Modal open = {isMessageModalOpen} onClose={handleCloseMessageModal} aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">   
-                <Box sx = {boxStyle}>
+                <Box sx = {{...boxStyle, p:2}}>
                     <Alert severity="success">Registration Successful!</Alert>
-                    <Button variant="outlined" onClick = {handleCloseMessageModal}>OK</Button>
                 </Box>
             </Modal>
         )
