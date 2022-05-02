@@ -59,99 +59,42 @@ function Account() {
 
             <Container fixed id="main"> 
                 <h1>ACCOUNT</h1>
-                <Box sx={{
-                    mt: 2,
-                    width: 300,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-                component="form"
-                onSubmit={handleSubmit}
-                >
+                <Box sx={{ mt: 2, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center'}}
+                    component="form" onSubmit={handleSubmit}>
                     <h2>Profile</h2>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        id="firstName"
-                        label="First Name"
-                        name="fname"
-                        autoComplete="First Name"
-                        defaultValue={auth.user.firstName}
-                        autoFocus>
+                    <TextField margin="normal" fullWidth id="firstName" label="First Name" name="fname" autoComplete="First Name"
+                        defaultValue={auth.user.firstName} >
+                    </TextField>
+                    <TextField margin="normal" fullWidth id="lastname" label="Last Name" name="lname" autoComplete="Last Name" 
+                        defaultValue={auth.user.lastName} >
+                    </TextField>
+                    <TextField margin="normal" fullWidth id="userName" label="User Name" name="userName" autoComplete="User Name" 
+                        defaultValue={auth.user.userName} >
+                    </TextField>
+                    <TextField margin="normal" fullWidth id="email" label="Email" name="email" autoComplete="Email"
+                        defaultValue={auth.user.email} >
                     </TextField>
 
-                    <TextField 
-                        margin="normal"
-                        fullWidth
-                        id="lastname"
-                        label="Last Name"
-                        name="lname"
-                        autoComplete="Last Name"
-                        defaultValue={auth.user.lastName}
-                        autoFocus>
-                    </TextField>
-
-                    <TextField 
-                        margin="normal"
-                        fullWidth
-                        id="userName"
-                        label="User Name"
-                        name="userName"
-                        autoComplete="User Name"
-                        defaultValue={auth.user.userName}
-                        autoFocus>
-                    </TextField>
-
-                    <TextField 
-                        margin="normal"
-                        fullWidth
-                        id="email"
-                        label="Email"
-                        name="email"
-                        autoComplete="Email"
-                        defaultValue={auth.user.email}
-                        autoFocus>
-                    </TextField>
-                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }}
-                            type="submit">
+                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }} type="submit">
                             Submit Changes
                     </Button>
                 </Box>
 
                 <Divider/>
                 
-                <Box sx={{
-                    mt: 2,
-                    width: 300,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-                >
+                <Box sx={{ mt: 2, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                     <h2>Change Password</h2>
-                    <TextField 
-                            margin="normal"
-                            fullWidth
-                            id="oldPassword"
-                            label="Password"
-                            name="Password"
-                            autoComplete="********"
-                            autoFocus>
+                    <TextField margin="normal" fullWidth id="oldPassword" label="Password" name="Password" autoComplete="********"
+                        >
                     </TextField>
-                    <TextField 
-                            margin="normal"
-                            fullWidth
-                            id="newPassword"
-                            label="New Password"
-                            name="New Password"
-                            autoComplete="********"
-                            autoFocus>
+                    <TextField margin="normal" fullWidth id="newPassword" label="New Password" name="New Password" autoComplete="********"
+                        >
                     </TextField>
                     <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }}>
                             Submit Changes
                     </Button>
                 </Box>
+
                 <Link to = "/twofactorsetup">
                     <Button variant="outlined">
                         <div className = "linkText" id = "expLinkText">
@@ -159,11 +102,13 @@ function Account() {
                         </div>
                     </Button>
                 </Link>
+
                 <Button variant="outlined" onClick={disableTwoAuth}>
                     <div className = "linkText" id = "expLinkText">
                         Disable 2 Factor
                     </div>
                 </Button>
+                
             </Container>
             <br></br>
             <br></br>
