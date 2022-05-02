@@ -142,95 +142,28 @@ const RegisterLoginModal = (props) => {
 
     if(!loginMode){
         modal = (
-            <Modal
-            open={props.open && !loginMode}
-            onClose={props.handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-            >
+            <Modal open={props.open && !loginMode} onClose={props.handleClose} aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
                 <Box sx={boxStyle}>
-                    <Box sx={{
-                    my: 8,
-                    mx: 4,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    }}
-                    >
+                    <Box sx={{my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <Typography component="h1" variant="h5">
                             Register
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            />
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="User Name"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                            />
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="firstName"
-                            label="First Name"
-                            name="firstName"
-                            autoComplete="firstName"
-                            autoFocus
-                            />
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="lastName"
-                            label="Last Name"
-                            name="lastName"
-                            autoComplete="lastName"
-                            autoFocus
-                            />
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            />
-                            <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="passwordVerify"
-                            label="Re-Enter Password"
-                            type="password"
-                            id="passwordVerify"
-                            autoComplete="current-password"
-                            />
-                            <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                            />
-                            <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            >
+                            <TextField margin="normal" required fullWidth id="email" label="Email Address" name="email"
+                                autoComplete="email" autoFocus/>
+                            <TextField margin="normal" required fullWidth id="username" label="User Name" name="username"
+                                autoComplete="username"/>
+                            <TextField margin="normal" required fullWidth id="firstName" label="First Name" name="firstName" 
+                                autoComplete="firstName"/>
+                            <TextField margin="normal" required fullWidth id="lastName" label="Last Name" name="lastName" 
+                                autoComplete="lastName"/>
+                            <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" 
+                                autoComplete="current-password"/>
+                            <TextField margin="normal" required fullWidth name="passwordVerify" label="Re-Enter Password" type="password" 
+                                id="passwordVerify" autoComplete="current-password"/>
+                            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me"/>
+                            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                                 Register
                             </Button>
                             <span onClick = {handleRegToLog}>Log In</span>  
