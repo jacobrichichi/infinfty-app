@@ -3,13 +3,14 @@
 #collectionContainer {
     background-color: white;
     width: 90%;
-    height: 95%;
+    max-height:80vh;
+    min-height:80vh;
     border: 1px solid rgb(49, 49, 49); 
     border-radius: 20px;
 }
 
 #collImgCont {
-    height: 50%;
+    height: 250px;
     display: flex;
     justify-content: center;
     padding-bottom: 12px;
@@ -17,21 +18,21 @@
 }
 
 #collTitleCont {
-    width: 100%;
     font-size: 26px;
-    height: 20%;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
     padding-bottom: 12px;
+    position: flex;
+    height: 15%;
 
 }
 
 #collDescCont {
-    width: 100%;
-    height: 30%;
     font-size: 16px;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    justify-content: center;
+    position: flex;
+    height: 25%;
+
 }
 

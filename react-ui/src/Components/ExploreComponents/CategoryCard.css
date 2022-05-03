@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 #categoryContainer {
     background-color: #F5F5F5;
-    /* height: 60vh; */
+    max-height: 100vh;
+    min-height: 100vh;
     margin-bottom: 5%;
     margin-top: 2%;
 
@@ -37,10 +38,12 @@
 
 
 #collectionComponents {
-    /* display: flex; */
-    justify-content: center;
+    display: flex;
+    justify-content:center;
     padding-left: 20px;
-    height: 85%; 
+    max-height: 85vh; 
+    min-height: 85vh;
+
     padding-bottom:4%;
 }
 

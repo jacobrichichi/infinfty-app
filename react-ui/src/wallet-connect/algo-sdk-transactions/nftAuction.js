@@ -74,6 +74,38 @@ export const deleteAuctions = async(sender, nftID) => {
     const appIndex = confirmedTxn['application-index']
 }
 
+export const endAuction = async (auctionID, walletID, nftID) => {
+    const conTemp = new WalletConnect({
+        bridge: "https://bridge.walletconnect.org",
+        qrcodeModal: QRCodeModal
+    });
+
+    const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+
+    let params = await client.getTransactionParams().do()
+    // set transaction fee for writing to the contract to minimum
+    params.fee = algosdk.ALGORAND_MIN_TX_FEE
+    params.flatFee = true
+    let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: walletID, suggestedParams: params, appIndex: auctionID, foreignAssets: [nftID] })
+    let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
+    let buffering = Buffer.from(encoding)
+    let finalToString = buffering.toString("base64")
+
+    const walletTxns = [{txn: finalToString}]
+    
+    const requestParams = [walletTxns];
+    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+    const result = await conTemp.sendCustomRequest(request)
+
+    const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
+
+    let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
+    const appIndex = confirmedTxn['application-index']
+
+
+    return { success: true }
+}
+
 export const createAuction = async (con, sender, seller, nftID, reserve, minBidIncrement, duration) => {
 
     // only here so i can see the methods that come with walletconnect, con should be grabbed from index.js
@@ -82,7 +114,7 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
         qrcodeModal: QRCodeModal
     });
 
-    //create a client to interact with blockchain
+    //  create a client to interact with blockchain
     //  this switches to test net
     //  const token={
     //      "x-api-key": "DAvynGYXzzaY8IMPxgcH32wok98nqPS49wnjv2El" // fill in yours

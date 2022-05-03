@@ -9,7 +9,7 @@ import 'react-multi-carousel/lib/styles.css';
 
 const CategoryCard = (props) => {
     const title = props.data.categoryTitle;
-    const collectionData = props.data.collections;
+    const collections = props.data.collections.exploreAuctions;
 
    
     const responsive = {
@@ -33,25 +33,24 @@ const CategoryCard = (props) => {
     var collectionCards =
     <div id = "collectionComponents">
          <Carousel swipeable={false}
-        // width = "100"
         draggable={false}
-        showDots={true}
+        showDots={false}
         responsive={responsive}
         ssr={false} // means to render carousel on server-side.
         infinite={true}
-        autoPlay = {true}
+        autoPlay = {false}
         autoPlaySpeed={10000}
         keyBoardControl={true}
         customTransition="all .5"
         transitionDuration={500}
         containerClass="carousel-container"
-        removeArrowOnDeviceType={["tablet", "mobile"]}
+        removeArrowOnDeviceType={[/*"tablet", "mobile"*/]}
         dotListClass="custom-dot-list-style"
-        itemClass="carousel-item-padding-40-px hello"
+        itemClass="carousel-item-padding-40-px"
         >
-        {collectionData.map((collection, index) => (
+        {typeof collections !== 'undefined' ? collections.map((collection, index) => (
             <CollectionCard data = {collection}/>
-        ))}
+        )): <div/>}
         </Carousel>
     </div>
 

@@ -20,5 +20,12 @@ router.post('/listNFTSale', auth.verify, function(req, res) {
 router.post('/storeCreatedAuction', auth.verify, function(req, res) {
     NftController.storeCreatedAuction(req, res)
 })
+router.get('/getExploreAuctions', auth.verify, function(req, res) {
+    NftController.getExploreAuctions(req, res)
+})
+
+router.post('/endAuction', auth.verify, function(req, res) {
+    NftController.endAuction(req, res)
+})
 
 module.exports = router

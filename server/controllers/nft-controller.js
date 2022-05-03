@@ -283,10 +283,162 @@ storeCreatedAuction = async(req, res) => {
     })
 }
 
+
+// TODO, If for some reason auction is deleted from chain, but not from mongoDB database,
+// need a way to catch this error, and handle it
+getExploreAuctions = async(req, res) => {
+    Sale.find({ }, async (err, auctions) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!auctions.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Auctions not found` })
+        }
+        else{
+            const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+            let unshuffledAuctionsMapped = []
+            let auctionDetails = []
+
+            auctions.forEach(auction => {
+                unshuffledAuctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet })
+            })
+
+            let auctionsMapped = unshuffledAuctionsMapped
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value)
+
+            await Promise.all(
+                auctionsMapped.map(async auction => {
+                    auction.state = await client.getApplicationByID(auction['id']).do()
+                    auction.state = auction.state.params['global-state']
+                })
+            )
+
+            auctionsMapped.forEach(auction => {
+                auction.state.map((stateVar) => {
+                    stateVar.key = atob(stateVar.key)
+                })
+                
+                let stateCompiled = {}
+
+                auction.state.forEach((stateVar) => {
+                    stateCompiled[stateVar.key] = stateVar['value']
+                })
+
+                stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
+                stateCompiled['end'] = stateCompiled['end']['uint']
+                stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
+                stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
+                stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
+                stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
+                stateCompiled['start'] = stateCompiled['start']['uint']
+                stateCompiled['description'] = "Cool little auction!"
+
+                // if no bid was placed yet, then bid_amount isn't a variable
+                if(typeof stateCompiled['bid_amount'] !== "undefined"){
+                    stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+                }
+                else{
+                    stateCompiled['bid_amount'] = 0
+                }
+
+                auction.state = stateCompiled
+
+                auctionDetails.push(auction)
+            })
+
+            await Promise.all(
+                auctionDetails.map(async auction => {
+                    const { params } = await client.getAssetByID(auction.state['nft_id']).do()
+                    auction.state.nftName = params.name
+                    auction.state.nftUnitName = params["unit-name"];
+                    auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
+                    auction.state.nftDecimals = params.decimals;
+                })
+            )
+
+            return res.status(200).json({
+                success: true,
+                auctions: auctionDetails
+            })
+        }
+    })
+}
+
+endAuction = async(req, res) => {
+    User.findOne({ _id: req.userId}, async (err, user) => {
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: 'The subject user was not found'
+            })
+        }
+
+        const callerWallet = user.wallet
+        if(callerWallet === 'a'){
+            return res.status(200).json({
+                success: false,
+                message: 'User wallet not found'
+            })
+        }
+
+        Sale.findOne({ appID: req.body.auctionID }, (err, auction) => {
+            if(err){
+                return res.status(400).json({
+                    success: false,
+                    message: 'The subject auction was not found'
+                })
+            }
+
+            if(auction.creatorWallet !== callerWallet) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'You can only close auctions with which you have created'
+                })
+            }
+
+            // If i delete user list auction first, possibility of leaving hanging sale that has been closed
+            // Would show up on explore page, even though it doesnt exist
+            // attempt to fetch would lead to error
+
+            // If vice versa
+
+
+            callerAuctions = user.auctions
+            
+            for(let i = 0; i<callerAuctions.length; i++){
+                if(callerAuctions[i] === auction.appID){
+                    callerAuctions.splice(i, 1)
+                    break;
+                }
+            }
+
+            user.auctions = callerAuctions
+            user.save()
+                .then(() => {
+                    Sale.findOneAndDelete({ appID: auction.appID }, () => {
+                        return res.status(200).json({
+                            success: true
+                        })
+                    })
+                })
+
+        })
+
+
+    })
+
+}
+
 module.exports = {
     getInventory,
     addWallet,
     createNft,
     listNFTSale,
-    storeCreatedAuction
+    storeCreatedAuction,
+    getExploreAuctions,
+    endAuction
 }

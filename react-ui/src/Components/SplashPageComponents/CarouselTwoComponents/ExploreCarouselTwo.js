@@ -9,6 +9,9 @@ import 'react-multi-carousel/lib/styles.css';
 
 const ExploreCarouselTwo = (props) => {
 
+  let collections = props.data.collections.exploreAuctions
+
+
     const responsive = {
         desktop: {
           breakpoint: { max: 2400, min: 1024 },
@@ -33,7 +36,7 @@ const ExploreCarouselTwo = (props) => {
     <div id = "carTwoComponents">
          <Carousel swipeable={false}
         draggable={false}
-        showDots={true}
+        showDots={false}
         responsive={responsive}
         ssr={false} // means to render carousel on server-side.
         infinite={true}
@@ -43,13 +46,13 @@ const ExploreCarouselTwo = (props) => {
         customTransition="all .5"
         transitionDuration={500}
         containerClass="carousel-container"
-        removeArrowOnDeviceType={["tablet", "mobile"]}
+        removeArrowOnDeviceType={[]}
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px">
 
-            {props.data.collections.map((collection, index) => (
+            {typeof collections !== 'undefined' ? collections.map((collection, index) => (
                 <CarouselTwoCard data = {collection}/>
-            ))}
+            )) : <div></div>}
         </Carousel>
     </div>
 

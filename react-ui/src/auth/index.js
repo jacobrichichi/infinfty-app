@@ -31,6 +31,7 @@ function AuthContextProvider(props) {
 
     const authReducer = (action) => {
         const {type, payload} = action;
+        console.log(type)
 
         switch(type) {
             
@@ -283,7 +284,7 @@ function AuthContextProvider(props) {
             })
             history('../')
             localStorage.removeItem('userId')
-            localStorage.removeItem('wallet')
+            
         }
     }
 

@@ -16,7 +16,7 @@
 
   #textDiv {
       margin:auto;      
-      min-width: 600px;
+      min-width: 400px;
       display: flex;
       justify-content: center;
       align-items: center;
