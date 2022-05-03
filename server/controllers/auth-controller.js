@@ -221,10 +221,54 @@ getLoggedIn = async (req, res) => {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
                 email: loggedInUser.email,
-                twofactorsecret: !!existingUser.twofactorsecret,
+                twofactorsecret: !!loggedInUser.twofactorsecret,
             }
         })
     } catch (err) {
+        console.log("err: " + err);
+        res.json(false);
+    }
+}
+
+updateUser = async (req, res) => {
+    try {
+        const body = req.body;
+
+        let userId = auth.verifyUser(req);
+        if (!userId) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "?"
+            })
+        }  
+
+        const existingUser = await User.findOne({ _id: userId });
+        
+        existingUser.firstName = body.firstName;
+        existingUser.lastName = body.lastName;
+        existingUser.userName = body.userName;
+        existingUser.email = body.email;
+
+        existingUser
+        .save()
+        .then(() => {
+            console.log("SUCCESS!!!");
+            return res.status(200).json({
+                success: true,
+                id: user._id,
+                message: 'User information updated!',
+            })
+        })
+        .catch(error => {
+            console.log("FAILURE: " + JSON.stringify(error));
+            return res.status(404).json({
+                error,
+                message: 'User information not updated!',
+            })
+        })
+    }
+    catch (err) {
         console.log("err: " + err);
         res.json(false);
     }
@@ -236,5 +280,6 @@ module.exports = {
     loginUserById,
     logoutUser,
     getLoggedIn,
-    refreshUser
+    refreshUser,
+    updateUser
 }

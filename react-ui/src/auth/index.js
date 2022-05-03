@@ -236,19 +236,30 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.editUser = async function(newFirstName, newLastName, newEmail) {
+    auth.editUser = async function(newFirstName, newLastName, newUserName, newEmail) {
         const response = await api.getLoggedIn();
         if (response.status === 200) {
+
             let user = response.data.user;
+
             user.firstName = newFirstName;
             user.lastName = newLastName;
+            user.userName = newUserName
             user.email = newEmail;
-            authReducer( {
-                type: AuthActionType.EDIT_USER,
-                payload: {
-                    user: user
+
+            async function updateUser(user){
+                response = await api.updateUser(user._id, user);
+                if (response.status === 200){
+                    authReducer( {
+                        type: AuthActionType.EDIT_USER,
+                        payload: {
+                            user: user
+                        }
+                    })
                 }
-            })
+            }
+            updateUser(user)
+            
         }
     }
 

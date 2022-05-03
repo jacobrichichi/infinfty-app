@@ -12,7 +12,7 @@ const api = axios.create({
     baseURL: baseURL
 })
 
-export const getLoggedIn = () => api.get('/loggedIn/');
+export const getLoggedIn = () => api.get(`/loggedIn/`);
 
 export const loginUser = (email, password) => {
     return api.post(`/login/`, {
@@ -40,6 +40,12 @@ export const logoutUser = (id) => api.get(`/logout/${id}`)
 
 export const refreshUser = () => api.get(`/refreshUser/`)
 
+export const updateUser = (id, user) => {
+    return api.put(`/loginByID/${id}`, {
+        user: user
+    })
+}
+
 export const setUp2FA = (user) => api.post(`/synctotp`, user)
 
 export const verifyTOTP = (user) => api.post(`/verifytotp`, user)
@@ -51,6 +57,7 @@ const apis = {
     loginUser,
     logoutUser,
     refreshUser,
+    updateUser,
     setUp2FA,
     verifyTOTP,
 }
