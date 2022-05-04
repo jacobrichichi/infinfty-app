@@ -15,6 +15,7 @@ import SellAuctionNFT from './Components/CreateSellComponents/SellAuctionNFT';
 import EditNFT from './Components/EditComponents/EditNFT';
 import TwoFactorSetup from './Components/TwoFactor/TwoFactorSetup';
 import TwoFactorVerify from './Components/TwoFactor/TwoFactorVerify';
+import AuctionInfo from './Components/AuctionInfo';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path = "/edit" element = {<EditNFT/>} />
               <Route path = "/twofactorsetup" element = {<TwoFactorSetup/>} />
               <Route path = "/twofactorverify" element = {<TwoFactorVerify/>}/>
+              <Route path = "/auction" element = {<AuctionInfo/>}/>
             </Routes>
           </WalletContextProvider>
         </AuthContextProvider>
