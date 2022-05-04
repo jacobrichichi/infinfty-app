@@ -4,7 +4,7 @@ import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-do
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
-import { bidOnAuction, createAuction, deleteAuctions, getAuctionDetails, endAuction } from './algo-sdk-transactions/nftAuction'
+import { bidOnAuction, createAuction, createNFT, deleteAuctions, getAuctionDetails, endAuction } from './algo-sdk-transactions/nftAuction'
 
 const WalletContext = createContext();
 
@@ -299,8 +299,9 @@ function WalletContextProvider(props) {
     }
 
     wallet.createNft = async function(nftFile, nftName, nftDesc) {
-        const response = await api.createNft(nftFile, nftName, nftDesc);
+        const response = await createNFT(nftFile, nftName, nftDesc)
     }
+    
     wallet.disconnectWallet = function(){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",

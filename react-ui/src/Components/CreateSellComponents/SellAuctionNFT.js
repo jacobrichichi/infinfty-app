@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react'
 import './SellAuctionNFT.css'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
+import Modal from '@mui/material/Modal';
 
 import WalletContext from '../../wallet-connect'
 
@@ -12,6 +14,7 @@ const SellAuctionNFT = (props) => {
 
     const [ isAuction, setIsAuction ] = useState(false)
     const [ error, setError ] = useState("")
+    const [modalOpen, setModalOpen] = useState(false);
 
     const [disable, setDisable] = React.useState(false);
 
@@ -30,6 +33,7 @@ const SellAuctionNFT = (props) => {
 
             else{
                 setDisable(true)
+                setModalOpen(true)
                 wallet.auctionNFT(startPrice, reserve, duration)
             }
         }
@@ -43,6 +47,7 @@ const SellAuctionNFT = (props) => {
 
             else{
                 setDisable(true)
+                setModalOpen(true)
                 wallet.sellNFT(price, duration)
             }
         }
@@ -51,6 +56,32 @@ const SellAuctionNFT = (props) => {
     const handleSwitch = (event) => {
         setIsAuction(!isAuction)
     }
+
+    const handleCloseModal = (event) => {
+        setModalOpen(false)
+    }
+
+    let furtherDirectionModal = <Modal
+                            open = {modalOpen}
+                            onClose={handleCloseModal}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >   
+                            <Box sx = 
+                                {{position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 400,
+                                bgcolor: 'background.paper',
+                                border: '2px solid #000',
+                                boxShadow: 24,
+                                p: 4,}}
+                                >
+                                <Alert severity="warning">Refer to your Pera Algo Wallet in order to sign necessary transactions</Alert>
+                                <Button variant="outlined" onClick = {handleCloseModal}>OK</Button>
+                            </Box>
+                        </Modal>
 
     // Straight selling NFT
     var heading = "List Your NFT"
@@ -162,6 +193,7 @@ const SellAuctionNFT = (props) => {
 
     return(
         <div id = "saMainCont">
+            {furtherDirectionModal}
             <div id = "saHeadingCont">
                 <div style = {{color: headingColor}}>
                     {heading}
@@ -182,7 +214,6 @@ const SellAuctionNFT = (props) => {
                 </div>
 
             </div>
-
         </div>
     )
 }

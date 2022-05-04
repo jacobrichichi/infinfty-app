@@ -6,6 +6,10 @@ import rawClear from "../auction_contracts/clearnew.txt"
 
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
+export const createNFT = async (nftFile, nftName, nftDesc) => {
+    
+}
+
 export const bidOnAuction = async (auctionID, bidder, bidAmount) => {
 
     const conTemp = new WalletConnect({
@@ -73,6 +77,8 @@ export const deleteAuctions = async(sender, nftID) => {
     let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
     const appIndex = confirmedTxn['application-index']
 }
+
+
 
 export const endAuction = async (auctionID, walletID, nftID) => {
     const conTemp = new WalletConnect({

@@ -55,11 +55,13 @@ function CreateSell(){
         e.preventDefault();
         console.log('pressed submit');
 
+        const formData = new FormData(e.currentTarget)
+
         // Will have to add parameters for price, sellingtype, price, days
-        wallet.createNft(files[0], 'First NFT', 'An NFT that is the first made through this website')
+        wallet.createNft(files[0], formData.get('nftName'), 'An NFT that is the first made through this website')
         
-        let path = `/inventory`; 
-        navigate(path);
+        //let path = `/inventory`; 
+        //navigate(path);
 	};
 
     const changeRadioButton = (e) => {
@@ -85,10 +87,26 @@ function CreateSell(){
             <h1 style={{padding: '1%'}}>Create Your NFT</h1>
             <form id='form'>
                 <div style={{width: '50%', float: 'left'}}>
-                    <FormGroup sx={{width: '50%', padding: '2%'}}>
-                        <TextField name='nftname'></TextField>
-                        <Button variant="contained" size='small' onClick={onFileUpload}>Submit</Button>
-                    </FormGroup>
+                    <Box component="form" noValidate onSubmit={onFileUpload} sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="nftName"
+                            label="NFT Name"
+                            name="nftName"
+                            autoComplete=""
+                            autoFocus
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            size = 'small'
+                            sx={{ mt: 3, mb: 2 }}>
+                                Create
+                        </Button>
+                    </Box>
                 </div>
                 <div id='preview-nft' style={{width: '50%', float: 'right'}}>
                     <div {...getRootProps()}>
