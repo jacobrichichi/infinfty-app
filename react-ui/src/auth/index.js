@@ -237,19 +237,64 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.editUser = async function(newFirstName, newLastName, newEmail) {
-        const response = await api.getLoggedIn();
+    auth.editUser = async function(newFirstName, newLastName, newUserName, newEmail) {
+        let response = await api.getLoggedIn();
+        console.log("Success 2")
+        console.log(response.status)
         if (response.status === 200) {
+
             let user = response.data.user;
+            console.log("Success 3")
+            console.log(user)
+
             user.firstName = newFirstName;
             user.lastName = newLastName;
+            user.userName = newUserName;
             user.email = newEmail;
-            authReducer( {
-                type: AuthActionType.EDIT_USER,
-                payload: {
-                    user: user
+            console.log("Success 4")
+            console.log(user)
+            console.log(user._id)
+
+            async function updateUser(user){
+                response = await api.updateUser(user._id, user);
+                if (response.status === 200){
+                    authReducer( {
+                        type: AuthActionType.EDIT_USER,
+                        payload: {
+                            user: user
+                        }
+                    })
                 }
-            })
+            }
+            updateUser(user)
+            
+        }
+    }
+
+    auth.changePassword = async function(password, newPassword) {
+        let response = await api.getLoggedIn();
+        console.log("changePassword reached")
+        if (response.status === 200) {
+            let user = response.data.user;
+
+            user.password = password;
+            user.newPassword = newPassword;
+            console.log("passwords")
+            console.log(password)
+            console.log(newPassword)
+
+            async function updatePassword(user){
+                response = await api.updatePassword(user._id, user);
+                if (response.status === 200){
+                    authReducer( {
+                        type: AuthActionType.EDIT_USER,
+                        payload: {
+                            user: user
+                        }
+                    })
+                }
+            }
+            updatePassword(user)
         }
     }
 
