@@ -11,6 +11,7 @@ router.get('/logout/:id', AuthController.logoutUser)
 router.get('/loggedIn', AuthController.getLoggedIn)
 router.get('/refreshUser', AuthController.refreshUser)
 router.put('/updateUser', AuthController.updateUser)
+router.put('/updatePassword', AuthController.updatePassword)
 
 router.post('/synctotp', TwoFactorController.setup2FA)
 router.post('/verifytotp', TwoFactorController.verifyTOTP)

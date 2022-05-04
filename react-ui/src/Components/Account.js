@@ -36,6 +36,17 @@ function Account() {
     
     };
 
+    const handlePassword = (event) => {
+        console.log("handlepassword reached")
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        auth.changePassword(
+            formData.get('Password'),
+            formData.get('New Password'),
+        )
+    
+    };
+
     var disableTwoAuth = () => {
         console.log('weeerooo');
     }
@@ -84,7 +95,8 @@ function Account() {
 
                 <Divider/>
                 
-                <Box sx={{ mt: 2, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Box sx={{ mt: 2, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center'}} 
+                    component="form" onSubmit={handlePassword}>
                     <h2>Change Password</h2>
                     <TextField margin="normal" fullWidth id="oldPassword" label="Password" name="Password" autoComplete="********"
                         >
@@ -92,7 +104,7 @@ function Account() {
                     <TextField margin="normal" fullWidth id="newPassword" label="New Password" name="New Password" autoComplete="********"
                         >
                     </TextField>
-                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }}>
+                    <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }} type="submit">
                             Submit Changes
                     </Button>
                 </Box>
