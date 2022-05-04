@@ -40,11 +40,9 @@ export const logoutUser = (id) => api.get(`/logout/${id}`)
 
 export const refreshUser = () => api.get(`/refreshUser/`)
 
-export const updateUser = (id, user) => {
-    return api.put(`/loginByID/${id}`, {
-        user: user
-    })
-}
+export const updateUser = (id, user) => api.put(`/updateUser`, user)
+
+export const updatePassword = (id, user) => api.put(`/updatePassword`, user)
 
 export const setUp2FA = (user) => api.post(`/synctotp`, user)
 
@@ -58,6 +56,7 @@ const apis = {
     logoutUser,
     refreshUser,
     updateUser,
+    updatePassword,
     setUp2FA,
     verifyTOTP,
 }

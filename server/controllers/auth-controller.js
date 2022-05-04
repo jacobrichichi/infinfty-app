@@ -233,7 +233,7 @@ getLoggedIn = async (req, res) => {
 updateUser = async (req, res) => {
     try {
         const body = req.body;
-
+        
         let userId = auth.verifyUser(req);
         if (!userId) {
             return res.status(200).json({
@@ -254,6 +254,7 @@ updateUser = async (req, res) => {
         .save()
         .then(() => {
             console.log("SUCCESS!!!");
+            console.log(req)
             return res.status(200).json({
                 success: true,
                 id: user._id,
@@ -274,6 +275,71 @@ updateUser = async (req, res) => {
     }
 }
 
+updatePassword = async (req, res) => {
+    try {
+        console.log("updatepassword reached")
+        const { password, newPassword } = req.body;
+
+        let userId = auth.verifyUser(req);
+        if (!userId) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "?"
+            })
+        }  
+
+        const existingUser = await User.findOne({ _id: userId });
+
+        // Chec if newPassword meets requirements (8 characters or more)
+        if (newPassword.length < 8) {
+            console.log("New password doesn't meet requirements");
+            return res.status(200).json({
+                success: false,
+                errorMessage: "New password must be 8 characters in length."
+            })
+        }
+
+        // Check if current password in first field is correct
+        const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
+        if (!passwordCorrect) {
+            console.log("Incorrect password");
+            return res.status(200).json({
+                success: false,
+                errorMessage: "Wrong current password provided."
+            })
+        }
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+
+        existingUser.passwordHash = passwordHash;
+
+        existingUser
+        .save()
+        .then(() => {
+            console.log("PASSWORD SUCCESS!!!");
+            return res.status(200).json({
+                success: true,
+                id: user._id,
+                message: 'User password updated!',
+            })
+        })
+        .catch(error => {
+            console.log("FAILURE: " + JSON.stringify(error));
+            return res.status(404).json({
+                error,
+                message: 'User password not updated!',
+            })
+        })
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -281,5 +347,6 @@ module.exports = {
     logoutUser,
     getLoggedIn,
     refreshUser,
-    updateUser
+    updateUser,
+    updatePassword
 }
