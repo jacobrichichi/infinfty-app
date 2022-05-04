@@ -233,7 +233,7 @@ getLoggedIn = async (req, res) => {
 updateUser = async (req, res) => {
     try {
         const body = req.body;
-
+        
         let userId = auth.verifyUser(req);
         if (!userId) {
             return res.status(200).json({
@@ -254,6 +254,7 @@ updateUser = async (req, res) => {
         .save()
         .then(() => {
             console.log("SUCCESS!!!");
+            console.log(req)
             return res.status(200).json({
                 success: true,
                 id: user._id,
@@ -273,6 +274,28 @@ updateUser = async (req, res) => {
         res.json(false);
     }
 }
+
+/*
+changePassword = async (req, res) => {
+    try {
+        const { password, newpassword } = req.body;
+
+        // Check if current password in first field is correct
+        const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
+        if (!passwordCorrect) {
+            console.log("Incorrect password");
+            return res.status(200).json({
+                success: false,
+                errorMessage: "Wrong current password provided."
+            })
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+*/
 
 module.exports = {
     registerUser,

@@ -239,14 +239,21 @@ function AuthContextProvider(props) {
 
     auth.editUser = async function(newFirstName, newLastName, newUserName, newEmail) {
         const response = await api.getLoggedIn();
+        console.log("Success 2")
+        console.log(response.status)
         if (response.status === 200) {
 
             let user = response.data.user;
+            console.log("Success 3")
+            console.log(user)
 
             user.firstName = newFirstName;
             user.lastName = newLastName;
-            user.userName = newUserName
+            user.userName = newUserName;
             user.email = newEmail;
+            console.log("Success 4")
+            console.log(user)
+            console.log(user._id)
 
             async function updateUser(user){
                 response = await api.updateUser(user._id, user);

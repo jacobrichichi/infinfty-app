@@ -25,6 +25,8 @@ function Account() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        console.log("Success!")
+        console.log(formData.get('fname'))
         auth.editUser(
             formData.get('fname'),
             formData.get('lname'),

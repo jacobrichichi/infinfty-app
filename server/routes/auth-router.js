@@ -10,7 +10,7 @@ router.get('/loginById/:id', AuthController.loginUserById)
 router.get('/logout/:id', AuthController.logoutUser)
 router.get('/loggedIn', AuthController.getLoggedIn)
 router.get('/refreshUser', AuthController.refreshUser)
-router.put('/updateUser',AuthController.updateUser)
+router.put('/updateUser', AuthController.updateUser)
 
 router.post('/synctotp', TwoFactorController.setup2FA)
 router.post('/verifytotp', TwoFactorController.verifyTOTP)
