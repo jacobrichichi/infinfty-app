@@ -9,7 +9,7 @@ import 'react-multi-carousel/lib/styles.css';
 
 const ExploreCarouselTwo = (props) => {
 
-  let collections = props.data.collections.exploreAuctions
+  let collections = props.data.collections
 
 
     const responsive = {

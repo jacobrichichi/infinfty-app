@@ -17,7 +17,8 @@ export const WalletActionType = {
     SET_CURRENT_NFT: "SET_CURRENT_NFT",
     SET_EXPLORE_AUCTIONS: "SET_EXPLORE_AUCTIONS",
     SET_CURRENT_AUCTION: "SET_CURRENT_AUCTION",
-    DONE_DISCONNECTING: "DONE_DISCONNECTING"
+    DONE_DISCONNECTING: "DONE_DISCONNECTING",
+    REFRESH_PAGE: "REFRESH_PAGE"
 }
 
 function WalletContextProvider(props) {
@@ -165,6 +166,19 @@ function WalletContextProvider(props) {
                     exploreAuctions: wallet.exploreAuctions,
                     disconnecting: false
 
+                })
+            }
+            case WalletActionType.REFRESH_PAGE: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: payload.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: payload.isWallet,
+                    currentNFT: payload.currentNFT,
+                    currentAuction: payload.currentAuction,
+                    exploreAuctions: payload.exploreAuctions,
+                    disconnecting: false
                 })
             }
 
@@ -393,7 +407,9 @@ function WalletContextProvider(props) {
 
 
     // this is usually called before entering the auction page, general info like NFT being sold, seller, highest current bid etc etc
-    wallet.setCurrentAuction = async function(auction){
+    wallet.setCurrentAuction = async function(auctionID){
+        const auction = await getAuctionDetails(auctionID)
+
         walletReducer({
             type: WalletActionType.SET_CURRENT_AUCTION,
             payload: {
@@ -432,7 +448,7 @@ function WalletContextProvider(props) {
                 walletReducer({
                     type: WalletActionType.SET_EXPLORE_AUCTIONS,
                     payload: {
-                        exploreAuctions: {exploreAuctions: exploreAuctions }
+                        exploreAuctions: exploreAuctions
                     }
                 })
 
@@ -446,30 +462,84 @@ function WalletContextProvider(props) {
         walletReducer({
             type: WalletActionType.SET_EXPLORE_AUCTIONS,
             payload: {
-                exploreAuctions: {exploreAuctions: auctions }
+                exploreAuctions: auctions
             }
         })
     }
 
+    wallet.goToAuction = function(auction){
+        walletReducer({
+            type: WalletActionType.SET_CURRENT_AUCTION,
+            payload: {
+                currentAuction: auction
+            }
+        })
+        localStorage.setItem('currentAuctionID', auction.id)
+        navigate('../auction')
+    }
+
+    wallet.refreshPage  = async function(nftUrl, walletID, auctionID) {
+        const response = await api.getExploreAuctions()
+
+        if(response.status === 200){
+            if(response.data.success){
+
+                let exploreAuctions = response.data.auctions
+                let currentNFT = (nftUrl !== null ? {url: nftUrl, 
+                                    name: localStorage.getItem("currentNFTName"), 
+                                    amount: localStorage.getItem("currentNFTAmount"), 
+                                    id: localStorage.getItem("currentNFTId")} : null)
+
+                const auction = await getAuctionDetails(auctionID)
+                
+
+                console.log(exploreAuctions)
+                walletReducer({
+                    type: WalletActionType.REFRESH_PAGE,
+                    payload: {
+                        exploreAuctions: exploreAuctions,
+                        currentNFT: currentNFT,
+                        accounts: walletID,
+                        currentAuction: auction
+                    }
+                })
+
+
+            }
+        }
+    }
+
+    // consolidated refresh into one call
+
     useEffect(() => {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         const currentWallet = localStorage.getItem("wallet");
+        const currentAuctionID = localStorage.getItem("currentAuctionID");
         //const exploreAuctions = localStorage.getItem("exploreAuctions")
-        if (currentNFTUrl) {
-            wallet.resetCurrentNFT(currentNFTUrl, 
-                localStorage.getItem("currentNFTName"), 
-                localStorage.getItem("currentNFTAmount"), 
-                localStorage.getItem("currentNFTId")
-            )
-            //auth.loginUser('','')
-            //wallet.getWalletId()
-        }
+        wallet.refreshPage((currentNFTUrl ? currentNFTUrl : null),
+                             (currentWallet ? currentWallet : null),
+                             (currentAuctionID ? currentAuctionID : null))
 
-        if(currentWallet){
-            wallet.readdWallet(currentWallet)
-        }
+       // if (currentNFTUrl) {
+        //     wallet.resetCurrentNFT(currentNFTUrl, 
+        //         localStorage.getItem("currentNFTName"), 
+        //         localStorage.getItem("currentNFTAmount"), 
+        //         localStorage.getItem("currentNFTId")
+        //     )
+        //     //auth.loginUser('','')
+        //     //wallet.getWalletId()
+        // }
 
-        wallet.getExploreAuctions()
+        // if(currentWallet){
+        //     wallet.readdWallet(currentWallet)
+        // }
+
+        // if(currentAuctionID){
+        //     console.log(window.location.href)
+        //     wallet.setCurrentAuction(parseInt(currentAuctionID))
+        // }
+
+        //wallet.getExploreAuctions()
       }, []);
 
 

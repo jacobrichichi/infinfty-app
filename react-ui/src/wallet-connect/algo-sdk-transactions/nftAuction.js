@@ -36,12 +36,49 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let auctionInfo = await client.accountApplicationInformation(creatorWallet, auctionID).do()
+    let auction = await client.getApplicationByID(auctionID).do()
         
     // TODO: Decode the app state into human readable form
     // first need to decode the variable names, then the variable values
 
-    console.log(auctionInfo)
+    auction.state = auction.params['global-state']
+
+    auction.state.map((stateVar) => {
+        stateVar.key = atob(stateVar.key)
+    })
+    
+    let stateCompiled = {}
+
+    auction.state.forEach((stateVar) => {
+        stateCompiled[stateVar.key] = stateVar['value']
+    })
+
+    stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
+    stateCompiled['end'] = stateCompiled['end']['uint']
+    stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
+    stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
+    stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
+    stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
+    stateCompiled['start'] = stateCompiled['start']['uint']
+    stateCompiled['description'] = "Cool little auction!"
+
+    // if no bid was placed yet, then bid_amount isn't a variable
+    if(typeof stateCompiled['bid_amount'] !== "undefined"){
+        stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+    }
+    else{
+        stateCompiled['bid_amount'] = 0
+    }
+
+    auction.state = stateCompiled
+
+    const { params } = await client.getAssetByID(auction.state['nft_id']).do()
+    auction.state.nftName = params.name
+    auction.state.nftUnitName = params["unit-name"];
+    auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
+    auction.state.nftDecimals = params.decimals;
+
+    return auction
 }
 
 // This will be repurposed to delete an auction SC given an application ID

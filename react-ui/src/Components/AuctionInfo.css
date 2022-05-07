@@ -21,6 +21,7 @@
 }
 
 #nft-image {
+    max-height: 350px;
 }
 
 #options-container {

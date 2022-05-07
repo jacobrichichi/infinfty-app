@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import "./CollectionCard.css"
 import { Link } from 'react-router-dom'
+import WalletContext from '../../wallet-connect'
 
 
 const CollectionCard = (props) => {
+
+    const { wallet } = useContext(WalletContext)
 
     const title = props.data.state.nftName;
     const imageLocation = props.data.state.nftURL;
@@ -13,11 +16,12 @@ const CollectionCard = (props) => {
     }
     console.log(props.data.state)
 
-    
+    const goToAuction = (event) => {
+        wallet.goToAuction(props.data)
+    }
 
     return (
-        <Link to = {"/explore/" + title}>
-            <div id = "collectionContainer">
+            <div id = "collectionContainer" onClick = {goToAuction}>
                 <div id = "collImgCont">
                     <img src = {imageLocation}/>
                 </div>
@@ -28,7 +32,6 @@ const CollectionCard = (props) => {
                     <span>{description}</span>
                 </div>
             </div>
-        </Link>
     )
 }
 

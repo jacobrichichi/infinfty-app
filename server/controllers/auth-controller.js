@@ -102,8 +102,10 @@ loginUser = async (req, res) => {
         }
         // LOGIN THE USER
         const token = auth.signToken(existingUser._id);
+        var now = new Date()
         res.cookie("token", token, {
             httpOnly: true,
+            expires: new Date(now.getFullYear(), now.getMonth()+1, now.getDay()),
             secure: true,
             sameSite: true
         }).status(200).json({

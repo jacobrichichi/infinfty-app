@@ -9,7 +9,7 @@ import 'react-multi-carousel/lib/styles.css';
 
 const CategoryCard = (props) => {
     const title = props.data.categoryTitle;
-    const collections = props.data.collections.exploreAuctions;
+    const collections = props.data.collections;
 
    
     const responsive = {
@@ -48,7 +48,7 @@ const CategoryCard = (props) => {
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
         >
-        {typeof collections !== 'undefined' ? collections.map((collection, index) => (
+        {(typeof collections !== 'undefined' || collections !== null) ? collections.map((collection, index) => (
             <CollectionCard data = {collection}/>
         )): <div/>}
         </Carousel>
