@@ -14,7 +14,8 @@ function AuctionInfo(props) {
 
     const handlePlaceBid = (event) => {
         event.preventDefault();
-        return
+        const formData = new FormData(event.currentTarget);
+        wallet.placeBid(formData.get('offer'));
     }
 
     let auction = wallet.currentAuction
@@ -53,9 +54,9 @@ function AuctionInfo(props) {
             <Grid  id = "options-container" item xs={6} >  
                 <Grid container>
                     <Grid item>
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
+                        <Box component="form" onSubmit = {handlePlaceBid} noValidate sx={{ mt: 1 }}>
                             <h2>Make Offer</h2>
-                            <TextField variant="filled" margin="normal" fullWidth id="offer" label="Offer" name="Offer"
+                            <TextField variant="filled" margin="normal" fullWidth id="offer" label="Offer" name="offer"
                             />
                             <Button type="submit" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mt: 3, mb: 2 }}>
                                 Save
@@ -65,10 +66,10 @@ function AuctionInfo(props) {
                             </Button>
                             <Divider style={{width:'100%'}} />
                             <h2>Highest Offer</h2>
-                            {auction.state.bid_amount}
+                            {auction.state.bid_amount/1000000} Algos
                             <Divider style={{width:'100%'}} />
-                            <h2>Duration</h2>
-                            {auction.state.end}
+                            <h2>End Time:</h2>
+                            {new Date(auction.state.end * 1000).toLocaleString()}
                         </Box>
                     </Grid>
                 </Grid>         

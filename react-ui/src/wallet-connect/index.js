@@ -420,6 +420,15 @@ function WalletContextProvider(props) {
         //const auctionDetails = getAuctionDetails(appID, creatorWallet)
     }
 
+    wallet.setCurrentAuctionNoID = async function(auction){
+        walletReducer({
+            type: WalletActionType.SET_CURRENT_AUCTION,
+            payload: {
+                currentAuction: auction
+            }
+        })
+    }
+
     wallet.endAuction = async function() {
         const response = await endAuction(parseInt(wallet.currentAuction.id), wallet.accounts, wallet.currentAuction.state.nft_id)
         if(response.success){
@@ -490,7 +499,11 @@ function WalletContextProvider(props) {
                                     amount: localStorage.getItem("currentNFTAmount"), 
                                     id: localStorage.getItem("currentNFTId")} : null)
 
-                const auction = await getAuctionDetails(auctionID)
+                
+                let auction = null
+                if(auctionID !== null){
+                    auction = await getAuctionDetails(auctionID)
+                }
                 
 
                 console.log(exploreAuctions)
@@ -509,6 +522,11 @@ function WalletContextProvider(props) {
         }
     }
 
+    wallet.placeBid = async function(offer) {
+        const response = await bidOnAuction(wallet.currentAuction, wallet.accounts, parseFloat(offer))
+
+    }
+
     // consolidated refresh into one call
 
     useEffect(() => {
@@ -519,27 +537,6 @@ function WalletContextProvider(props) {
         wallet.refreshPage((currentNFTUrl ? currentNFTUrl : null),
                              (currentWallet ? currentWallet : null),
                              (currentAuctionID ? currentAuctionID : null))
-
-       // if (currentNFTUrl) {
-        //     wallet.resetCurrentNFT(currentNFTUrl, 
-        //         localStorage.getItem("currentNFTName"), 
-        //         localStorage.getItem("currentNFTAmount"), 
-        //         localStorage.getItem("currentNFTId")
-        //     )
-        //     //auth.loginUser('','')
-        //     //wallet.getWalletId()
-        // }
-
-        // if(currentWallet){
-        //     wallet.readdWallet(currentWallet)
-        // }
-
-        // if(currentAuctionID){
-        //     console.log(window.location.href)
-        //     wallet.setCurrentAuction(parseInt(currentAuctionID))
-        // }
-
-        //wallet.getExploreAuctions()
       }, []);
 
 

@@ -24,7 +24,7 @@ const CarouselTwoCard = (props) => {
                 <b>{title}</b>
             </div>
             <div id = "carTwoTopBid">
-                <span>Top Bid: {topBid} Algos</span>
+                <span>Top Bid: {topBid / 1000000} Algos</span>
             </div>  
             <div id = "carTwoDesc">
                 <span>{description}</span>

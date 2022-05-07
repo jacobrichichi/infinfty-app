@@ -369,13 +369,16 @@ getExploreAuctions = async(req, res) => {
 }
 
 endAuction = async(req, res) => {
+    console.log('hi')
     User.findOne({ _id: req.userId}, async (err, user) => {
+        
         if(err){
             return res.status(400).json({
                 success: false,
                 message: 'The subject user was not found'
             })
         }
+        console.log('user')
 
         const callerWallet = user.wallet
         if(callerWallet === 'a'){
@@ -385,6 +388,9 @@ endAuction = async(req, res) => {
             })
         }
 
+        console.log(callerWallet)
+        console.log(req.body)
+
         Sale.findOne({ appID: req.body.auctionID }, (err, auction) => {
             if(err){
                 return res.status(400).json({
@@ -392,6 +398,8 @@ endAuction = async(req, res) => {
                     message: 'The subject auction was not found'
                 })
             }
+
+            console.log('hi 2')
 
             if(auction.creatorWallet !== callerWallet) {
                 return res.status(400).json({

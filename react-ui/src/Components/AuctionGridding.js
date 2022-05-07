@@ -25,7 +25,7 @@ function AuctionGridding(props){
 
     const handleEnd = (auction) => {
         console.log(auction)
-        wallet.setCurrentAuction(auction)
+        wallet.setCurrentAuctionNoID(auction)
         setIsConfirmEndModalOpen(true)
     }
 
@@ -77,7 +77,7 @@ function AuctionGridding(props){
                     <p>Top Bid: {auction.state.bid_amount === 0 ? "None" : auction.state.bid_amount}</p>
                </div>
                <div id = "nftEndCont">
-                    <p>End's at: {auction.state.end}</p>
+                    <p>End's at: {new Date(auction.state.end * 1000).toLocaleString()}</p>
                </div>
                <div id = "endAuctionCont">
                    <Button onClick = {() => handleEnd(auction)}>

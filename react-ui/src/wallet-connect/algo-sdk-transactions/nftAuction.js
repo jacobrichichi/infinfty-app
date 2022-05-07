@@ -6,28 +6,6 @@ import rawClear from "../auction_contracts/clearnew.txt"
 
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
-export const createNFT = async (nftFile, nftName, nftDesc) => {
-    
-}
-
-export const bidOnAuction = async (auctionID, bidder, bidAmount) => {
-
-    const conTemp = new WalletConnect({
-        bridge: "https://bridge.walletconnect.org",
-        qrcodeModal: QRCodeModal
-    });
-
-    const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
-
-    let userInfo = await client.accountInformation(bidder).do()
-
-    let appInfo = await client.accountApplicationInformation(bidder, userInfo['created-apps'][10].id).do()
-
-    console.log(appInfo)
-
-
-}
-
 export const getAuctionDetails = async(auctionID, creatorWallet) => {
     const conTemp = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
@@ -36,7 +14,10 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let auction = await client.getApplicationByID(auctionID).do()
+    let auction = await client.getApplicationByID(auctionID).do().catch(error => {
+        localStorage.removeItem("currentAuctionID")
+        return null
+    })
         
     // TODO: Decode the app state into human readable form
     // first need to decode the variable names, then the variable values
@@ -81,8 +62,12 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     return auction
 }
 
-// This will be repurposed to delete an auction SC given an application ID
-export const deleteAuctions = async(sender, nftID) => {
+export const createNFT = async (nftFile, nftName, nftDesc) => {
+    
+}
+
+export const bidOnAuction = async (auction, bidder, bidAmount) => {
+
     const conTemp = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModal
@@ -90,32 +75,57 @@ export const deleteAuctions = async(sender, nftID) => {
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let params = await client.getTransactionParams().do()
-    // set transaction fee for writing to the contract to minimum
-    params.fee = algosdk.ALGORAND_MIN_TX_FEE
-    params.flatFee = true
+    let userInfo = await client.accountInformation(bidder).do()
 
-    let info = await client.accountInformation(sender).do()
-    let app =  info['created-apps'][5]
+    let prevBidder = auction.state.bid_account
+    let prevBidAmount = auction.state.bid_amount
 
-    let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: sender, suggestedParams: params, appIndex: app.id, foreignAssets: [nftID] })
-    let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
-    let buffering = Buffer.from(encoding)
-    let finalToString = buffering.toString("base64")
 
-    const walletTxns = [{txn: finalToString}]
-    
-    const requestParams = [walletTxns];
-    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
-    const result = await conTemp.sendCustomRequest(request)
+    let sug_params = await client.getTransactionParams().do()
+    sug_params.fee = algosdk.ALGORAND_MIN_TX_FEE
+    sug_params.flatFee = true
 
-    const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
+    let appAddr = algosdk.getApplicationAddress(parseInt(auction.id))
 
-    let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
-    const appIndex = confirmedTxn['application-index']
+    let payTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: bidder,
+        to: appAddr,
+        amount: parseInt(bidAmount * 1000000),
+        suggestedParams: sug_params
+    })
+
+    let bidTxn = algosdk.makeApplicationCallTxnFromObject({
+                                                    from: bidder,
+                                                    suggestedParams: sug_params,
+                                                    appIndex: parseInt(auction.id),
+                                                    onComplete: algosdk.OnApplicationComplete.NoOpOC,
+                                                    appArgs: [new Uint8Array(Buffer.from("bid"))],
+                                                    foreignAssets: [auction.state.nft_id],
+                                                    accounts: prevBidAmount !== 0 ? [prevBidder] : []
+                                                })
+
+    algosdk.assignGroupID([payTxn, bidTxn])
+
+    const paymentTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(payTxn)).toString("base64")
+    const bidTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(bidTxn)).toString("base64")
+    const paymentTxns = [{txn: paymentTxnEncoded}, {txn: bidTxnEncoded}]
+    const paymentParams = [paymentTxns]
+    const paymentRequest = formatJsonRpcRequest("algo_signTxn", paymentParams);
+
+    const paymentResult = await conTemp.sendCustomRequest(paymentRequest);
+    console.log(paymentResult)
+    const paymentAdded = await client.sendRawTransaction([new Uint8Array(paymentResult[0]), new Uint8Array(paymentResult[1])]).do()
+    let confirmedPaymentTxn = await algosdk.waitForConfirmation(client, paymentAdded.txId, 5);
+
+    // const bidTxns = [{txn: bidTxnEncoded}]
+    // const bidParams = [bidTxns]
+    // const bidRequest = formatJsonRpcRequest("algo_signTxn", bidParams);
+    // const bidResult = await conTemp.sendCustomRequest(bidRequest);
+    // const bidAdded = await client.sendRawTransaction(new Uint8Array(bidResult[0])).do()
+    // let confirmedBidTxn = await algosdk.waitForConfirmation(client, bidAdded.txId, 5);
+
+
 }
-
-
 
 export const endAuction = async (auctionID, walletID, nftID) => {
     const conTemp = new WalletConnect({
@@ -124,6 +134,8 @@ export const endAuction = async (auctionID, walletID, nftID) => {
     });
 
     const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+
+    let accountInfo = await client.accountInformation(walletID).do()
 
     let params = await client.getTransactionParams().do()
     // set transaction fee for writing to the contract to minimum
@@ -176,9 +188,9 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     const startTime = parseInt(date.getTime()/1000 + 100)
 
     //const endTime = startTime + duration * 24 * 60 * 60
-    const endTime = startTime + 30
-    let microReserve = parseInt(reserve * 100000)
-    let microIncrement = parseInt(minBidIncrement * 100000)
+    const endTime = startTime + 1800
+    let microReserve = parseInt(reserve * 1000000)
+    let microIncrement = parseInt(minBidIncrement * 1000000)
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc
     const appArgs = [
         algosdk.decodeAddress(sender).publicKey,
