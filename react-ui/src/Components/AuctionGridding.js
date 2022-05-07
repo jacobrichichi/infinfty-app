@@ -74,7 +74,7 @@ function AuctionGridding(props){
                </div>
 
                <div id = "nftBidCont">
-                    <p>Top Bid: {auction.state.bid_amount === 0 ? "None" : auction.state.bid_amount}</p>
+                    <p>Top Bid: {auction.state.bid_amount === 0 ? "No Bid" : (auction.state.bid_amount / 1000000 + " Algos")}</p>
                </div>
                <div id = "nftEndCont">
                     <p>End's at: {new Date(auction.state.end * 1000).toLocaleString()}</p>
