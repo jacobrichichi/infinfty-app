@@ -85,7 +85,7 @@ loginUser = async (req, res) => {
                 errorMessage: "Please enter all required fields." 
             });
         }
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (!existingUser) {
             return res.status(200).json({
                 success: false,
