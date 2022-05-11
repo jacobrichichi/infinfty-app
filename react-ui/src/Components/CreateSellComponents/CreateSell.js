@@ -23,28 +23,40 @@ import { TextField } from '@mui/material';
 function CreateSell(){
     const { wallet } = useContext(WalletContext)
 
-    const [files, setFiles]= useState([]);
-    const [sellingtype, setSellingType]= useState(' ');
-    const [price, setPrice]= useState(0);
-    const [days, setDays]= useState(0);
+    const [files, setFiles] = useState([]);
+    const [assetName, setAssetname] = useState("An NFT")
+    const [assetDesc, setAssetDesc] = useState("Desc of NFT created")
+
+    /**
+        ASA Paramters: NFT Specific
+        Creator (required)
+        AssetName (optional, but recommended)
+        UnitName (optional, but recommended) => AlgoNFT
+        Total (required) => 1
+        Decimals (required) => 0
+        DefaultFrozen (required) => True
+        URL (optional) => Link to IPFS or Pinning service
+        MetaDataHash (optional) => Hash from IPFS
+
+     */
 
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/*, video/*, audio/*',
         onDrop: (acceptedFiles) => {
-            // doesn't append
+            // Doesn't append, need to select more than one
             setFiles(
                 acceptedFiles.map( (file) => Object.assign(file, {
                     preview: URL.createObjectURL(file)
                 }))
             );
-            console.log(files);
+            console.log(files.length);
         }
     });
 
     const images = files.map( (file) => (
         <div key={file.name}>
             <div>
-                <img src={file.preview} style={{width: '100%'}} alt='preview'/>
+                <img src={file.preview} style={{width: '50%'}} alt='preview'/>
             </div>
         </div>
     ));
@@ -54,59 +66,25 @@ function CreateSell(){
 	const onFileUpload = (e) => {
         e.preventDefault();
         console.log('pressed submit');
-
-        const formData = new FormData(e.currentTarget)
-
         // Will have to add parameters for price, sellingtype, price, days
-        wallet.createNft(files[0], formData.get('nftName'), 'An NFT that is the first made through this website')
-        
-        //let path = `/inventory`; 
-        //navigate(path);
+        wallet.createNft(files[0], assetName, assetDesc)
+        let path = `/inventory`; 
+        navigate(path);
 	};
 
-    const changeRadioButton = (e) => {
-        var val=e.target.value;
-        setSellingType(val);
-        console.log(val);
-    }
-
-    const changePrice = (e) => {
-        var val=e.target.value;
-        setPrice(val);
-        console.log(val);
-    }
-
-    const changeDuration = (e) => {
-        var val=e.target.value;
-        setDays(val);
-        console.log(val);
-    }
+    var changeNFTName = (e) => {setAssetname(e.target.value)}
+    var changeNFTDescription = (e) => {setAssetDesc(e.target.value)}
 
     return(
         <div>
             <h1 style={{padding: '1%'}}>Create Your NFT</h1>
             <form id='form'>
                 <div style={{width: '50%', float: 'left'}}>
-                    <Box component="form" noValidate onSubmit={onFileUpload} sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="nftName"
-                            label="NFT Name"
-                            name="nftName"
-                            autoComplete=""
-                            autoFocus
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            size = 'small'
-                            sx={{ mt: 3, mb: 2 }}>
-                                Create
-                        </Button>
-                    </Box>
+                    <FormGroup sx={{width: '50%', padding: '2%'}}>
+                        <TextField name='nftname' onChange={changeNFTName} placeholder="What is your NFT name?"></TextField>
+                        <TextField name='nftdesc' onChange={changeNFTDescription} placeholder="Describe your NFT"></TextField>
+                        <Button variant="contained" size='small' onClick={onFileUpload}>Submit</Button>
+                    </FormGroup>
                 </div>
                 <div id='preview-nft' style={{width: '50%', float: 'right'}}>
                     <div {...getRootProps()}>

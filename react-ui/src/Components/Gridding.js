@@ -22,7 +22,7 @@ function Gridding(props){
     return (
        <div id = "griddingContainer">
         {props.nftitems.map(({url, name, amount, id}) => (
-           <div id = "gridCell">
+           <div id = "gridCell" key={name}>
                <div id = "nftImgCont">
                    <img src = {url} alt = "" id = "nftImg"></img>
                </div>
