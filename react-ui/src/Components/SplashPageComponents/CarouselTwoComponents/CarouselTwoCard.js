@@ -1,8 +1,10 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import "./CarouselTwoCard.css"
 import Stack from '@mui/material/Stack'
+import WalletContext from '../../../wallet-connect'
 
 const CarouselTwoCard = (props) => {
+    const { wallet } = useContext(WalletContext)
 
     const title = props.data.state.nftName;
     const imageLocation = props.data.state.nftURL;
@@ -10,6 +12,10 @@ const CarouselTwoCard = (props) => {
     const topBid = props.data.state.bid_amount;
     console.log(props.data.state)
     
+    const goToAuction = (event) => {
+        wallet.goToAuction(props.data)
+    }
+
     return (
         // <div id = "carTwoCardContainer">
 
@@ -19,6 +25,7 @@ const CarouselTwoCard = (props) => {
         alignItems="center"
         spacing={1.5}
         id = "carTwoCardContainer"
+        onClick={goToAuction}
         >
             <img id = "carTwoImg" src = {imageLocation}/>
             <div id = "carTwoTitle">
