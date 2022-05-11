@@ -131,6 +131,7 @@ const Navbar = (props) => {
         </Grid>
       )
     }
+    if(auth.loggedIn){
     return(
         <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
             <div className = "linkText navLink" id = "conLinkText" onClick = {handleWalletOpen}>
@@ -138,6 +139,13 @@ const Navbar = (props) => {
             </div>
         </Grid>
       )
+    } else {
+      return(
+        <Grid item xs = {2} className = "textContainer" id = "conTextContainer">
+            
+        </Grid>
+      )
+    }
   };
 
   return (
