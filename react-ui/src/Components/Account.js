@@ -98,10 +98,10 @@ function Account() {
                 <Box sx={{ mt: 2, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center'}} 
                     component="form" onSubmit={handlePassword}>
                     <h2>Change Password</h2>
-                    <TextField margin="normal" fullWidth id="oldPassword" label="Password" name="Password" autoComplete="********"
+                    <TextField type="password" margin="normal" fullWidth id="oldPassword" label="Password" name="Password" autoComplete="********"
                         >
                     </TextField>
-                    <TextField margin="normal" fullWidth id="newPassword" label="New Password" name="New Password" autoComplete="********"
+                    <TextField type="password" variant="filled" margin="normal" fullWidth id="newPassword" label="New Password" name="New Password" autoComplete="********"
                         >
                     </TextField>
                     <Button variant="contained" sx = {{bgcolor: "#CE4257", color: "white",  mt: 3, mb: 3 }} type="submit">
