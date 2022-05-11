@@ -12,7 +12,8 @@ router.post('/addWallet', auth.verify, function(req, res){
     NftController.addWallet(req, res);
 });
 router.post('/createNft', auth.verify, function(req, res){
-    NftController.createNft(req, res);
+    res.send('yay') // take routing out just in case
+    // NftController.createNft(req, res);
 });
 router.post('/listNFTSale', auth.verify, function(req, res) {
     NftController.listNFTSale(req, res)

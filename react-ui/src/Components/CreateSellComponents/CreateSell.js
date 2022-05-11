@@ -13,11 +13,11 @@ import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { TextField } from '@mui/material';
 
 
 import hspack from '../images/hspack.png'
 import WalletContext from '../../wallet-connect'
-import { TextField } from '@mui/material';
 
 
 function CreateSell(){
@@ -26,19 +26,6 @@ function CreateSell(){
     const [files, setFiles] = useState([]);
     const [assetName, setAssetname] = useState("An NFT")
     const [assetDesc, setAssetDesc] = useState("Desc of NFT created")
-
-    /**
-        ASA Paramters: NFT Specific
-        Creator (required)
-        AssetName (optional, but recommended)
-        UnitName (optional, but recommended) => AlgoNFT
-        Total (required) => 1
-        Decimals (required) => 0
-        DefaultFrozen (required) => True
-        URL (optional) => Link to IPFS or Pinning service
-        MetaDataHash (optional) => Hash from IPFS
-
-     */
 
     const {getRootProps, getInputProps} = useDropzone({
         accept: 'image/*, video/*, audio/*',
@@ -61,23 +48,32 @@ function CreateSell(){
         </div>
     ));
 
+    var changeNFTName = (e) => {setAssetname(e.target.value)}
+    var changeNFTDescription = (e) => {setAssetDesc(e.target.value)}
+    var submiterror = "";
     let navigate = useNavigate();
-    // On file upload (click the upload button)
-	const onFileUpload = (e) => {
+
+	const onFileUpload = async (e) => {
         e.preventDefault();
         console.log('pressed submit');
         // Will have to add parameters for price, sellingtype, price, days
-        wallet.createNft(files[0], assetName, assetDesc)
-        let path = `/inventory`; 
-        navigate(path);
+        if(wallet.isWallet){
+            let res = await wallet.createNft(files[0], assetName, assetDesc, wallet.accounts)
+            if (res.sucess){
+                let path = `/inventory`; 
+                navigate(path);
+            }else{
+                submiterror = (<h2>Something failed.</h2>)
+            }
+        }else{
+            submiterror = (<h2>No active wallet.</h2>)
+        }
 	};
-
-    var changeNFTName = (e) => {setAssetname(e.target.value)}
-    var changeNFTDescription = (e) => {setAssetDesc(e.target.value)}
 
     return(
         <div>
             <h1 style={{padding: '1%'}}>Create Your NFT</h1>
+            {submiterror}
             <form id='form'>
                 <div style={{width: '50%', float: 'left'}}>
                     <FormGroup sx={{width: '50%', padding: '2%'}}>
