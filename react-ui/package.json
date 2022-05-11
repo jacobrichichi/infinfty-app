@@ -37,5 +37,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "https://infinfty.herokuapp.com/nft"
+  "proxy": "https://infinfty.herokuapp.com/"
 }
