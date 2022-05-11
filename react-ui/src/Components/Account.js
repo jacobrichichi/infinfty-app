@@ -110,14 +110,14 @@ function Account() {
                 </Box>
 
                 <Link to = "/twofactorsetup">
-                    <Button variant="outlined">
+                <Button color="success" variant="contained" sx={{ mt: 3, mb: 2 }}>
                         <div className = "linkText" id = "expLinkText">
                             Enable 2 Factor
                         </div>
                     </Button>
                 </Link>
 
-                <Button variant="outlined" onClick={disableTwoAuth}>
+                <Button color="secondary" variant="contained" sx={{mb: 4 }} onClick = {disableTwoAuth}>
                     <div className = "linkText" id = "expLinkText">
                         Disable 2 Factor
                     </div>
