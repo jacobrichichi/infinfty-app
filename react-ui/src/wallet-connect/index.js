@@ -430,7 +430,7 @@ function WalletContextProvider(props) {
     }
 
     wallet.endAuction = async function() {
-        const response = await endAuction(parseInt(wallet.currentAuction.id), wallet.accounts, wallet.currentAuction.state.nft_id)
+        const response = await endAuction(parseInt(wallet.currentAuction.id), wallet.accounts, wallet.currentAuction.state.bid_account, wallet.currentAuction.state.nft_id)
         if(response.success){
             const backendResponse = await api.endAuction(parseInt(wallet.currentAuction.id), wallet.currentAuction.state.nft_id)
         }
