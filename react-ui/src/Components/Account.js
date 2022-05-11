@@ -33,7 +33,6 @@ function Account() {
             formData.get('userName'),
             formData.get('email'),
         )
-    
     };
 
     const handlePassword = (event) => {
@@ -44,7 +43,6 @@ function Account() {
             formData.get('Password'),
             formData.get('New Password'),
         )
-    
     };
 
     var disableTwoAuth = () => {

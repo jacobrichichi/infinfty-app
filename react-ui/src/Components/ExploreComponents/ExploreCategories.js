@@ -32,7 +32,7 @@ function ExploreCategories(){
         <div id = "mainContainer">
                 <div id = "titleTextContainer">
                     <span id = "titleText">
-                        Explore Our Collections!
+                        Explore The Realm of InfiNFTy™!
                     </span>
                 </div>
 
