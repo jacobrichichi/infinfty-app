@@ -17,8 +17,6 @@ import './Account.css';
 
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
-import { Card, Checkbox, Grid } from "@mui/material";
-
 
 function Account() {
     const { auth } = useContext(AuthContext)

@@ -12,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem';
-
+import IconButton from '@mui/material/IconButton';
 
 import "./Navbar.css"
 
@@ -22,6 +22,7 @@ import Modal from '@mui/material/Modal';
 import RegisterLoginModal from './RegisterLoginModal';
 import WalletContext from '../wallet-connect'
 import AuthContext from '../auth'
+import SearchPage from './SearchPage'
 
 const Navbar = (props) => {
   const { wallet } = useContext(WalletContext)
@@ -36,6 +37,7 @@ const Navbar = (props) => {
   // ^ Purpose of loggedIn State is trivial
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
+  let navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
@@ -59,6 +61,13 @@ const Navbar = (props) => {
     wallet.disconnectWallet()
     auth.logoutUser();
     wallet.doneLoggingOut();
+  }
+
+  const handleEvent = (event) => {
+    if (event.key === "Enter") {
+        console.log(event.target.value);
+        navigate("/search");
+    }
   }
 
   var accountInfo = (
@@ -120,7 +129,7 @@ const Navbar = (props) => {
     loginModal = <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
   }
 
-  let navigate = useNavigate();
+  
   var walletconnect = () => {
     if(auth.loggedIn && (auth.user.hasWallet)){
       return(
@@ -158,7 +167,7 @@ const Navbar = (props) => {
         </Grid>
 
         <Grid item xs = {10} id = "searchContainer">
-            <TextField id = "searchBar"/>
+            <TextField id = "searchBar" defaultValue="Search NFTs" margin="normal" fullWidth onKeyPress={handleEvent}/>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">

@@ -12,9 +12,9 @@ const CarouselTwoCard = (props) => {
     const topBid = props.data.state.bid_amount;
     console.log(props.data.state)
     
-    const goToAuction = (event) => {
-        wallet.goToAuction(props.data)
-    }
+        const goToAuction = (event) => {
+            wallet.goToAuction(props.data)
+        }
 
     return (
         // <div id = "carTwoCardContainer">
