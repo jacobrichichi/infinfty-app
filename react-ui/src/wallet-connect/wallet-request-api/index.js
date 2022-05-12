@@ -70,7 +70,6 @@ export const endAuction = (auctionID, nftID) => {
 const apis = {
     addWallet,
     getInventory,
-    createNft,
     listNFTSale,
     testPython,
     testAuction,

@@ -312,8 +312,9 @@ function WalletContextProvider(props) {
         }
     }
 
-    wallet.createNft = async function(nftFile, nftName, nftDesc) {
-        const response = await createNFT(nftFile, nftName, nftDesc)
+    wallet.createNft = async function(nftFile, nftName, nftDesc, bidder) {
+        const response = await createNFT(nftFile, nftName, nftDesc, bidder)
+        return response
     }
     
     wallet.disconnectWallet = function(){

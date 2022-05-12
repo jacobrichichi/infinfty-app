@@ -9,6 +9,7 @@
     "@material-ui/core": "latest",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "latest",
+    "@pinata/sdk": "^1.1.25",
     "@walletconnect/client": "^1.7.5",
     "algorand-walletconnect-qrcode-modal": "^1.7.4",
     "algosdk": "^1.15.0",
@@ -21,7 +22,8 @@
     "react-pro-sidebar": "^0.7.1",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.2.2",
-    "react-scripts": "^2.1.8"
+    "react-scripts": "^2.1.8",
+    "web3": "^1.7.3"
   },
   "scripts": {
     "start": "react-scripts start",
