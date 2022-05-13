@@ -5,7 +5,8 @@ const ObjectId = Schema.Types.ObjectId
 const SaleSchema = new Schema(
     {
         appID: { type: String, required: true },
-        creatorWallet: { type: String, required: true }
+        creatorWallet: { type: String, required: true },
+        description: { type: String, required: true }
     },
 
     { timestamps: true },
