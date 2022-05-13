@@ -26,7 +26,7 @@ const Desktop = (props) => {
             <DesktopMainCard/>
             <ExploreCarouselTwo data = {carouselOneDataNew}/>
             <AlgoRundownCard/>
-            <ExploreCarouselTwo data = {carouselTwoDataNew}/>
+            {/* <ExploreCarouselTwo data = {carouselTwoDataNew}/> */}
             
 
         </div>

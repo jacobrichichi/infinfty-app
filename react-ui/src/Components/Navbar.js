@@ -8,12 +8,14 @@ import accountImg from "./images/accountImg.png"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem';
-
+import IconButton from '@mui/material/IconButton';
 
 import "./Navbar.css"
 
@@ -23,6 +25,7 @@ import Modal from '@mui/material/Modal';
 import RegisterLoginModal from './RegisterLoginModal';
 import WalletContext from '../wallet-connect'
 import AuthContext from '../auth'
+import SearchPage from './SearchPage'
 
 const Navbar = (props) => {
   const { wallet } = useContext(WalletContext)
@@ -30,6 +33,7 @@ const Navbar = (props) => {
   
   // open State to close RegisterLoginModal
   const [open, setOpen] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -39,6 +43,7 @@ const Navbar = (props) => {
   // ^ Purpose of loggedIn State is trivial
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
 
+  let navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
@@ -139,7 +144,7 @@ const Navbar = (props) => {
     loginModal = <RegisterLoginModal open = {open} handleClose = {handleClose} handleLogin = {handleLogin}/>
   }
 
-  let navigate = useNavigate();
+  
   var walletconnect = () => {
     if(auth.loggedIn && (auth.user.hasWallet)){
       return(
@@ -167,8 +172,41 @@ const Navbar = (props) => {
     }
   };
 
+  const handleCloseErrorModal = (event) => {
+    wallet.removeErrorMessage()
+  }
+
+  var errorPopup = <div></div>
+
+  if(wallet.isError){
+    errorPopup =
+    <Modal
+        open = {true}
+        onClose={handleCloseErrorModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+    >   
+        <Box sx = 
+            {{position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,}}
+            >
+            <Alert severity="warning">{wallet.errorMessage}</Alert>
+            <Button variant="outlined" onClick = {handleCloseErrorModal}>OK</Button>
+        </Box>
+    </Modal>
+  }
+
+
   return (
     <div>
+      {errorPopup}
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
         <Grid item xs = {4} id = "logoContainer">
           <Link to = "/">

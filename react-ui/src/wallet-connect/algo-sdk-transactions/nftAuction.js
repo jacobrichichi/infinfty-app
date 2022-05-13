@@ -3,60 +3,75 @@ import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import rawApprove from "../auction_contracts/approvalnew.txt"
 import rawClear from "../auction_contracts/clearnew.txt"
+import web3 from 'web3';
 
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
 export const clearApps = async (wallet) => {
-     const conTemp = new WalletConnect({
-        bridge: "https://bridge.walletconnect.org",
-        qrcodeModal: QRCodeModal
-    });
 
-    const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+    try{
+        const conTemp = new WalletConnect({
+            bridge: "https://bridge.walletconnect.org",
+            qrcodeModal: QRCodeModal
+        });
 
-    let accountInfo = await client.accountInformation(wallet).do()
+        const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let apps = accountInfo['created-apps']
+        let accountInfo = await client.accountInformation(wallet).do()
 
-    let params = await client.getTransactionParams().do()
-    // set transaction fee for writing to the contract to minimum
-    params.fee = algosdk.ALGORAND_MIN_TX_FEE
-    params.flatFee = true
+        let apps = accountInfo['created-apps']
 
-    for(let i = 0; i<apps.length; i++) {
-        let auction = apps[i]
-        auction.state = auction.params['global-state']
+        let params = await client.getTransactionParams().do()
+        // set transaction fee for writing to the contract to minimum
+        params.fee = algosdk.ALGORAND_MIN_TX_FEE
+        params.flatFee = true
 
-        auction.state.map((stateVar) => {
-            stateVar.key = atob(stateVar.key)
-        })
-        
-        let stateCompiled = {}
+        for(let i = 0; i<apps.length; i++) {
+            let auction = apps[i]
+            auction.state = auction.params['global-state']
 
-        auction.state.forEach((stateVar) => {
-            stateCompiled[stateVar.key] = stateVar['value']
-        })
+            auction.state.map((stateVar) => {
+                stateVar.key = atob(stateVar.key)
+            })
+            
+            let stateCompiled = {}
 
-        let nft_id = stateCompiled['nft_id']['uint']
+            auction.state.forEach((stateVar) => {
+                stateCompiled[stateVar.key] = stateVar['value']
+            })
 
-        let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: wallet, suggestedParams: params, foreignAssets: [nft_id], appIndex: auction.id, accounts: [wallet] })
-        let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
-        let buffering = Buffer.from(encoding)
-        let finalToString = buffering.toString("base64")
+            let nft_id = stateCompiled['nft_id']['uint']
 
-        const walletTxns = [{txn: finalToString}]
-        
-        const requestParams = [walletTxns];
-        const request = formatJsonRpcRequest("algo_signTxn", requestParams);
-        const result = await conTemp.sendCustomRequest(request)
+            let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: wallet, suggestedParams: params, foreignAssets: [nft_id], appIndex: auction.id, accounts: [wallet] })
+            let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
+            let buffering = Buffer.from(encoding)
+            let finalToString = buffering.toString("base64")
 
-        const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
+            const walletTxns = [{txn: finalToString}]
+            
+            const requestParams = [walletTxns];
+            const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+            const result = await conTemp.sendCustomRequest(request)
 
-        let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
+            const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
+
+            let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
+        }
+    }
+    catch(error) {
+        return { success: false, error: error}
     }
 
     return { success: true }
 }
+/**
+ * 
+ * name: 'testnet',
+ * server: 'https://testnet-algorand.api.purestake.io/ps1',
+ * label: 'TESTNET',
+ * explorer: 'https://goalseeker.purestake.io/algorand/testnet'
+ */
+
 
 export const getAuctionDetails = async(auctionID, creatorWallet) => {
     const conTemp = new WalletConnect({
@@ -114,114 +129,241 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     return auction
 }
 
-export const createNFT = async (nftFile, nftName, nftDesc) => {
+export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
+    /**
+        ASA Paramters: NFT Specific
+        Creator (required)
+        AssetName (optional, but recommended)
+        UnitName (optional, but recommended) => INFIMINT
+        Total (required) => 1
+        Decimals (required) => 0
+        DefaultFrozen (required) => True
+        URL (optional) => Link to IPFS or Pinning service
+        MetaDataHash (optional) => Hash from IPFS
+     */
     
-}
+    
+    // Pinning services
+    const pinataSDK = require('@pinata/sdk')
+    const pinata = pinataSDK(process.env.REACT_APP_PINATA_KEY, process.env.REACT_APP_PINATA_SECRET);
+    // Pin the file to IPFS via Pinata
+    const resultFile = await pinata.pinFileToIPFS(nftFile);
+    console.log('SC1: The NFT original digital asset pinned to IPFS via Pinata: ', resultFile);
+    // Constructing metadata JSON
+    let integrity = web3.utils.asciiToHex(resultFile.IpfsHash)
+    const metadata = {
+        "name": `${nftName}@arc3`,
+        "description": nftDesc,
+        "image": `ipfs://${resultFile.IpfsHash}`,
+        "image_integrity": `sha256-${integrity.base64}`,
+        "image_mimetype": `image/png`,
+        "properties": {
+            "file_url": `arc3-asa`,
+            "file_url_integrity": `sha256-${integrity.base64}`,
+            "file_url_mimetype": `image/png`,
+        }
+    }
+    // Pin metadata to IPFS via Pinata
+    const resultMeta = await pinata.pinJSONToIPFS(metadata);
+    console.log('SC1: The NFT metadata JSON file pinned to IPFS via Pinata: ', resultMeta);
 
-export const bidOnAuction = async (auction, bidder, bidAmount) => {
-
+    // Create asset onto Algorand chain
+    /**
+     * > Asset URL (au) points to a JSON Metadata file URI. 
+     * In the case of using IPFS , only standard IPFS URI (ipfs://...) 
+     * must be used and not gateway format (https://ipfs.io/ipfs/...). 
+     * No http URI is allowed for web security standards reasons. If Asset 
+     * Name does not end with "@arc3" then the Asset URL has to end with "#arc3". 
+     * > Asset Metadata Hash (am) is defined as the SHA-256 digest of the JSON 
+     * Metadata file as a 32-byte string (as defined in NIST FIPS 180-4), when 
+     * no extra_metadata is defined in JSON Metadata file (most of use cases).
+     */
+    const client = new algosdk.Algodv2('', 'https://algoexplorerapi.io', '');
+    let params = await client.getTransactionParams().do();
+    // Immutable parameters
+    params.fee = algosdk.ALGORAND_MIN_TX_FEE;
+    params.flatFee = true;
+    let note = undefined; // arbitrary data to be stored in the transaction; here, none is stored
+    // Asset creation specific parameters: The following parameters are asset specific
+    // We will also change the manager later in the example
+    let addr = bidder;
+    // Whether user accounts will need to be unfrozen before transacting    
+    let defaultFrozen = false;
+    // integer number of decimals for asset unit calculation
+    let decimals = 0;
+    // total number of this asset available for circulation   
+    let totalIssuance = 1;
+    // Used to display asset units to user    
+    let unitName = `INFIMINT`;
+    // Friendly name of the asset    
+    let assetName = `${nftName}@arc3`;
+    // Optional string pointing to a URL relating to the asset
+    let assetURL = `ipfs://${resultFile.IpfsHash}`;
+    // Optional hash commitment of some sort relating to the asset. 32 character length.
+    let assetMetadataHash = `sha256-${integrity.base64}`;
+    // Mutable paramters. Can only be changed by the current manager
+    // Specified address can change reserve, freeze, clawback, and manager
+    let manager = bidder;
+    // Specified address is considered the asset reserve
+    // (it has no special privileges, this is only informational)
+    let reserve = bidder;
+    // Specified address can freeze or unfreeze user asset holdings 
+    let freeze = bidder;
+    // Specified address can revoke user asset holdings and send them to other addresses    
+    let clawback = bidder;
+    // Signing and Sending "Txn" to allow "addr" to create an asset
+    // Signing will take place via app, sends API request to app
+    let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
+        addr, 
+        note,
+        totalIssuance, 
+        decimals, 
+        defaultFrozen, 
+        manager, 
+        reserve, 
+        freeze,
+        clawback, 
+        unitName, 
+        assetName, 
+        assetURL, 
+        assetMetadataHash, 
+        params
+    );
+    // Format unsignedTxn for API request to app
+    let encodedtxn = algosdk.encodeUnsignedTransaction(txn)
+    let buffertxn = Buffer.from(encodedtxn)
+    let finalToString = buffertxn.toString("base64")
+    const walletTxns = [{txn: finalToString}]
+    const requestParams = [walletTxns];
+    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
     const conTemp = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModal
     });
+    const results = await conTemp.sendCustomRequest(request) // API request to app
+    const tx = await client.sendRawTransaction(new Uint8Array(results[0])).do()
+    let assetID = null;
+    // Wait for transaction to be confirmed
+    const ptx = await algosdk.waitForConfirmation(client, tx.txId, 5);
+    // Get the new asset's information from the creator account
+    assetID = ptx["asset-index"];
+    // Get the completed Transaction
+    console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+    return { success: true }
+}
 
-    const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+export const bidOnAuction = async (auction, bidder, bidAmount) => {
+    try{
+        const conTemp = new WalletConnect({
+            bridge: "https://bridge.walletconnect.org",
+            qrcodeModal: QRCodeModal
+        });
 
-    let userInfo = await client.accountInformation(bidder).do()
+        const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let prevBidder = auction.state.bid_account
-    let prevBidAmount = auction.state.bid_amount
+        let userInfo = await client.accountInformation(bidder).do()
+
+        let prevBidder = auction.state.bid_account
+        let prevBidAmount = auction.state.bid_amount
 
 
-    let sug_params = await client.getTransactionParams().do()
-    sug_params.fee = algosdk.ALGORAND_MIN_TX_FEE
-    sug_params.flatFee = true
+        let sug_params = await client.getTransactionParams().do()
+        sug_params.fee = algosdk.ALGORAND_MIN_TX_FEE
+        sug_params.flatFee = true
 
-    let appAddr = algosdk.getApplicationAddress(parseInt(auction.id))
+        let appAddr = algosdk.getApplicationAddress(parseInt(auction.id))
 
-    let payTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        from: bidder,
-        to: appAddr,
-        amount: parseInt(bidAmount * 1000000),
-        suggestedParams: sug_params
-    })
+        let payTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+            from: bidder,
+            to: appAddr,
+            amount: parseInt(bidAmount * 1000000),
+            suggestedParams: sug_params
+        })
 
-    let bidTxn = algosdk.makeApplicationCallTxnFromObject({
-                                                    from: bidder,
-                                                    suggestedParams: sug_params,
-                                                    appIndex: parseInt(auction.id),
-                                                    onComplete: algosdk.OnApplicationComplete.NoOpOC,
-                                                    appArgs: [new Uint8Array(Buffer.from("bid"))],
-                                                    foreignAssets: [auction.state.nft_id],
-                                                    accounts: prevBidAmount !== 0 ? [prevBidder] : []
-                                                })
+        let bidTxn = algosdk.makeApplicationCallTxnFromObject({
+                                                        from: bidder,
+                                                        suggestedParams: sug_params,
+                                                        appIndex: parseInt(auction.id),
+                                                        onComplete: algosdk.OnApplicationComplete.NoOpOC,
+                                                        appArgs: [new Uint8Array(Buffer.from("bid"))],
+                                                        foreignAssets: [auction.state.nft_id],
+                                                        accounts: prevBidAmount !== 0 ? [prevBidder] : []
+                                                    })
 
-    let optInTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        from: bidder,
-        to: bidder,
-        suggestedParams: sug_params,
-        amount: 0,
-        assetIndex: auction.state.nft_id,
-    })
+        let optInTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            from: bidder,
+            to: bidder,
+            suggestedParams: sug_params,
+            amount: 0,
+            assetIndex: auction.state.nft_id,
+        })
 
-    algosdk.assignGroupID([payTxn, bidTxn, optInTxn])
+        algosdk.assignGroupID([payTxn, bidTxn, optInTxn])
 
-    const paymentTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(payTxn)).toString("base64")
-    const bidTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(bidTxn)).toString("base64")
-    const optInTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(optInTxn)).toString("base64")
-    const paymentTxns = [{txn: paymentTxnEncoded}, {txn: bidTxnEncoded}, {txn: optInTxnEncoded}]
-    const paymentParams = [paymentTxns]
-    const paymentRequest = formatJsonRpcRequest("algo_signTxn", paymentParams);
+        const paymentTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(payTxn)).toString("base64")
+        const bidTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(bidTxn)).toString("base64")
+        const optInTxnEncoded = Buffer.from(algosdk.encodeUnsignedTransaction(optInTxn)).toString("base64")
+        const paymentTxns = [{txn: paymentTxnEncoded}, {txn: bidTxnEncoded}, {txn: optInTxnEncoded}]
+        const paymentParams = [paymentTxns]
+        const paymentRequest = formatJsonRpcRequest("algo_signTxn", paymentParams);
 
-    const paymentResult = await conTemp.sendCustomRequest(paymentRequest);
-    console.log(paymentResult)
-    const paymentAdded = await client.sendRawTransaction([new Uint8Array(paymentResult[0]), new Uint8Array(paymentResult[1]), new Uint8Array(paymentResult[2])]).do()
-    let confirmedPaymentTxn = await algosdk.waitForConfirmation(client, paymentAdded.txId, 5);
+        const paymentResult = await conTemp.sendCustomRequest(paymentRequest);
+        console.log(paymentResult)
+        const paymentAdded = await client.sendRawTransaction([new Uint8Array(paymentResult[0]), new Uint8Array(paymentResult[1]), new Uint8Array(paymentResult[2])]).do()
+        let confirmedPaymentTxn = await algosdk.waitForConfirmation(client, paymentAdded.txId, 5);
+    }
+    catch(error) {
+        return { success: false, error: error}
+    }
+    return { success: true }
 
 }
 
 export const endAuction = async (auctionID, walletID, bidderAccount, nftID) => {
-    const conTemp = new WalletConnect({
-        bridge: "https://bridge.walletconnect.org",
-        qrcodeModal: QRCodeModal
-    });
+    try{
+        const conTemp = new WalletConnect({
+            bridge: "https://bridge.walletconnect.org",
+            qrcodeModal: QRCodeModal
+        });
 
-    const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+        const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
 
-    let accountInfo = await client.accountInformation(walletID).do()
+        let accountInfo = await client.accountInformation(walletID).do()
 
-    let params = await client.getTransactionParams().do()
-    // set transaction fee for writing to the contract to minimum
-    params.fee = algosdk.ALGORAND_MIN_TX_FEE
-    params.flatFee = true
-    let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: walletID, 
-        suggestedParams: params,
-        appIndex: auctionID, 
-        foreignAssets: [nftID],
-        accounts: [walletID, bidderAccount]
-    
-    })
-    let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
-    let buffering = Buffer.from(encoding)
-    let finalToString = buffering.toString("base64")
+        let params = await client.getTransactionParams().do()
+        // set transaction fee for writing to the contract to minimum
+        params.fee = algosdk.ALGORAND_MIN_TX_FEE
+        params.flatFee = true
+        let deleteTxn = algosdk.makeApplicationDeleteTxnFromObject({from: walletID, 
+            suggestedParams: params,
+            appIndex: auctionID, 
+            foreignAssets: [nftID],
+            accounts: [walletID, bidderAccount]
+        
+        })
+        let encoding = algosdk.encodeUnsignedTransaction(deleteTxn)
+        let buffering = Buffer.from(encoding)
+        let finalToString = buffering.toString("base64")
 
-    const walletTxns = [{txn: finalToString}]
-    
-    const requestParams = [walletTxns];
-    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
-    const result = await conTemp.sendCustomRequest(request)
+        const walletTxns = [{txn: finalToString}]
+        
+        const requestParams = [walletTxns];
+        const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+        const result = await conTemp.sendCustomRequest(request)
 
-    const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
+        const txid = await client.sendRawTransaction(new Uint8Array(result[0])).do()
 
-    let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
-    const appIndex = confirmedTxn['application-index']
-
-
+        let confirmedTxn = await algosdk.waitForConfirmation(client, txid.txId, 5);
+        const appIndex = confirmedTxn['application-index']
+    }   
+    catch(error) {
+        return { success: false, error: error}
+    }
     return { success: true }
 }
 
 export const createAuction = async (con, sender, seller, nftID, reserve, minBidIncrement, duration) => {
-
+    try{
     // only here so i can see the methods that come with walletconnect, con should be grabbed from index.js
     const conTemp = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
@@ -356,6 +498,10 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                 })
         })
 
-    console.log(fetchRes)
-    return fetchRes
+        return fetchRes
+    }
+    catch(error) {
+        return { success: false, error: error}
+    }
+    
 }

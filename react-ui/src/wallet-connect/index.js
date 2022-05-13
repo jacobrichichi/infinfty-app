@@ -19,7 +19,9 @@ export const WalletActionType = {
     SET_CURRENT_AUCTION: "SET_CURRENT_AUCTION",
     SET_SEARCH_RESULTS: "SET_SEARCH_RESULTS",
     DONE_DISCONNECTING: "DONE_DISCONNECTING",
-    REFRESH_PAGE: "REFRESH_PAGE"
+    REFRESH_PAGE: "REFRESH_PAGE",
+    ADD_ERROR_MESSAGE: "ADD_ERROR_MESSAGE",
+    REMOVE_ERROR_MESSAGE: "REMOVE_ERROR_MESSAGE"
 }
 
 function WalletContextProvider(props) {
@@ -33,7 +35,9 @@ function WalletContextProvider(props) {
         currentAuction: null,
         searchResults: [],
         exploreAuctions: [],
-        disconnecting: false
+        disconnecting: false,
+        isError: false,
+        errorMessage: ""
     })
 
     const navigate = useNavigate();
@@ -54,7 +58,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -69,7 +75,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting 
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -84,7 +92,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
 
                 })
             }
@@ -100,7 +110,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: true
+                    disconnecting: true,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -115,7 +127,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -130,7 +144,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -145,7 +161,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: payload.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
             case WalletActionType.SET_CURRENT_AUCTION: {
@@ -159,7 +177,9 @@ function WalletContextProvider(props) {
                     currentAuction: payload.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
 
                 })
             }
@@ -175,7 +195,9 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: wallet.searchResults,
-                    disconnecting: false
+                    disconnecting: false,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
 
                 })
             }
@@ -190,7 +212,9 @@ function WalletContextProvider(props) {
                     currentAuction: payload.currentAuction,
                     exploreAuctions: payload.exploreAuctions,
                     searchResults: payload.searchResults,
-                    disconnecting: false
+                    disconnecting: false,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
                 })
             }
 
@@ -205,7 +229,44 @@ function WalletContextProvider(props) {
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
                     searchResults: payload.searchResults,
-                    disconnecting: wallet.disconnecting
+                    disconnecting: wallet.disconnecting,
+                    isError: wallet.isError,
+                    errorMessage: wallet.errorMessage
+
+                })
+            }
+            case WalletActionType.ADD_ERROR_MESSAGE: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: wallet.isWallet,
+                    currentNFT: wallet.currentNFT,
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
+                    disconnecting: wallet.disconnecting,
+                    isError: true,
+                    errorMessage: payload.errorMessage
+
+                })
+            }
+
+            case WalletActionType.REMOVE_ERROR_MESSAGE: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: wallet.isWallet,
+                    currentNFT: wallet.currentNFT,
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
+                    disconnecting: wallet.disconnecting,
+                    isError: false,
+                    errorMessage: ""
 
                 })
             }
@@ -340,8 +401,14 @@ function WalletContextProvider(props) {
         }
     }
 
-    wallet.createNft = async function(nftFile, nftName, nftDesc) {
-        const response = await createNFT(nftFile, nftName, nftDesc)
+    wallet.createNft = async function(nftFile, nftName, nftDesc, bidder) {
+        const response = await createNFT(nftFile, nftName, nftDesc, bidder)
+        if(response.success){
+            navigate('/inventory')
+        }
+        else{
+            console.log('something went wrong')
+        }
     }
     
     wallet.disconnectWallet = function(){
@@ -428,7 +495,24 @@ function WalletContextProvider(props) {
                     if(auctionStorageResponse.data.success){
                         wallet.setCurrentAuction(auctionCreationResponse.appID, wallet.accounts)
                     }
+                    else{
+                        walletReducer({
+                            type: WalletActionType.ADD_ERROR_MESSAGE,
+                            payload: {
+                                errorMessage: auctionStorageResponse.error.message
+                            }
+                        }) 
+                    }
                 }
+            }
+
+            else if(auctionCreationResponse){
+                walletReducer({
+                    type: WalletActionType.ADD_ERROR_MESSAGE,
+                    payload: {
+                        errorMessage: auctionCreationResponse.error.message
+                    }
+                })
             }
         }
     }
@@ -461,6 +545,25 @@ function WalletContextProvider(props) {
         const response = await endAuction(parseInt(wallet.currentAuction.id), wallet.accounts, wallet.currentAuction.state.bid_account, wallet.currentAuction.state.nft_id)
         if(response.success){
             const backendResponse = await api.endAuction(parseInt(wallet.currentAuction.id), wallet.currentAuction.state.nft_id)
+            if(backendResponse.data.success){
+                navigate('/inventory')
+            }
+            else{
+                walletReducer({
+                    type: WalletActionType.ADD_ERROR_MESSAGE,
+                    payload: {
+                        errorMessage: backendResponse.data.error.message
+                    }
+                })
+            }
+        }
+        else{
+            walletReducer({
+                type: WalletActionType.ADD_ERROR_MESSAGE,
+                payload: {
+                    errorMessage: response.error.message
+                }
+            })
         }
 
     }
@@ -582,7 +685,27 @@ function WalletContextProvider(props) {
 
     wallet.placeBid = async function(offer) {
         const response = await bidOnAuction(wallet.currentAuction, wallet.accounts, parseFloat(offer))
+        if(response.success){
+            navigate('/')
+        }
+        else{
+            walletReducer({
+                type: WalletActionType.ADD_ERROR_MESSAGE,
+                payload: {
+                    errorMessage: response.error.message
+                }
+            })
+        }
 
+    }
+
+    wallet.removeErrorMessage = function() {
+        walletReducer({
+            type: WalletActionType.REMOVE_ERROR_MESSAGE,
+            payload: {
+
+            }
+        })
     }
 
     // consolidated refresh into one call

@@ -17,6 +17,7 @@ import TwoFactorSetup from './Components/TwoFactor/TwoFactorSetup';
 import TwoFactorVerify from './Components/TwoFactor/TwoFactorVerify';
 import AuctionInfo from './Components/AuctionInfo';
 import SearchResults from './Components/SearchResultComponents/SearchResults';
+import SearchPage from './Components/SearchPage';
 
 function App() {
   return (

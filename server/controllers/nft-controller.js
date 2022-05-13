@@ -364,8 +364,11 @@ getExploreAuctions = async(req, res) => {
             // console.log(auctionDetails[0].state.nftName.toLowerCase())
 
             let newSearchTerm = searchTerm.toLowerCase().trim()
-            
-            auctionDetails = auctionDetails.filter(auction => auction.state.nftName.toLowerCase().includes(newSearchTerm))
+            let currentTime = new Date().getTime() / 1000
+            console.log(currentTime)
+            console.log(auctionDetails[0].state.end)
+
+            auctionDetails = auctionDetails.filter(auction => (auction.state.nftName.toLowerCase().includes(newSearchTerm) && currentTime < auction.state.end))
             
 
             return res.status(200).json({
