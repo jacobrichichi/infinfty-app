@@ -157,7 +157,7 @@ logoutUser = async (req, res) => {
             })
         }
 
-        // wallet being a means user has no wallet
+        // wallet being 'a' means user has no wallet
         user.wallet = "a";
         user.save().then(() => {
             res.cookie("token", "", {
@@ -173,6 +173,30 @@ logoutUser = async (req, res) => {
                 secure: true,
                 sameSite: "none"
             }).send();
+        })
+    })
+}
+
+// this finds the user, sets their wallet to the no wallet value, saves it, and returns the resulting no wallet user
+removeWallet = async (req, res) => {
+    let userID = auth.verifyUser(req);
+
+    console.log(userID)
+    User.findOne({ _id: userID }, (err, user) => {
+        if(err || user === null){
+            return res.status(400).json({
+                success: false,
+                error: 'The subject user was not found'
+            })
+        }
+
+        // wallet being 'a' means user has no wallet
+        user.wallet = "a";
+        user.save().then(() =>{
+            return res.status(200).json({
+                success: true,
+                user: user
+            })
         })
     })
 }
@@ -352,5 +376,6 @@ module.exports = {
     getLoggedIn,
     refreshUser,
     updateUser,
-    updatePassword
+    updatePassword,
+    removeWallet
 }

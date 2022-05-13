@@ -36,6 +36,10 @@ export const registerUser = (firstName, lastName, userName, email, password, pas
     })
 }
 
+export const removeWallet = () => {
+    return api.get(`/removeWallet/`)
+}
+
 export const logoutUser = (id) => api.get(`/logout/${id}`)
 
 export const refreshUser = () => api.get(`/refreshUser/`)

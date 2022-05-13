@@ -354,6 +354,9 @@ function AuthContextProvider(props) {
         console.log('verifyTOTP  ' + response)
         return response.data
     }
+    auth.removeWallet = async function() {
+        const response = await api.removeWallet(userID)
+    }
 
 
     useEffect(() => {
