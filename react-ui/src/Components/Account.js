@@ -1,16 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { Link } from "react-router-dom";
 import AuthContext from "../auth";
-
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import Modal from '@mui/material/Modal';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
-//ah
+import Alert from '@mui/material/Alert';
+import Modal from '@mui/material/Modal';
 
 import './General.css';
 import './Account.css';
@@ -24,9 +22,14 @@ import WalletContext from '../wallet-connect'
 function Account() {
     const { auth } = useContext(AuthContext)
     const { wallet } = useContext(WalletContext)
+    const boxStyle = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, 
+                    bgcolor: 'background.paper',    border: '1px solid #000', boxShadow: 15, p: 4, overflowY: 'scroll', maxHeight: '85%'};    
+    
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isMessageModalOpen, setIsMessageModalOpen ] = useState(false)
+    const [isDisconnectWalletMode, setDisconnectWalletMode] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -53,10 +56,48 @@ function Account() {
         )
     };
 
+    const handleCloseMessageModal = (event) => {      
+        event.stopPropagation();
+        setIsMessageModalOpen(false);
+        setDisconnectWalletMode(false);
+    }
+
+
+    const disconnectWallet = (event) => {
+        console.log("disconnecting wallet");
+        console.log(auth.user.hasWallet);
+
+        if (auth.user.hasWallet){
+            wallet.disconnectWallet()
+        }
+        // console.log(localStorage.getItem("wallet"));
+
+        // auth.user.hasWallet = false; // have to make auth.user.hasWallet false 
+
+        setIsMessageModalOpen(true);
+        setDisconnectWalletMode(true);
+        
+
+        // console.log(auth.user.hasWallet);
+    };
+
+    var messageModal = ""
+        if (isDisconnectWalletMode){
+            messageModal =(
+                <Modal open = {isMessageModalOpen} onClose={handleCloseMessageModal} aria-labelledby="modal-modal-title" 
+                    aria-describedby="modal-modal-description">   
+                    <Box sx = {{...boxStyle, p:2}}>
+                        <Alert severity="success" >Disconnection is successful !!</Alert>
+                    </Box>
+                </Modal>
+            )
+        }
+
     var disableTwoAuth = () => {
         wallet.clearApps()
         console.log('weeerooo');
     }
+
 
     if (!auth.loggedIn) {
         // console.log("Not Logged In")
@@ -144,17 +185,25 @@ function Account() {
                     </Button>
                 </Link>
 
-                <Button color="secondary" variant="contained" sx={{mb: 4 }} onClick = {disableTwoAuth}>
+                <Button color="secondary" variant="contained" sx={{mb: 2 }} onClick = {disableTwoAuth}>
                     <div className = "linkText" id = "expLinkText">
                         Disable 2 Factor
                     </div>
                 </Button>
                 
+                <Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {auth.user.hasWallet == false}>
+                    <div className = "linkText" id = "expLinkText">
+                        Disconnect Your Wallet
+                    </div>
+                </Button>
+
             </Container>
             <br></br>
             <br></br>
+            {messageModal}
         </div>
     );
 }
 
 export default Account;
+
