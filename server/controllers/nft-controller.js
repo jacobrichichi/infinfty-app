@@ -140,6 +140,7 @@ getInventory = async (req, res) => {
             }
 
             auction.state = stateCompiled
+            auction.isOwnAuction = true
 
             auctionDetails.push(auction)
         })
@@ -287,6 +288,7 @@ storeCreatedAuction = async(req, res) => {
 // TODO, If for some reason auction is deleted from chain, but not from mongoDB database,
 // need a way to catch this error, and handle it
 getExploreAuctions = async(req, res) => {
+    console.log(req)
     let searchTerm = req.body.searchTerm
     Sale.find({ }, async (err, auctions) => {
         if (err) {

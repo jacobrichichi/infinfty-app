@@ -34,6 +34,7 @@ const Navbar = (props) => {
   // open State to close RegisterLoginModal
   const [open, setOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -203,10 +204,44 @@ const Navbar = (props) => {
     </Modal>
   }
 
+  
+  
+  const handleCloseSuccessModal = (event) => {
+    wallet.removeSuccessMessage()
+  }
+
+  var successPopup = <div></div>
+
+  if(wallet.isSuccess){
+    successPopup =
+    <Modal
+        open = {true}
+        onClose={handleCloseSuccessModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+    >   
+        <Box sx = 
+            {{position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,}}
+            >
+            <Alert severity="warning">{wallet.successMessage}</Alert>
+            <Button variant="outlined" onClick = {handleCloseSuccessModal}>OK</Button>
+        </Box>
+    </Modal>
+  }
+
 
   return (
     <div>
       {errorPopup}
+      {successPopup}
     <Grid container columns = {24} spacing = {1} id = "navBarContainer">
         <Grid item xs = {4} id = "logoContainer">
           <Link to = "/">

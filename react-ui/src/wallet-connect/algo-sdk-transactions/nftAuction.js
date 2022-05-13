@@ -90,7 +90,7 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     // TODO: Decode the app state into human readable form
     // first need to decode the variable names, then the variable values
 
-    if(auction.params !== null){
+    if(auction !== null && auction.params !== null){
         auction.state = auction.params['global-state']
 
         auction.state.map((stateVar) => {
@@ -410,8 +410,8 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     const date = new Date()
     const startTime = parseInt(date.getTime()/1000 + 100)
 
-    //const endTime = startTime + duration * 24 * 60 * 60
-    const endTime = startTime + 1800
+    const endTime = startTime + duration * 60 * 60
+    //const endTime = startTime + 1800
     let microReserve = parseInt(reserve * 1000000)
     let microIncrement = parseInt(minBidIncrement * 1000000)
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc

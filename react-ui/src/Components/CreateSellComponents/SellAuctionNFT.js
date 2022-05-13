@@ -158,7 +158,7 @@ const SellAuctionNFT = (props) => {
                     required
                     fullWidth
                     name="duration"
-                    label="Duration"
+                    label="Duration (hours)"
                     id="duration"
                     type="number"
                     autoComplete="5"
