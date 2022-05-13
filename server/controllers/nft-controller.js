@@ -84,7 +84,7 @@ getInventory = async (req, res) => {
             decimals: 0
         }))
 
-        
+        assets = assets.filter(asset => asset.amount !== 0)
 
         await Promise.all(
             assets.map(async asset => {

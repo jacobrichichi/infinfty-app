@@ -74,6 +74,7 @@ export const clearApps = async (wallet) => {
 
 
 export const getAuctionDetails = async(auctionID, creatorWallet) => {
+    
     const conTemp = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModal
@@ -89,44 +90,65 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     // TODO: Decode the app state into human readable form
     // first need to decode the variable names, then the variable values
 
-    auction.state = auction.params['global-state']
+    if(auction.params !== null){
+        auction.state = auction.params['global-state']
 
-    auction.state.map((stateVar) => {
-        stateVar.key = atob(stateVar.key)
-    })
-    
-    let stateCompiled = {}
+        auction.state.map((stateVar) => {
+            stateVar.key = atob(stateVar.key)
+        })
+        
+        let stateCompiled = {}
 
-    auction.state.forEach((stateVar) => {
-        stateCompiled[stateVar.key] = stateVar['value']
-    })
+        auction.state.forEach((stateVar) => {
+            stateCompiled[stateVar.key] = stateVar['value']
+        })
 
-    stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
-    stateCompiled['end'] = stateCompiled['end']['uint']
-    stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
-    stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
-    stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
-    stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
-    stateCompiled['start'] = stateCompiled['start']['uint']
-    stateCompiled['description'] = "Cool little auction!"
+        stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
+        stateCompiled['end'] = stateCompiled['end']['uint']
+        stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
+        stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
+        stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
+        stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
+        stateCompiled['start'] = stateCompiled['start']['uint']
+        stateCompiled['description'] = "Cool little auction!"
 
-    // if no bid was placed yet, then bid_amount isn't a variable
-    if(typeof stateCompiled['bid_amount'] !== "undefined"){
-        stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+        // if no bid was placed yet, then bid_amount isn't a variable
+        if(typeof stateCompiled['bid_amount'] !== "undefined"){
+            stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+        }
+        else{
+            stateCompiled['bid_amount'] = 0
+        }
+
+        auction.state = stateCompiled
+
+        const { params } = await client.getAssetByID(auction.state['nft_id']).do()
+        auction.state.nftName = params.name
+        auction.state.nftUnitName = params["unit-name"];
+        auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
+        auction.state.nftDecimals = params.decimals;
+
+        return auction
     }
     else{
-        stateCompiled['bid_amount'] = 0
+        return {id: "",
+             state: {
+                bid_account:"",
+                end: 0,
+                min_bid_inc: 0,
+                nft_id: 0,
+                reserve_amount: 0,
+                seller: "",
+                start: 0,
+                description: "",
+                nftName: "",
+                nftUnitName: "",
+                nftURL: "",
+                nftDecimals: 0,
+                bid_amount: 0
+            }
+        }
     }
-
-    auction.state = stateCompiled
-
-    const { params } = await client.getAssetByID(auction.state['nft_id']).do()
-    auction.state.nftName = params.name
-    auction.state.nftUnitName = params["unit-name"];
-    auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
-    auction.state.nftDecimals = params.decimals;
-
-    return auction
 }
 
 export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
