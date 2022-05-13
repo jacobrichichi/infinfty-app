@@ -547,7 +547,7 @@ function WalletContextProvider(props) {
         })
     }
 
-    wallet.auctionNFT = async function(startPrice, reserve, duration){
+    wallet.auctionNFT = async function(startPrice, reserve, duration, description){
         const con = new WalletConnect({
             bridge: "https://bridge.walletconnect.org",
             qrcodeModal: QRCodeModal
@@ -559,7 +559,7 @@ function WalletContextProvider(props) {
             console.log(auctionCreationResponse)
 
             if(auctionCreationResponse && auctionCreationResponse.success){
-                const auctionStorageResponse = await api.storeCreatedAuction(auctionCreationResponse.appID)
+                const auctionStorageResponse = await api.storeCreatedAuction(auctionCreationResponse.appID, description)
 
                 if(auctionStorageResponse.status === 200){
                     if(auctionStorageResponse.data.success){

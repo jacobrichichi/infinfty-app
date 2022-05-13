@@ -240,7 +240,8 @@ listNFTSale = async(req, res) => {
     // this will not be an issue if called in the way frontend calls it though,
     // so for now, on the back burner
 storeCreatedAuction = async(req, res) => {
-    const { appID } = req.body
+
+    const { appID, description } = req.body
     if(!appID) {
         return res.status(200).json({
             success: false,
@@ -265,7 +266,8 @@ storeCreatedAuction = async(req, res) => {
         }
 
         const newSale = new Sale({
-            appID: appID, creatorWallet: wallet
+            appID: appID, creatorWallet: wallet, description: description
+
         });
 
         user.auctions.push(appID)

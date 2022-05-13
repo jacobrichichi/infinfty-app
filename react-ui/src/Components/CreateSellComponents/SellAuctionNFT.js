@@ -26,6 +26,7 @@ const SellAuctionNFT = (props) => {
             const startPrice = formData.get('startPrice')
             const reserve = formData.get('reserve')
             const duration = formData.get('duration')
+            const description = formData.get('description')
             
             if(startPrice === "" || reserve === "" || duration === ""){
                 setError("All Fields Must Be Filled")
@@ -34,7 +35,7 @@ const SellAuctionNFT = (props) => {
             else{
                 setDisable(true)
                 setModalOpen(true)
-                wallet.auctionNFT(startPrice, reserve, duration)
+                wallet.auctionNFT(startPrice, reserve, duration, description)
             }
         }
         else{
@@ -154,6 +155,17 @@ const SellAuctionNFT = (props) => {
                 />
 
                 <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="duration"
+                    label="Duration (hours)"
+                    id="duration"
+                    type="number"
+                    autoComplete="5"
+                />
+
+<TextField
                     margin="normal"
                     required
                     fullWidth

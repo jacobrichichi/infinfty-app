@@ -156,6 +156,8 @@ logoutUser = async (req, res) => {
                 error: 'The subject user was not found'
             })
         }
+
+        // wallet being a means user has no wallet
         user.wallet = "a";
         user.save().then(() => {
             res.cookie("token", "", {

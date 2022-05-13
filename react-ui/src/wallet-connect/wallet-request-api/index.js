@@ -53,8 +53,8 @@ export const testAuction = () => {
     return api.post(`testAuction`, { })
 }
 
-export const storeCreatedAuction = (appID) => {
-    return api.post(`/storeCreatedAuction/`, { appID: appID })
+export const storeCreatedAuction = (appID, description) => {
+    return api.post(`/storeCreatedAuction/`, { appID: appID, description: description })
 }
 
 export const getExploreAuctions = (searchTerm) => {
