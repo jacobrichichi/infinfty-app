@@ -8,6 +8,7 @@ import accountImg from "./images/accountImg.png"
 import { Link } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Menu from '@mui/material/Menu'
@@ -32,6 +33,8 @@ const Navbar = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [ search, setSearch ] = useState("");
+
   // handleLogin -> setLoggedIn -> open State close RegisterLoginModal for to refresh navbar
   // ^ Purpose of loggedIn State is trivial
   const handleLogin = () => {setLoggedIn(true); setOpen(false);}
@@ -60,6 +63,22 @@ const Navbar = (props) => {
     auth.logoutUser();
     wallet.doneLoggingOut();
   }
+
+  const handleUpdateSearch = (event) => {
+    event.preventDefault()
+    setSearch(event.target.value);
+  } 
+
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        handleSearch(search)
+    }
+}
+
+  const handleSearch = (searchTerm) => {
+    wallet.searchAuctions(searchTerm)
+    
+  } 
 
   var accountInfo = (
     <div id = "userText" className = "navLink" onClick={handleOpen}>
@@ -158,7 +177,7 @@ const Navbar = (props) => {
         </Grid>
 
         <Grid item xs = {10} id = "searchContainer">
-            <TextField id = "searchBar"/>
+          <TextField value = {search} id = "searchBar" onKeyPress={handleKeyPress} onChange = {handleUpdateSearch}/>
         </Grid>
 
         <Grid item xs = {2} className = "textContainer" id = "expTextContainer">

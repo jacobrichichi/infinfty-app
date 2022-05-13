@@ -4,7 +4,7 @@ import { Navigate, UNSAFE_NavigationContext, useNavigate } from 'react-router-do
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import api from './wallet-request-api'
-import { bidOnAuction, createAuction, createNFT, deleteAuctions, getAuctionDetails, endAuction } from './algo-sdk-transactions/nftAuction'
+import { bidOnAuction, createAuction, createNFT, deleteAuctions, getAuctionDetails, endAuction, clearApps } from './algo-sdk-transactions/nftAuction'
 
 const WalletContext = createContext();
 
@@ -17,6 +17,7 @@ export const WalletActionType = {
     SET_CURRENT_NFT: "SET_CURRENT_NFT",
     SET_EXPLORE_AUCTIONS: "SET_EXPLORE_AUCTIONS",
     SET_CURRENT_AUCTION: "SET_CURRENT_AUCTION",
+    SET_SEARCH_RESULTS: "SET_SEARCH_RESULTS",
     DONE_DISCONNECTING: "DONE_DISCONNECTING",
     REFRESH_PAGE: "REFRESH_PAGE"
 }
@@ -30,6 +31,7 @@ function WalletContextProvider(props) {
         isWallet: false,
         currentNFT: null,
         currentAuction: null,
+        searchResults: [],
         exploreAuctions: [],
         disconnecting: false
     })
@@ -51,6 +53,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
                 })
             }
@@ -65,6 +68,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting 
                 })
             }
@@ -79,6 +83,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
 
                 })
@@ -94,6 +99,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: true
                 })
             }
@@ -108,6 +114,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
                 })
             }
@@ -122,6 +129,7 @@ function WalletContextProvider(props) {
                     currentNFT: payload.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
                 })
             }
@@ -136,6 +144,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: payload.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
                 })
             }
@@ -149,6 +158,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: payload.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: wallet.disconnecting
 
                 })
@@ -164,6 +174,7 @@ function WalletContextProvider(props) {
                     currentNFT: wallet.currentNFT,
                     currentAuction: wallet.currentAuction,
                     exploreAuctions: wallet.exploreAuctions,
+                    searchResults: wallet.searchResults,
                     disconnecting: false
 
                 })
@@ -178,7 +189,24 @@ function WalletContextProvider(props) {
                     currentNFT: payload.currentNFT,
                     currentAuction: payload.currentAuction,
                     exploreAuctions: payload.exploreAuctions,
+                    searchResults: payload.searchResults,
                     disconnecting: false
+                })
+            }
+
+            case WalletActionType.SET_SEARCH_RESULTS: {
+                return setWallet({
+                    connector: wallet.connector,
+                    accounts: wallet.accounts,
+                    inventory_assets: wallet.inventory_assets,
+                    auctions: wallet.auctions,
+                    isWallet: wallet.isWallet,
+                    currentNFT: wallet.currentNFT,
+                    currentAuction: wallet.currentAuction,
+                    exploreAuctions: wallet.exploreAuctions,
+                    searchResults: payload.searchResults,
+                    disconnecting: wallet.disconnecting
+
                 })
             }
 
@@ -446,7 +474,7 @@ function WalletContextProvider(props) {
     }
 
     wallet.getExploreAuctions = async function() {
-        const response = await api.getExploreAuctions()
+        const response = await api.getExploreAuctions("")
 
         if(response.status === 200){
             if(response.data.success){
@@ -463,6 +491,26 @@ function WalletContextProvider(props) {
 
                 localStorage.setItem('exploreAuctions', exploreAuctions)
         
+            }
+        }
+    }
+
+    wallet.searchAuctions = async function(searchTerm) {
+        const response = await api.getExploreAuctions(searchTerm)
+
+        if(response.status === 200){
+            if(response.data.success){
+
+                let searchResults = response.data.auctions
+
+                walletReducer({
+                    type: WalletActionType.SET_SEARCH_RESULTS,
+                    payload: {
+                        searchResults: searchResults
+                    }
+                })
+                localStorage.setItem('searchTerm', searchTerm)
+                navigate('/search')
             }
         }
     }
@@ -487,11 +535,21 @@ function WalletContextProvider(props) {
         navigate('../auction')
     }
 
-    wallet.refreshPage  = async function(nftUrl, walletID, auctionID) {
-        const response = await api.getExploreAuctions()
+    wallet.clearApps = async function() {
+        const response = await clearApps(wallet.accounts);
+    }
+
+    wallet.refreshPage  = async function(nftUrl, walletID, auctionID, searchTerm) {
+        const response = await api.getExploreAuctions("")
 
         if(response.status === 200){
             if(response.data.success){
+                let searchResults = []
+
+                if(searchTerm !== null){
+                    const searchResponse = await api.getExploreAuctions(searchTerm)
+                    searchResults = searchResponse.data.auctions
+                }
 
                 let exploreAuctions = response.data.auctions
                 let currentNFT = (nftUrl !== null ? {url: nftUrl, 
@@ -505,15 +563,15 @@ function WalletContextProvider(props) {
                     auction = await getAuctionDetails(auctionID)
                 }
                 
-
-                console.log(exploreAuctions)
                 walletReducer({
                     type: WalletActionType.REFRESH_PAGE,
                     payload: {
                         exploreAuctions: exploreAuctions,
                         currentNFT: currentNFT,
                         accounts: walletID,
-                        currentAuction: auction
+                        currentAuction: auction,
+                        searchResults: searchResults
+
                     }
                 })
 
@@ -533,10 +591,12 @@ function WalletContextProvider(props) {
         const currentNFTUrl = localStorage.getItem("currentNFTUrl");
         const currentWallet = localStorage.getItem("wallet");
         const currentAuctionID = localStorage.getItem("currentAuctionID");
+        const currentSearchTerm = localStorage.getItem("searchTerm")
         //const exploreAuctions = localStorage.getItem("exploreAuctions")
         wallet.refreshPage((currentNFTUrl ? currentNFTUrl : null),
                              (currentWallet ? currentWallet : null),
-                             (currentAuctionID ? currentAuctionID : null))
+                             (currentAuctionID ? currentAuctionID : null),
+                             (currentSearchTerm ? currentSearchTerm : null))
       }, []);
 
 

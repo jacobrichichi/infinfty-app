@@ -1,0 +1,42 @@
+#searchResultContainer{
+    display:flex;
+    padding-left: 30px;
+}
+
+#searchGridCell {
+    width: 30%;
+}
+
+#searchNftImgCont {
+    height: 55%;
+    display: flex;
+    justify-content: center;
+}
+
+#searchNftImg {
+    height: 30vh;
+}
+
+#searchNftNameCont {
+   height:5%;
+   width: 100%;
+   text-align: center;
+}
+#searchNftBidCont {
+   height:5%;
+   width: 100%;
+   text-align: center;
+}
+#searchNftEndCont {
+    height:5%;
+    width: 100%;
+    text-align: center;
+ }
+ 
+
+#searchEndAuctionCont {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

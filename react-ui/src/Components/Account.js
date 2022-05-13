@@ -17,10 +17,12 @@ import './Account.css';
 import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Card, Checkbox, Grid } from "@mui/material";
+import WalletContext from '../wallet-connect'
 
 
 function Account() {
     const { auth } = useContext(AuthContext)
+    const { wallet } = useContext(WalletContext)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -48,6 +50,8 @@ function Account() {
     };
 
     var disableTwoAuth = () => {
+        wallet.clearApps();
+
         console.log('weeerooo');
     }
 

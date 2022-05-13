@@ -287,6 +287,7 @@ storeCreatedAuction = async(req, res) => {
 // TODO, If for some reason auction is deleted from chain, but not from mongoDB database,
 // need a way to catch this error, and handle it
 getExploreAuctions = async(req, res) => {
+    let searchTerm = req.body.searchTerm
     Sale.find({ }, async (err, auctions) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -353,12 +354,19 @@ getExploreAuctions = async(req, res) => {
             await Promise.all(
                 auctionDetails.map(async auction => {
                     const { params } = await client.getAssetByID(auction.state['nft_id']).do()
-                    auction.state.nftName = params.name
+                    auction.state.nftName = params.name;
                     auction.state.nftUnitName = params["unit-name"];
-                    auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");;
+                    auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");
                     auction.state.nftDecimals = params.decimals;
                 })
             )
+            // console.log(searchTerm)
+            // console.log(auctionDetails[0].state.nftName.toLowerCase())
+
+            let newSearchTerm = searchTerm.toLowerCase().trim()
+            
+            auctionDetails = auctionDetails.filter(auction => auction.state.nftName.toLowerCase().includes(newSearchTerm))
+            
 
             return res.status(200).json({
                 success: true,
