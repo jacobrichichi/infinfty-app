@@ -183,6 +183,7 @@ removeWallet = async (req, res) => {
 
     console.log(userID)
     User.findOne({ _id: userID }, (err, user) => {
+        console.log(user)
         if(err || user === null){
             return res.status(400).json({
                 success: false,
@@ -192,6 +193,7 @@ removeWallet = async (req, res) => {
 
         // wallet being 'a' means user has no wallet
         user.wallet = "a";
+        console.log(user)
         user.save().then(() =>{
             return res.status(200).json({
                 success: true,

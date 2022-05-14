@@ -354,8 +354,23 @@ function AuthContextProvider(props) {
         console.log('verifyTOTP  ' + response)
         return response.data
     }
+
     auth.removeWallet = async function() {
-        const response = await api.removeWallet(userID)
+        const response = await api.removeWallet()
+        if(response.status === 200){
+            if(response.data.success) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+
+                authReducer({
+                    type: AuthActionType.TWO_FACT_PASS,
+                })
+            }
+        }
     }
 
 

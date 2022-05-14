@@ -69,6 +69,7 @@ function Account() {
 
         if (auth.user.hasWallet){
             wallet.disconnectWallet()
+            auth.removeWallet()
         }
         // console.log(localStorage.getItem("wallet"));
 

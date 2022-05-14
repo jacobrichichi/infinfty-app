@@ -63,6 +63,7 @@ const apis = {
     updatePassword,
     setUp2FA,
     verifyTOTP,
+    removeWallet
 }
 
 export default apis
