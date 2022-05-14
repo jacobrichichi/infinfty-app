@@ -54,22 +54,23 @@ function CreateSell(){
 
 	const onFileUpload = async (e) => {
         e.preventDefault();
-        // Will have to add parameters for price, sellingtype, price, days
-        // if(wallet.isWallet){
-        //     // awaiting within component can cause errorz
 
-        //     let res = await wallet.createNft(files[0], assetName, assetDesc, wallet.accounts)
-        //     if (res.sucess){
-        //         let path = `/inventory`; 
-        //         navigate(path);
-        //     }else{
-        //         submiterror = (<h2>Something failed.</h2>)
-        //     }
-        // }else{
-        //     submiterror = (<h2>No active wallet.</h2>)
-        // }
-        let res = await wallet.createNft(files[0], assetName, assetDesc, wallet.accounts)
-        console.log("result is " + res)
+        if(wallet.isWallet){
+            // awaiting within component can cause errorz
+
+            let res = await wallet.createNft(files[0], assetName, assetDesc, wallet.accounts)
+            console.log("Creating NFT result is " + res)
+            if (res.sucess==true){
+                let path = `/inventory`; 
+                navigate(path);
+            }else if(res.sucess=='duplicate'){
+                submiterror = (<h2>Duplicate NFT.</h2>)
+            }else{
+                submiterror = (<h2>Something failed.</h2>)
+            }
+        }else{
+            submiterror = (<h2>No active wallet.</h2>)
+        }
 	};
 
     return(
