@@ -472,14 +472,11 @@ function WalletContextProvider(props) {
     }
 
     wallet.createNft = async function(nftFile, nftName, nftDesc, bidder) {
-        console.log('heasd')
         const response = await createNFT(nftFile, nftName, nftDesc, bidder)
-        if(response.success){
-            navigate('/inventory')
+        if(!response.success){
+            console.log('Something went wrong')
         }
-        else{
-            console.log('something went wrong')
-        }
+        return response.success
     }
     
     wallet.disconnectWallet = function(){

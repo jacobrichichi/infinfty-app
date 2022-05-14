@@ -4,8 +4,10 @@ import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import rawApprove from "../auction_contracts/approvalnew.txt"
 import rawClear from "../auction_contracts/clearnew.txt"
 import web3 from 'web3';
+import axios from 'axios';
 
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
+import { getBottomNavigationUtilityClass } from '@mui/material';
 
 export const clearApps = async (wallet) => {
 
@@ -151,6 +153,80 @@ export const getAuctionDetails = async(auctionID, creatorWallet) => {
     }
 }
 
+const pinFileToIPFS = async (nftFile, nftName, nftDesc) => {
+    // Cause pinata sdk doesn't support frontend blobs, even Blob.stream() doesn't work
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+    const data = new FormData();
+    data.append('file', nftFile);
+    const metadata = JSON.stringify({
+        name: nftName,
+        keyvalues: {
+            description: nftDesc
+        }
+    });
+    data.append('pinataMetadata', metadata);
+    const pinataOptions = JSON.stringify({
+        cidVersion: 0,
+    });
+    data.append('pinataOptions', pinataOptions);
+
+    return axios.post(url, data, {
+        maxBodyLength: 'Infinity', // this is needed to prevent axios from erroring out with large files
+        headers: {
+            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            'pinata_api_key': process.env.REACT_APP_PINATA_KEY,
+            'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET,
+        },
+    }).then((response) => {
+        console.log(response);
+        return response
+    })
+    .catch((error) => {
+        console.log(error);
+        return getBottomNavigationUtilityClass
+    });
+};
+
+const pinJSONToIPFS = async (nftFile, nftName, nftDesc, resultFile, integrity) => {
+    const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+    const json = JSON.stringify({
+        pinataContent:{
+            name: `${nftName}@arc3`,
+            description: nftDesc,
+            media: `ipfs://${resultFile.IpfsHash}`,
+            media_integrity: `sha256-${integrity.base64}`,
+            media_mimetype: `${nftFile.type}`,
+            properties: {
+                file_url: `arc3-asa`,
+                file_url_integrity: `sha256-${integrity.base64}`,
+                file_url_mimetype: `${nftFile.type}`,
+            }
+        },
+        pinataMetadata:{
+            name: `${nftName}_arc3`,
+            keyvalues: {
+                description: nftDesc
+            }
+        },
+        pinataOptions:{
+            cidVersion: 0,
+        }
+    })
+
+    return axios.post(url, json, {
+        headers: {
+            'pinata_api_key': process.env.REACT_APP_PINATA_KEY,
+            'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET,
+        }
+    }).then((response) => {
+        console.log(response)
+        return response
+    }).catch((err) => {
+        console.log(err)
+        return null
+    });
+}
+
 export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     /**
         ASA Paramters: NFT Specific
@@ -163,54 +239,25 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
         URL (optional) => Link to IPFS or Pinning service
         MetaDataHash (optional) => Hash from IPFS
      */
-    
-    console.log('bidder account is '+ process.env.REACT_APP_PINATA_KEY)
-    // Pinning services
-    const pinataSDK = require('@pinata/sdk')
-    const pinata = pinataSDK(process.env.REACT_APP_PINATA_KEY, process.env.REACT_APP_PINATA_SECRET);
-    
-    pinata.testAuthentication().then((result) => {
-        //handle successful authentication here
-        console.log(result);
-    }).catch((err) => {
-        //handle error here
-        console.log(err);
-    });
 
-    
+    /* Pinning services */
     // Pin the file to IPFS via Pinata
-    const resultFile = await pinata.pinFileToIPFS(nftFile).catch((err) => {
-        console.log("Pinata File pinIPFS didn't work.");
-        return false;
-    });
+    const resultFile = await pinFileToIPFS(nftFile, nftName, nftDesc)
     if (!resultFile){
-        return { success: true }
+        return { success: false }
     }
-    console.log('SC1: The NFT original digital asset pinned to IPFS via Pinata: ', resultFile);
+    if(resultFile.data.isDuplicate){
+        return { success: 'duplicate' }
+    }
     // Constructing metadata JSON
     let integrity = web3.utils.asciiToHex(resultFile.IpfsHash)
-    const metadata = {
-        "name": `${nftName}@arc3`,
-        "description": nftDesc,
-        "image": `ipfs://${resultFile.IpfsHash}`,
-        "image_integrity": `sha256-${integrity.base64}`,
-        "image_mimetype": `image/png`,
-        "properties": {
-            "file_url": `arc3-asa`,
-            "file_url_integrity": `sha256-${integrity.base64}`,
-            "file_url_mimetype": `image/png`,
-        }
-    }
     // Pin metadata to IPFS via Pinata
-    const resultMeta = await pinata.pinJSONToIPFS(metadata).catch((err) => {
-        console.log("Pinata Metadata pinIPFS didn't work.");
-        return false;
-    });
-    console.log('SC1: The NFT metadata JSON file pinned to IPFS via Pinata: ', resultMeta);
+    const resultMeta = await pinJSONToIPFS(nftFile, nftName, nftDesc, resultFile, integrity)
+    if (!resultMeta){
+        return { success: false }
+    }
 
-    return { success: 'eehh' }
-
-    // Create asset onto Algorand chain
+    /* Create asset onto Algorand chain */
     /**
      * > Asset URL (au) points to a JSON Metadata file URI. 
      * In the case of using IPFS , only standard IPFS URI (ipfs://...) 

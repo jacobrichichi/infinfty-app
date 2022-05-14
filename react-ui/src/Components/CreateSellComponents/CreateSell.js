@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import {useDropzone} from 'react-dropzone'
-import axios from 'axios';
 import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
@@ -36,6 +35,7 @@ function CreateSell(){
                     preview: URL.createObjectURL(file)
                 }))
             );
+            console.log(acceptedFiles[0].type)
         }
     });
 
