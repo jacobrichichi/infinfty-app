@@ -66,20 +66,12 @@ function Account() {
     const disconnectWallet = (event) => {
         console.log("disconnecting wallet");
         console.log(auth.user.hasWallet);
-
         if (auth.user.hasWallet){
             wallet.disconnectWallet()
             auth.removeWallet()
         }
-        // console.log(localStorage.getItem("wallet"));
-
-        // auth.user.hasWallet = false; // have to make auth.user.hasWallet false 
-
         setIsMessageModalOpen(true);
         setDisconnectWalletMode(true);
-        
-
-        // console.log(auth.user.hasWallet);
     };
 
     var messageModal = ""
@@ -192,7 +184,7 @@ function Account() {
                     </div>
                 </Button>
                 
-                <Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {auth.user.hasWallet == false}>
+                <Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {!auth.user.hasWallet}>
                     <div className = "linkText" id = "expLinkText">
                         Disconnect Your Wallet
                     </div>
@@ -207,4 +199,5 @@ function Account() {
 }
 
 export default Account;
+
 
