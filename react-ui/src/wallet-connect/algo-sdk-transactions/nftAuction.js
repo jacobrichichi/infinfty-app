@@ -168,6 +168,16 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     // Pinning services
     const pinataSDK = require('@pinata/sdk')
     const pinata = pinataSDK(process.env.REACT_APP_PINATA_KEY, process.env.REACT_APP_PINATA_SECRET);
+    
+    pinata.testAuthentication().then((result) => {
+        //handle successful authentication here
+        console.log(result);
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
+
+    
     // Pin the file to IPFS via Pinata
     const resultFile = await pinata.pinFileToIPFS(nftFile).catch((err) => {
         console.log("Pinata File pinIPFS didn't work.");
