@@ -164,12 +164,28 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
         MetaDataHash (optional) => Hash from IPFS
      */
     
-    
+    console.log('bidder account is '+ process.env.REACT_APP_PINATA_KEY)
     // Pinning services
     const pinataSDK = require('@pinata/sdk')
     const pinata = pinataSDK(process.env.REACT_APP_PINATA_KEY, process.env.REACT_APP_PINATA_SECRET);
+    
+    pinata.testAuthentication().then((result) => {
+        //handle successful authentication here
+        console.log(result);
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
+
+    
     // Pin the file to IPFS via Pinata
-    const resultFile = await pinata.pinFileToIPFS(nftFile);
+    const resultFile = await pinata.pinFileToIPFS(nftFile).catch((err) => {
+        console.log("Pinata File pinIPFS didn't work.");
+        return false;
+    });
+    if (!resultFile){
+        return { success: true }
+    }
     console.log('SC1: The NFT original digital asset pinned to IPFS via Pinata: ', resultFile);
     // Constructing metadata JSON
     let integrity = web3.utils.asciiToHex(resultFile.IpfsHash)
@@ -186,8 +202,13 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
         }
     }
     // Pin metadata to IPFS via Pinata
-    const resultMeta = await pinata.pinJSONToIPFS(metadata);
+    const resultMeta = await pinata.pinJSONToIPFS(metadata).catch((err) => {
+        console.log("Pinata Metadata pinIPFS didn't work.");
+        return false;
+    });
     console.log('SC1: The NFT metadata JSON file pinned to IPFS via Pinata: ', resultMeta);
+
+    return { success: 'eehh' }
 
     // Create asset onto Algorand chain
     /**
