@@ -39,22 +39,25 @@ const SellAuctionNFT = (props) => {
             }
         }
         else{
-            const price = formData.get('price')
-            const duration = formData.get('duration')
+            setError("Only auctions for the time being :[")
 
-            if(price === "" || duration === ""){
-                setError("All Fields Must Be Filled")
-            }
+            // const price = formData.get('price')
+            // const duration = formData.get('duration')
 
-            else{
-                setDisable(true)
-                setModalOpen(true)
-                wallet.sellNFT(price, duration)
-            }
+            // if(price === "" || duration === ""){
+            //     setError("All Fields Must Be Filled")
+            // }
+
+            // else{
+            //     setDisable(true)
+            //     setModalOpen(true)
+            //     wallet.sellNFT(price, duration)
+            // }
         }
     }
 
     const handleSwitch = (event) => {
+        setError("")
         setIsAuction(!isAuction)
     }
 
