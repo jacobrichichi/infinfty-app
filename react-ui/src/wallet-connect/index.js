@@ -597,16 +597,18 @@ function WalletContextProvider(props) {
     // this is usually called before entering the auction page, general info like NFT being sold, seller, highest current bid etc etc
     wallet.setCurrentAuction = async function(auctionID){
         // check whether auction is own auction
-        const auction = await getAuctionDetails(auctionID)
+        const response = await api.getAuctionDetails(auctionID)
 
-        walletReducer({
-            type: WalletActionType.SET_CURRENT_AUCTION,
-            payload: {
-                currentAuction: auction
+        if(response.status === 200){
+            if(response.data.success){
+                walletReducer({
+                    type: WalletActionType.SET_CURRENT_AUCTION,
+                    payload: {
+                        currentAuction: response.data.auction
+                    }
+                })
             }
-        })
-
-        //const auctionDetails = getAuctionDetails(appID, creatorWallet)
+        }
     }
 
     wallet.setCurrentAuctionNoID = async function(auction){
@@ -745,7 +747,12 @@ function WalletContextProvider(props) {
                 
                 let auction = null
                 if(auctionID !== null){
-                    auction = await getAuctionDetails(auctionID)
+                    let auctionResponse = await api.getAuctionDetails(auctionID)
+                    if(response.status === 200){
+                        if(response.data.success){
+                            auction = auctionResponse.data.auction
+                        }
+                    }
                 }
                 
                 walletReducer({

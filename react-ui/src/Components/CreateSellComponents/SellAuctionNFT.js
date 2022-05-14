@@ -165,14 +165,13 @@ const SellAuctionNFT = (props) => {
                     autoComplete="5"
                 />
 
-<TextField
+                <TextField
                     margin="normal"
                     required
                     fullWidth
-                    name="duration"
-                    label="Duration (hours)"
-                    id="duration"
-                    type="number"
+                    name="description"
+                    label="Description"
+                    id="description"
                     autoComplete="5"
                 />
                 <Button

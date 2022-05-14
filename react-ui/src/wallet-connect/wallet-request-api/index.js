@@ -61,6 +61,10 @@ export const getExploreAuctions = (searchTerm) => {
     return api.post(`/getExploreAuctions/`, { searchTerm: searchTerm })
 }
 
+export const getAuctionDetails = (auctionID) => {
+    return api.post(`/getAuctionDetails/`, { auctionID: auctionID })
+}
+
 export const endAuction = (auctionID, nftID) => {
     return api.post(`/endAuction/`, {
         auctionID, nftID
@@ -76,7 +80,8 @@ const apis = {
     walletConnect,
     storeCreatedAuction,
     getExploreAuctions,
-    endAuction
+    endAuction,
+    getAuctionDetails
 }
 
 export default apis

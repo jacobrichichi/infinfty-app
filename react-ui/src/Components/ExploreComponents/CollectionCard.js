@@ -10,7 +10,7 @@ const CollectionCard = (props) => {
 
     const title = props.data.state.nftName;
     const imageLocation = props.data.state.nftURL;
-    let description = props.data.state.description;
+    let description = props.data.description;
     if(title === 'Cow Getting Abducted'){
         description += 'ifgugvbjkasbnl swhflksanvjkls slafhklsvb a uslafkshlic'
     }

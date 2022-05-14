@@ -14,7 +14,6 @@ const shell = require('shelljs');
 
 addWallet = async (req, res) => {
     const body = req.body;
-    console.log(body)
 
     if(!body) {
         return res.status(400).json({
@@ -73,9 +72,6 @@ getInventory = async (req, res) => {
                                         .do();   
 
         const assetsFromRes = accountInfo.assets;
-
-        console.log(assetsFromRes)
-
         var assets = assetsFromRes.map((asset) => ({
             id: Number(asset['asset-id']),
             amount: Number(asset.amount),
@@ -99,11 +95,14 @@ getInventory = async (req, res) => {
         // GET THE ACTIVE AUCTIONS CREATED AND THEIR DETAILS
         const auctions = user.auctions
         let auctionsMapped = []
-            let auctionDetails = []
+        let auctionDetails = []
 
-        auctions.forEach(auctionID => {
-            auctionsMapped.push({ 'id': auctionID })
-        })
+        await Promise.all(
+            auctions.map(async auctionID => {
+                let fullAuction = await Sale.findOne({ appID: auctionID })
+                auctionsMapped.push({ 'id': auctionID, description: fullAuction.description })
+            })
+        )
 
         await Promise.all(
             auctionsMapped.map(async auction => {
@@ -290,7 +289,6 @@ storeCreatedAuction = async(req, res) => {
 // TODO, If for some reason auction is deleted from chain, but not from mongoDB database,
 // need a way to catch this error, and handle it
 getExploreAuctions = async(req, res) => {
-    console.log(req)
     let searchTerm = req.body.searchTerm
     Sale.find({ }, async (err, auctions) => {
         if (err) {
@@ -305,15 +303,21 @@ getExploreAuctions = async(req, res) => {
             const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
             let unshuffledAuctionsMapped = []
             let auctionDetails = []
+            
+            console.log(auctions)
 
             auctions.forEach(auction => {
-                unshuffledAuctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet })
+                unshuffledAuctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet, 'description': auction.description })
             })
+
+            console.log(unshuffledAuctionsMapped)
 
             let auctionsMapped = unshuffledAuctionsMapped
                 .map(value => ({ value, sort: Math.random() }))
                 .sort((a, b) => a.sort - b.sort)
                 .map(({ value }) => value)
+
+            console.log(auctionsMapped)
 
             await Promise.all(
                 auctionsMapped.map(async auction => {
@@ -321,6 +325,8 @@ getExploreAuctions = async(req, res) => {
                     auction.state = auction.state.params['global-state']
                 })
             )
+
+            console.log(auctionsMapped)
 
             auctionsMapped.forEach(auction => {
                 auction.state.map((stateVar) => {
@@ -364,16 +370,14 @@ getExploreAuctions = async(req, res) => {
                     auction.state.nftDecimals = params.decimals;
                 })
             )
-            // console.log(searchTerm)
-            // console.log(auctionDetails[0].state.nftName.toLowerCase())
+
+            console.log(auctionDetails)
 
             let newSearchTerm = searchTerm.toLowerCase().trim()
             let currentTime = new Date().getTime() / 1000
-            console.log(currentTime)
-            console.log(auctionDetails[0].state.end)
 
             auctionDetails = auctionDetails.filter(auction => (auction.state.nftName.toLowerCase().includes(newSearchTerm) && currentTime < auction.state.end))
-            
+            console.log(auctionDetails)
 
             return res.status(200).json({
                 success: true,
@@ -383,8 +387,74 @@ getExploreAuctions = async(req, res) => {
     })
 }
 
+getAuctionDetails = async(req, res) => {
+    let auctionID = req.body.auctionID
+    Sale.findOne({ appID: auctionID}, async (err, auction) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (auction === null) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Auction not found` })
+        }
+        
+        else{
+            const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
+            
+            console.log(auction)
+
+            auction = { 'id': auction.appID, wallet: auction.creatorWallet, 'description': auction.description }
+
+            console.log(auction)
+
+            auction.state = await client.getApplicationByID(auction['id']).do()
+            auction.state = auction.state.params['global-state']
+
+            auction.state.map((stateVar) => {
+                stateVar.key = atob(stateVar.key)
+            })
+            
+            let stateCompiled = {}
+
+            auction.state.forEach((stateVar) => {
+                stateCompiled[stateVar.key] = stateVar['value']
+            })
+
+            stateCompiled['bid_account'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['bid_account']['bytes'], "base64")))
+            stateCompiled['end'] = stateCompiled['end']['uint']
+            stateCompiled['min_bid_inc'] = stateCompiled['min_bid_inc']['uint']
+            stateCompiled['nft_id'] = stateCompiled['nft_id']['uint']
+            stateCompiled['reserve_amount'] = stateCompiled['reserve_amount']['uint']
+            stateCompiled['seller'] = algosdk.encodeAddress(new Uint8Array(Buffer.from(stateCompiled['seller']['bytes'], "base64")))
+            stateCompiled['start'] = stateCompiled['start']['uint']
+            stateCompiled['description'] = "Cool little auction!"
+
+            // if no bid was placed yet, then bid_amount isn't a variable
+            if(typeof stateCompiled['bid_amount'] !== "undefined"){
+                stateCompiled['bid_amount'] = stateCompiled['bid_amount']['uint']
+            }
+            else{
+                stateCompiled['bid_amount'] = 0
+            }
+
+            auction.state = stateCompiled
+
+            const { params } = await client.getAssetByID(auction.state['nft_id']).do()
+            auction.state.nftName = params.name;
+            auction.state.nftUnitName = params["unit-name"];
+            auction.state.nftURL = params.url.replace("ipfs://", "https://ipfs.io/ipfs/");
+            auction.state.nftDecimals = params.decimals;
+
+            return res.status(200).json({
+                success: true,
+                auction: auction
+            })
+        }
+    })
+}
+
 endAuction = async(req, res) => {
-    console.log('hi')
     User.findOne({ _id: req.userId}, async (err, user) => {
         
         if(err){
@@ -393,8 +463,6 @@ endAuction = async(req, res) => {
                 message: 'The subject user was not found'
             })
         }
-        console.log('user')
-
         const callerWallet = user.wallet
         if(callerWallet === 'a'){
             return res.status(200).json({
@@ -403,8 +471,6 @@ endAuction = async(req, res) => {
             })
         }
 
-        console.log(callerWallet)
-        console.log(req.body)
 
         Sale.findOne({ appID: req.body.auctionID }, (err, auction) => {
             if(err){
@@ -414,7 +480,6 @@ endAuction = async(req, res) => {
                 })
             }
 
-            console.log('hi 2')
 
             if(auction.creatorWallet !== callerWallet) {
                 return res.status(400).json({
@@ -463,5 +528,6 @@ module.exports = {
     listNFTSale,
     storeCreatedAuction,
     getExploreAuctions,
-    endAuction
+    endAuction,
+    getAuctionDetails
 }

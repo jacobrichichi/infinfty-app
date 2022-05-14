@@ -30,6 +30,28 @@ function AuctionInfo(props) {
         }}
     }
 
+    let bidOrEndDiv = 
+        <Box component="form" onSubmit = {handlePlaceBid} noValidate sx={{ mt: 1 }}>
+            <h2>Make Offer</h2>
+            <TextField variant="filled" margin="normal" fullWidth id="offer" label="Offer" name="offer"
+            />
+            <Button type="submit" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mt: 3, mb: 2 }}>
+                Save
+            </Button>
+            <Button color="secondary" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mb: 3 }}>
+                Place Bid
+            </Button>
+        </Box>
+
+    if(wallet.accounts === auction.state.seller){
+        bidOrEndDiv = <Box sx={{ mt: 1 }}>
+                        <h2>Your Auction's Details</h2>
+                        <Button type="submit" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mt: 3, mb: 2 }}>
+                            End Auction
+                        </Button>
+                    </Box>
+    }    
+
 
 
     return(
@@ -45,7 +67,7 @@ function AuctionInfo(props) {
                     <Grid item xs = {12}>
                         <div id = "nft-description">
                             <h1>{auction.state.nftName}</h1>
-                            <h2>{auction.state.description}</h2>
+                            <h2>{auction.description}</h2>
                         </div>
                     </Grid>
                 </Grid>
@@ -54,23 +76,13 @@ function AuctionInfo(props) {
             <Grid  id = "options-container" item xs={6} >  
                 <Grid container>
                     <Grid item>
-                        <Box component="form" onSubmit = {handlePlaceBid} noValidate sx={{ mt: 1 }}>
-                            <h2>Make Offer</h2>
-                            <TextField variant="filled" margin="normal" fullWidth id="offer" label="Offer" name="offer"
-                            />
-                            <Button type="submit" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mt: 3, mb: 2 }}>
-                                Save
-                            </Button>
-                            <Button color="secondary" fullWidth variant="contained" sx={{bgcolor: "#CE4257", color: "white", mb: 3 }}>
-                                Place Bid
-                            </Button>
-                            <Divider style={{width:'100%'}} />
-                            <h2>Highest Offer</h2>
-                            {auction.state.bid_amount/1000000} Algos
-                            <Divider style={{width:'100%'}} />
-                            <h2>End Time:</h2>
-                            {new Date(auction.state.end * 1000).toLocaleString()}
-                        </Box>
+                        {bidOrEndDiv}
+                        <Divider style={{width:'100%'}} />
+                        <h2>Highest Offer</h2>
+                        {auction.state.bid_amount/1000000} Algos
+                        <Divider style={{width:'100%'}} />
+                        <h2>End Time:</h2>
+                        {new Date(auction.state.end * 1000).toLocaleString()}
                     </Grid>
                 </Grid>         
             </Grid>

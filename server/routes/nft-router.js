@@ -25,6 +25,10 @@ router.post('/getExploreAuctions', function(req, res) {
     NftController.getExploreAuctions(req, res)
 })
 
+router.post('/getAuctionDetails', function(req, res) {
+    NftController.getAuctionDetails(req, res)
+})
+
 router.post('/endAuction', auth.verify, function(req, res) {
     NftController.endAuction(req, res)
 })
