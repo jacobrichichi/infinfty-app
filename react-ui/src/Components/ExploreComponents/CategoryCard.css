@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 #categoryContainer {
     background-color: #F5F5F5;
-    max-height: 100vh;
-    min-height: 100vh;
+    /* max-height: 100vh;
+    min-height: 100vh; */
     margin-bottom: 5%;
     margin-top: 2%;
 
@@ -40,10 +40,20 @@
 #collectionComponents {
     display: flex;
     justify-content:center;
-    padding-left: 20px;
-    max-height: 85vh; 
-    min-height: 85vh;
+    /* padding-left: 20px; */
+    /* max-height: 85vh; 
+    min-height: 85vh; */
+    height: 100%;
     padding-bottom:4%;
+}
+
+#nftImage{
+    height: 100%; 
+    width: 100%;     
+    object-fit: contain;
+    margin: 15px;
+
+
 }
 
 #exploreButtonContainer {
@@ -62,3 +72,7 @@
     width: 100%;
     /* margin:auto; */
    }
+
+/* .custom-dot-list-style{
+    background-color: #DA762F;
+} */

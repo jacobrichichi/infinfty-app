@@ -2,11 +2,16 @@
 
 #collectionContainer {
     background-color: white;
-    width: 90%;
-    max-height:80vh;
-    min-height:80vh;
-    border: 1px solid rgb(49, 49, 49); 
+    /* width: 90%; */
+    /* max-height: 80vh; */
+    /* min-height: 60vh; */
+    height: 99%;
+    width: 85%;
+    border: 1px solid rgb(49, 49, 49);
     border-radius: 20px;
+    margin: auto;
+    cursor: pointer;
+    z-index: 0;
 }
 
 #collImgCont {
@@ -35,4 +40,5 @@
     height: 25%;
 
 }
+
 

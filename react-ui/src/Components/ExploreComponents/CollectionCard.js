@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import "./CollectionCard.css"
 import { Link } from 'react-router-dom'
 import WalletContext from '../../wallet-connect'
+import Stack from '@mui/material/Stack';
 
 
 const CollectionCard = (props) => {
@@ -22,15 +23,17 @@ const CollectionCard = (props) => {
 
     return (
             <div id = "collectionContainer" onClick = {goToAuction}>
-                <div id = "collImgCont">
-                    <img src = {imageLocation}/>
-                </div>
-                <div id = "collTitleCont">
-                        <b>{title}</b>
-                </div>
-                <div id = "collDescCont">
-                    <span>{description}</span>
-                </div>
+                <Stack direction="column"   pb = {4} justifyContent="space-evenly"  alignItems="center" spacing={2}>
+                    <div id = "collImgCont">
+                        <img id = "nftImage" src = {imageLocation} />
+                    </div>
+                    <div id = "collTitleCont">
+                            <b>{title}</b>
+                    </div>
+                    <div id = "collDescCont">
+                        <span>{description}</span>
+                    </div>
+                </Stack>
             </div>
     )
 }
