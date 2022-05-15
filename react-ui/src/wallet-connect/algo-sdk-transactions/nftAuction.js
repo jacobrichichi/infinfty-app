@@ -290,7 +290,10 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     // Optional string pointing to a URL relating to the asset
     let assetURL = `ipfs://${resultFile.data.IpfsHash}`;
     // Optional hash commitment of some sort relating to the asset. 32 character length.
-    let assetMetadataHash = (new Uint8Array(Buffer.from(`sha256-${integrity}`)));
+   // const hash = sha256.create();
+
+    //let assetMetadataHash = resultFile.data.IpfsHash
+    //(new Uint8Array(Buffer.from(`sha256-${resultFile.data.IpfsHash}`, "base64")));
     // Mutable paramters. Can only be changed by the current manager
     // Specified address can change reserve, freeze, clawback, and manager
     let manager = bidder;
@@ -303,22 +306,41 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     let clawback = bidder;
     // Signing and Sending "Txn" to allow "addr" to create an asset
     // Signing will take place via app, sends API request to app
-    let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
-        addr, 
-        note,
-        totalIssuance, 
-        decimals, 
-        defaultFrozen, 
-        manager, 
-        reserve, 
-        freeze,
-        clawback, 
-        unitName, 
-        assetName, 
-        assetURL, 
-        assetMetadataHash, 
-        params
-    );
+    
+    let txn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
+        from: addr,
+        suggestedParams: params,
+        totalIssuance: 10,
+        assetURL: assetURL,
+        assetName: assetName,
+        unitName: unitName,
+        decimals: decimals,
+        defaultFrozen: false,
+        manager: manager,
+        freeze: freeze,
+        clawback: clawback,
+        reserve: reserve
+    })
+
+   // algosdk.makeAssetConfigTxnWithSuggestedParamsFromObject({})
+    // let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
+    //     addr, 
+    //     note,
+    //     totalIssuance, 
+    //     decimals, 
+    //     defaultFrozen, 
+    //     manager, 
+    //     reserve, 
+    //     freeze,
+    //     clawback, 
+    //     unitName, 
+    //     assetName, 
+    //     assetURL, 
+    //     //assetMetadataHash, 
+    //     params
+    // );
+
+
     // Format unsignedTxn for API request to app
     let encodedtxn = algosdk.encodeUnsignedTransaction(txn)
     let buffertxn = Buffer.from(encodedtxn)
@@ -339,6 +361,17 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     assetID = ptx["asset-index"];
     // Get the completed Transaction
     console.log("Transaction " + tx.txId + " confirmed in round " + ptx["confirmed-round"]);
+
+    // let cTxn = algosdk.makeAssetConfigTxnWithSuggestedParamsFromObject({
+    //     from: addr,
+    //     suggestedParams: params,
+    //     assetIndex: assetID,
+    //     manager: manager,
+    //     reserve: reserve,
+    //     freeze: freeze,
+    //     clawback: clawback,
+    //     strictEmptyAddressChecking: false,
+    // })
     return { success: true }
 }
 
