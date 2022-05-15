@@ -105,9 +105,19 @@ getInventory = async (req, res) => {
         )
 
         await Promise.all(
-            auctionsMapped.map(async auction => {
-                auction.state = await client.accountApplicationInformation(walletId, auction['id']).do()
-                auction.state = auction.state['created-app']['global-state']
+            auctionsMapped.map(async (auction, index) => {
+                try{
+                    auction.state = await client.accountApplicationInformation(walletId, auction['id']).do()
+                    auction.state = auction.state['created-app']['global-state']
+                }
+
+                // This is an attempt to fix the error where an auction is closed on chain, but not
+                // removed from MongoDB
+                catch(error){
+                    await Sale.findOneAndDelete({ appID: auction['id'] })
+                    user.auctions.splice(index, 1)
+                    await user.save()
+                }
             })
         )
 
@@ -389,7 +399,8 @@ getExploreAuctions = async(req, res) => {
 
 getAuctionDetails = async(req, res) => {
     let auctionID = req.body.auctionID
-    Sale.findOne({ appID: auctionID}, async (err, auction) => {
+    Sale.findOne({ appID: auctionID }, async (err, auction) => {
+        console.log(auction)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

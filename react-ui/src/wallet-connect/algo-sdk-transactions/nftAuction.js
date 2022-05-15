@@ -250,7 +250,7 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
         return { success: 'duplicate' }
     }
     // Constructing metadata JSON
-    let integrity = web3.utils.asciiToHex(resultFile.IpfsHash)
+    let integrity = web3.utils.asciiToHex(resultFile.data.IpfsHash)
     // Pin metadata to IPFS via Pinata
     const resultMeta = await pinJSONToIPFS(nftFile, nftName, nftDesc, resultFile, integrity)
     if (!resultMeta){
@@ -288,9 +288,9 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     // Friendly name of the asset    
     let assetName = `${nftName}@arc3`;
     // Optional string pointing to a URL relating to the asset
-    let assetURL = `ipfs://${resultFile.IpfsHash}`;
+    let assetURL = `ipfs://${resultFile.data.IpfsHash}`;
     // Optional hash commitment of some sort relating to the asset. 32 character length.
-    let assetMetadataHash = `sha256-${integrity.base64}`;
+    let assetMetadataHash = (new Uint8Array(Buffer.from(`sha256-${integrity}`)));
     // Mutable paramters. Can only be changed by the current manager
     // Specified address can change reserve, freeze, clawback, and manager
     let manager = bidder;
