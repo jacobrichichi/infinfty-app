@@ -626,7 +626,7 @@ function WalletContextProvider(props) {
                 walletReducer({
                     type: WalletActionType.ADD_SUCCESS_MESSAGE,
                     payload: {
-                        successMessage: "Auction successfully ended! NFT's and Algo's have been sent to their rightful owners"
+                        successMessage: "Auction successfully ended! NFT's and Algo's have been sent to thei rightful owners"
                     }
                 })
             }
@@ -721,7 +721,7 @@ function WalletContextProvider(props) {
     }
 
     wallet.clearApps = async function() {
-        const response = await clearApps(wallet.accounts);
+        const response = await clearApps("J5LSNW4W44FDFQFR6NE5F57GU7Z7IARYHMK5D3DL4S5GUPUKJZ6ZB4EJCQ"/*wallet.accounts*/);
     }
 
     wallet.refreshPage  = async function(nftUrl, walletID, auctionID, searchTerm) {
