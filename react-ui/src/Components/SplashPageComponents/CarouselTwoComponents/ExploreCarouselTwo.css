@@ -7,7 +7,7 @@
 #carTwoComponents {
     display: flex;
     justify-content: center;
-    padding-left: 20px;
+    /* padding-left: 20px; */
     height: 85%; 
 }
 
