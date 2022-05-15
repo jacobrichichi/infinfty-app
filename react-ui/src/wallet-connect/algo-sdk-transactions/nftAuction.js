@@ -482,10 +482,17 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
     //const endTime = startTime + 1800
     let microReserve = parseInt(reserve * 1000000)
     let microIncrement = parseInt(minBidIncrement * 1000000)
+
+    let properNftId = nftID
+
+    if(typeof properNftId === "string"){
+        properNftId = parseInt(properNftId)
+    }
+
     // set the parameters to be passed into the auction contract, the seller, times, reserve, etc etc
     const appArgs = [
         algosdk.decodeAddress(sender).publicKey,
-        algosdk.encodeUint64(nftID),
+        algosdk.encodeUint64(properNftId),
         algosdk.encodeUint64(startTime),
         algosdk.encodeUint64(endTime),
         algosdk.encodeUint64(microReserve),
@@ -561,8 +568,8 @@ export const createAuction = async (con, sender, seller, nftID, reserve, minBidI
                     // setup opt's into the NFT so it can be sent to the contract
                     // fund NFT sends the NFT to the contracts wallet address
                     let fundAppTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({ from: seller, to: appAddr, suggestedParams: sug_params, amount: fundingAmount, note: new Uint8Array(Buffer.from("example note value")) })
-                    let setupTxn = algosdk.makeApplicationCallTxnFromObject({from: sender, suggestedParams: sug_params, appIndex: appIndex, onComplete: algosdk.OnApplicationComplete.NoOpOC, foreignAssets:[nftID], appArgs: [new Uint8Array(Buffer.from("setup"))] })
-                    let fundNftTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({from: seller, to: appAddr, assetIndex: nftID, amount: 1, suggestedParams: sug_params, note: new Uint8Array(Buffer.from("example note value")) })
+                    let setupTxn = algosdk.makeApplicationCallTxnFromObject({from: sender, suggestedParams: sug_params, appIndex: appIndex, onComplete: algosdk.OnApplicationComplete.NoOpOC, foreignAssets:[properNftId], appArgs: [new Uint8Array(Buffer.from("setup"))] })
+                    let fundNftTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({from: seller, to: appAddr, assetIndex: properNftId, amount: 1, suggestedParams: sug_params, note: new Uint8Array(Buffer.from("example note value")) })
                     
                     
                     algosdk.assignGroupID([fundAppTxn, setupTxn, fundNftTxn])
