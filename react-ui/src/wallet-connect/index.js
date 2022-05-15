@@ -745,11 +745,16 @@ function WalletContextProvider(props) {
                 
                 let auction = null
                 if(auctionID !== null){
-                    let auctionResponse = await api.getAuctionDetails(auctionID)
-                    if(response.status === 200){
-                        if(response.data.success){
-                            auction = auctionResponse.data.auction
+                    try{
+                        let auctionResponse = await api.getAuctionDetails(auctionID)
+                        if(auctionResponse.status === 200){
+                            if(auctionResponse.data.success){
+                                auction = auctionResponse.data.auction
+                            }
                         }
+                    }
+                    catch(error){
+                        localStorage.removeItem("currentAuctionID")
                     }
                 }
                 
