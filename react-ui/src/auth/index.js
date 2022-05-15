@@ -343,6 +343,17 @@ function AuthContextProvider(props) {
                 return response.data.qrcode
             }
         }
+        return ""
+    }
+
+    auth.del2FA = async function(){
+        let user = auth.user
+        const response = await api.del2FA(user)
+        if(response.status===200){
+            console.log(response.data.success + ': ' + response.data.message)
+            return response.data
+        }
+        return null
     }
 
     auth.verifyTOTP = async function(useremail, totpToken){
