@@ -106,12 +106,12 @@ getInventory = async (req, res) => {
                     auctionsMapped.push({ 'id': auctionID, description: fullAuction.description })
                 }
                 else{
-                    if(!deletedAuction){
-                        user.auctions.splice(index, 1)
-                        
-                        await user.save()
-                        deletedAuction = true
-                    }
+                    // if(!deletedAuction){
+                    //     user.auctions.splice(index, 1)
+
+                    //     await user.save()
+                    //     deletedAuction = true
+                    // }
                 }
             })
         )
@@ -126,9 +126,9 @@ getInventory = async (req, res) => {
                 // This is an attempt to fix the error where an auction is closed on chain, but not
                 // removed from MongoDB
                 catch(error){
-                    await Sale.findOneAndDelete({ appID: auction['id'] })
-                    user.auctions.splice(index, 1)
-                    await user.save()
+                    // await Sale.findOneAndDelete({ appID: auction['id'] })
+                    // user.auctions.splice(index, 1)
+                    // await user.save()
                 }
             })
         )
@@ -351,8 +351,8 @@ getExploreAuctions = async(req, res) => {
                         auctionsSecond.push(auction)
                     }
                     catch(error){
-                        console.log('hey')
-                        await Sale.findOneAndDelete({ appID: auction['id'] })
+                        // console.log('hey')
+                        // await Sale.findOneAndDelete({ appID: auction['id'] })
                     }
                 })
             )
