@@ -97,10 +97,22 @@ getInventory = async (req, res) => {
         let auctionsMapped = []
         let auctionDetails = []
 
+        let deletedAuction = false
+
         await Promise.all(
-            auctions.map(async auctionID => {
+            auctions.map(async (auctionID, index) => {
                 let fullAuction = await Sale.findOne({ appID: auctionID })
-                auctionsMapped.push({ 'id': auctionID, description: fullAuction.description })
+                if(fullAuction !== null){
+                    auctionsMapped.push({ 'id': auctionID, description: fullAuction.description })
+                }
+                else{
+                    if(!deletedAuction){
+                        user.auctions.splice(index, 1)
+                        
+                        await user.save()
+                        deletedAuction = true
+                    }
+                }
             })
         )
 
@@ -314,31 +326,40 @@ getExploreAuctions = async(req, res) => {
             let unshuffledAuctionsMapped = []
             let auctionDetails = []
             
-            console.log(auctions)
+           // console.log(auctions)
 
             auctions.forEach(auction => {
                 unshuffledAuctionsMapped.push({ 'id': auction.appID, 'wallet': auction.creatorWallet, 'description': auction.description })
             })
 
-            console.log(unshuffledAuctionsMapped)
+           // console.log(unshuffledAuctionsMapped)
 
             let auctionsMapped = unshuffledAuctionsMapped
                 .map(value => ({ value, sort: Math.random() }))
                 .sort((a, b) => a.sort - b.sort)
                 .map(({ value }) => value)
 
-            console.log(auctionsMapped)
+           // console.log(auctionsMapped)
+
+            let auctionsSecond = []
 
             await Promise.all(
                 auctionsMapped.map(async auction => {
-                    auction.state = await client.getApplicationByID(auction['id']).do()
-                    auction.state = auction.state.params['global-state']
+                    try{
+                        auction.state = await client.getApplicationByID(auction['id']).do()
+                        auction.state = auction.state.params['global-state']
+                        auctionsSecond.push(auction)
+                    }
+                    catch(error){
+                        console.log('hey')
+                        await Sale.findOneAndDelete({ appID: auction['id'] })
+                    }
                 })
             )
 
-            console.log(auctionsMapped)
+           // console.log(auctionsSecond)
 
-            auctionsMapped.forEach(auction => {
+            auctionsSecond.forEach(auction => {
                 auction.state.map((stateVar) => {
                     stateVar.key = atob(stateVar.key)
                 })
@@ -381,13 +402,13 @@ getExploreAuctions = async(req, res) => {
                 })
             )
 
-            console.log(auctionDetails)
+            //console.log(auctionDetails)
 
             let newSearchTerm = searchTerm.toLowerCase().trim()
             let currentTime = new Date().getTime() / 1000
 
             auctionDetails = auctionDetails.filter(auction => (auction.state.nftName.toLowerCase().includes(newSearchTerm) && currentTime < auction.state.end))
-            console.log(auctionDetails)
+           // console.log(auctionDetails)
 
             return res.status(200).json({
                 success: true,
@@ -400,7 +421,7 @@ getExploreAuctions = async(req, res) => {
 getAuctionDetails = async(req, res) => {
     let auctionID = req.body.auctionID
     Sale.findOne({ appID: auctionID }, async (err, auction) => {
-        console.log(auction)
+       // console.log(auction)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -413,11 +434,11 @@ getAuctionDetails = async(req, res) => {
         else{
             const client = new algosdk.Algodv2("", "https://algoexplorerapi.io", "")
             
-            console.log(auction)
+            //console.log(auction)
 
             auction = { 'id': auction.appID, wallet: auction.creatorWallet, 'description': auction.description }
 
-            console.log(auction)
+           // console.log(auction)
 
             auction.state = await client.getApplicationByID(auction['id']).do()
             auction.state = auction.state.params['global-state']
