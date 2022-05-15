@@ -88,9 +88,12 @@ function Account() {
             )
         }
 
-    var disableTwoAuth = () => {
-        wallet.clearApps()
+    const disableTwoAuth = async function() {
         console.log('weeerooo');
+        // remove from 2fa db
+        auth.del2FA()
+        auth.passTwoFact()
+        return
     }
 
 

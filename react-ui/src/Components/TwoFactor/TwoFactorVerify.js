@@ -18,14 +18,19 @@ function TwoFactorVerify(props){
 
     let navigate = useNavigate()
     var handleSubmit = async function() {
-        const result = await auth.verifyTOTP(auth.user.email, totpToken)
-        // {success: Boolean, message: String}
-        if(!result.success){
-            setRetryText(result.message)
+        if(auth.user==null){
+            console.log('user is null')
+            console.log(auth.user)
         }else{
-            // Proceed to homepage or something
-            auth.passTwoFact()
-            navigate(`/`)
+            const result = await auth.verifyTOTP(auth.user.email, totpToken)
+            // {success: Boolean, message: String}
+            if(!result.success){
+                setRetryText(result.message)
+            }else{
+                // Proceed to homepage or something
+                auth.passTwoFact()
+                navigate(`/`)
+            }
         }
     }
 

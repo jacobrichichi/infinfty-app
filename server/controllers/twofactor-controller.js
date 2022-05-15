@@ -20,9 +20,9 @@ const auth = require("../auth")
     // Get user and update into db
     User.findOne({email: email}, (err, user) => {
         if(err){
-            return res.status(400).json({
+            return res.status(200).json({
                 success: false,
-                message: 'Error not found'
+                message: 'Error: not found'
             });
         }
         if(!user.twofactorsecret){
@@ -35,8 +35,8 @@ const auth = require("../auth")
                 qr: 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/My%20Awesome%20App:johndoe%3Fsecret=XDQXYCP5AC6FA32FQXDGJSPBIDYNKK5W%26issuer=My%20Awesome%20App'
             }
             */
-            user.twofactorsecret=newSecret.secret;
-            // ^ Must Encrypt for security
+            user.twofactorsecret=newSecret.secret; // Must Encrypt for security
+            // Update the user's data
             user.save().then((success)=>{
                 twofactor.generateToken(user.twofactorsecret)
                 return res.status(200).json({
@@ -45,7 +45,7 @@ const auth = require("../auth")
                     qrcode: newSecret.uri
                 });
             }).catch((err) => {
-                return res.status(400).json({
+                return res.status(200).json({
                     success: false,
                     message: "Couldn't setup 2Factor"
                 });
@@ -109,7 +109,32 @@ verifyTOTP = (req, res) => {
     });
 }
 
+del2FA = (req, res) => {
+    const {email} = req.body;
+    User.findOne({email: email}, (err, user) => {
+        if(err){
+            return res.status(200).json({
+                success: false,
+                message: 'Error: not found'
+            })
+        }
+        user.twofactorsecret = null
+        user.save().then((success) => {
+            return res.status(200).json({
+                success: true,
+                message: '2FA gone'
+            });
+        }).catch((err) => {
+            return res.status(200).json({
+                success: false,
+                message: 'Error removing 2FA'
+            });
+        });
+    });
+}
+
 module.exports={
     setup2FA,
+    del2FA,
     verifyTOTP
 }

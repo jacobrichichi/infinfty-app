@@ -50,6 +50,8 @@ export const updatePassword = (id, user) => api.put(`/updatePassword`, user)
 
 export const setUp2FA = (user) => api.post(`/synctotp`, user)
 
+export const del2FA = (user) => api.post(`/nototp`, user)
+
 export const verifyTOTP = (user) => api.post(`/verifytotp`, user)
 
 const apis = {
@@ -62,6 +64,7 @@ const apis = {
     updateUser,
     updatePassword,
     setUp2FA,
+    del2FA,
     verifyTOTP,
     removeWallet
 }

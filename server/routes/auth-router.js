@@ -15,6 +15,7 @@ router.put('/updateUser', AuthController.updateUser)
 router.put('/updatePassword', AuthController.updatePassword)
 
 router.post('/synctotp', TwoFactorController.setup2FA)
+router.post('/nototp', TwoFactorController.del2FA)
 router.post('/verifytotp', TwoFactorController.verifyTOTP)
 
 module.exports = router
