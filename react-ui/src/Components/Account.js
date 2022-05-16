@@ -126,13 +126,13 @@ function Account() {
             </div>
             <ProSidebar id = "sidebar">
                 <Menu iconShape="square">
-                    <MenuItem>Account</MenuItem>
-                        <SubMenu title="Wallets">
-                            <MenuItem>Wallet</MenuItem>
-                            <MenuItem>Wallet</MenuItem>
+                        <SubMenu title="Disconnect Wallet">
+                            <MenuItem><Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {!auth.user.hasWallet}>
+                    <div className = "linkText" id = "expLinkText">
+                        Disconnect Your Wallet
+                    </div>
+                </Button></MenuItem>
                         </SubMenu>
-                    <MenuItem>Inventory
-                    <Link to="/inventory"></Link></MenuItem>
                 </Menu>
             </ProSidebar>  
 
@@ -175,6 +175,8 @@ function Account() {
                     </Button>
                 </Box>
 
+                <h2>2 Factor Authentication</h2>
+
                 <Link to = "/twofactorsetup">
                 <Button color="success" variant="contained" sx={{ mt: 3, mb: 2 }}>
                         <div className = "linkText" id = "expLinkText">
@@ -189,11 +191,7 @@ function Account() {
                     </div>
                 </Button>
                 
-                <Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {!auth.user.hasWallet}>
-                    <div className = "linkText" id = "expLinkText">
-                        Disconnect Your Wallet
-                    </div>
-                </Button>
+                
 
             </Container>
             <br></br>
