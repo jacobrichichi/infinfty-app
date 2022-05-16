@@ -269,6 +269,7 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
      * no extra_metadata is defined in JSON Metadata file (most of use cases).
      */
     const client = new algosdk.Algodv2('', 'https://algoexplorerapi.io', '');
+
     let params = await client.getTransactionParams().do();
     // Immutable parameters
     params.fee = algosdk.ALGORAND_MIN_TX_FEE;
@@ -286,7 +287,7 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     // Used to display asset units to user    
     let unitName = `INFIMINT`;
     // Friendly name of the asset    
-    let assetName = `${nftName}@arc3`;
+    let assetName = `${nftName}`;
     // Optional string pointing to a URL relating to the asset
     let assetURL = `ipfs://${resultFile.data.IpfsHash}`;
     // Optional hash commitment of some sort relating to the asset. 32 character length.
@@ -310,35 +311,13 @@ export const createNFT = async (nftFile, nftName, nftDesc, bidder) => {
     let txn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
         from: addr,
         suggestedParams: params,
-        totalIssuance: 10,
         assetURL: assetURL,
         assetName: assetName,
         unitName: unitName,
         decimals: decimals,
         defaultFrozen: false,
-        manager: manager,
-        freeze: freeze,
-        clawback: clawback,
-        reserve: reserve
+        total: 1,
     })
-
-   // algosdk.makeAssetConfigTxnWithSuggestedParamsFromObject({})
-    // let txn = algosdk.makeAssetCreateTxnWithSuggestedParams(
-    //     addr, 
-    //     note,
-    //     totalIssuance, 
-    //     decimals, 
-    //     defaultFrozen, 
-    //     manager, 
-    //     reserve, 
-    //     freeze,
-    //     clawback, 
-    //     unitName, 
-    //     assetName, 
-    //     assetURL, 
-    //     //assetMetadataHash, 
-    //     params
-    // );
 
 
     // Format unsignedTxn for API request to app
