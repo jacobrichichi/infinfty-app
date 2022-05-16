@@ -2,8 +2,8 @@ import axios from 'axios'
 axios.defaults.withCredentials = true;
 
 //const baseURL = 'https://infinftapp.herokuapp.com/nft'
-//const baseURL = 'https://infinfty.herokuapp.com/nft'
-const baseURL = 'http://localhost:5000/nft'
+const baseURL = 'https://infinfty.herokuapp.com/nft'
+//const baseURL = 'http://localhost:5000/nft'
 
 /*if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     baseURL = 'http://localhost:5000/auth'
