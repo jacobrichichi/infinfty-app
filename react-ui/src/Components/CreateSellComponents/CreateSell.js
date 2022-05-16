@@ -55,6 +55,7 @@ function CreateSell(){
 	const onFileUpload = async (e) => {
         e.preventDefault();
 
+
         if(wallet.isWallet){
             // awaiting within component can cause errorz
 
