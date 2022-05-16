@@ -54,6 +54,8 @@ function Account() {
             formData.get('Password'),
             formData.get('New Password'),
         )
+        handleOpen()
+        
     };
 
     const handleCloseMessageModal = (event) => {      
@@ -92,6 +94,7 @@ function Account() {
         // remove from 2fa db
         auth.del2FA()
         auth.passTwoFact()
+        handleOpen()
         return
     }
 
@@ -126,11 +129,14 @@ function Account() {
             <ProSidebar id = "sidebar">
                 <Menu iconShape="square">
                         <SubMenu title="Disconnect Wallet">
-                            <MenuItem><Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {!auth.user.hasWallet}>
-                    <div className = "linkText" id = "expLinkText">
-                        Disconnect Your Wallet
-                    </div>
-                </Button></MenuItem>
+                            <MenuItem>
+                                <Button style={{ backgroundColor: "#DCBAA9"}} variant="contained" sx={{mb: 4 }} onClick = {disconnectWallet} disabled = {!auth.user.hasWallet}>
+                                    <div className = "linkText" id = "expLinkText">
+                                        Disconnect Your Wallet
+                                    </div>
+                                    {messageModal}
+                                </Button>
+                            </MenuItem>
                         </SubMenu>
                 </Menu>
             </ProSidebar>  
@@ -189,13 +195,10 @@ function Account() {
                         Disable 2 Factor
                     </div>
                 </Button>
-                
-                
 
             </Container>
             <br></br>
             <br></br>
-            {messageModal}
         </div>
     );
 }
