@@ -64,16 +64,15 @@ function Account() {
 
 
     const disconnectWallet = (event) => {
-        // console.log("disconnecting wallet");
-        // console.log(auth.user.hasWallet);
-        // if (auth.user.hasWallet){
-        //     wallet.disconnectWallet()
-        //     auth.removeWallet()
-        // }
-        // setIsMessageModalOpen(true);
-        // setDisconnectWalletMode(true);
+        console.log("disconnecting wallet");
+        console.log(auth.user.hasWallet);
+        if (auth.user.hasWallet){
+            wallet.disconnectWallet()
+            auth.removeWallet()
+        }
+        setIsMessageModalOpen(true);
+        setDisconnectWalletMode(true);
 
-        wallet.clearApps()
     };
 
     var messageModal = ""
